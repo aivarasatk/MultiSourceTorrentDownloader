@@ -14,9 +14,10 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="App" MinHeight="400" Width="600"
-        SizeToContent="Height"
+        Title="App"
+        SizeToContent="WidthAndHeight"
         d:DataContext="{d:DesignInstance d:Type=model:MainModel}">
+    
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

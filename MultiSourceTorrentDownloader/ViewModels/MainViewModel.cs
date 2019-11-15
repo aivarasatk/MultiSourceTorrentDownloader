@@ -1,4 +1,5 @@
-﻿using MultiSourceTorrentDownloader.Models;
+﻿using MultiSourceTorrentDownloader.Interfaces;
+using MultiSourceTorrentDownloader.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +10,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
     {
         public MainModel Model { get; private set; }
 
-        public MainViewModel()
+        public MainViewModel(ITorrentSource source)
         {
             Model = new MainModel();
         }
