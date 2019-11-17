@@ -12,5 +12,7 @@ namespace MultiSourceTorrentDownloader.Enums
         SizeAsc = 6,
         SeedersDesc = 7,
         SeedersAsc = 8,
+        LeecherssDesc = 9,
+        LeechersAsc = 10,
     }
 }

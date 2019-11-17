@@ -1,7 +1,9 @@
-﻿using MultiSourceTorrentDownloader.Interfaces;
+﻿using MultiSourceTorrentDownloader.Enums;
+using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MultiSourceTorrentDownloader.ViewModels
@@ -20,11 +22,27 @@ namespace MultiSourceTorrentDownloader.ViewModels
             InitializeViewModel();
         }
 
-        private async void InitializeViewModel()//CHNAGE TO VOID
+        private void InitializeViewModel()
         {
-            //Model.IsLoading = true;// REMOVE
+            Model.Filters = ThePirateBayFilters();
+            Model.SelectedFilter = Model.Filters.First();
             //var torrents = await _thePirateBaySource.GetTorrents("the deuce");
 
+        }
+
+        private IEnumerable<KeyValuePair<ThePirateBayFilter, string>> ThePirateBayFilters()
+        {
+            return new List<KeyValuePair<ThePirateBayFilter, string>>
+            {
+                new KeyValuePair<ThePirateBayFilter, string>(ThePirateBayFilter.SeedersDesc, "Seeders Desc."),
+                new KeyValuePair<ThePirateBayFilter, string>(ThePirateBayFilter.SeedersAsc, "Seeders Asc."),
+                new KeyValuePair<ThePirateBayFilter, string>(ThePirateBayFilter.UploadedDesc, "Uploaded Desc."),
+                new KeyValuePair<ThePirateBayFilter, string>(ThePirateBayFilter.UploadedAsc, "Uploaded Asc."),
+                new KeyValuePair<ThePirateBayFilter, string>(ThePirateBayFilter.SizeDesc, "Size Desc."),
+                new KeyValuePair<ThePirateBayFilter, string>(ThePirateBayFilter.SizeAsc, "Size Asc."),
+                new KeyValuePair<ThePirateBayFilter, string>(ThePirateBayFilter.LeechersAsc, "Leechers Asc."),
+                new KeyValuePair<ThePirateBayFilter, string>(ThePirateBayFilter.LeecherssDesc, "Leechers Desc."),
+            };
         }
     }
 }

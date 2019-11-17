@@ -15,7 +15,7 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="App"
-        SizeToContent="WidthAndHeight"
+        Width="600" Height="400"
         d:DataContext="{d:DesignInstance d:Type=model:MainModel}">
     
     <Window.Resources>
@@ -32,8 +32,44 @@
                 <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             </Grid.Resources>
 
+            <Grid>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <GroupBox Grid.Row="0" Margin="16" Header="Search Criteria">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding SearchValue}" Height="auto" Margin="0,0,16,0"/>
+                        <Button  Grid.Row="0" Grid.Column="1" Command="{Binding SearchCommand}" Content="Search"/>
+
+                        <ComboBox Grid.Row="1" ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" Width="150" Margin="0,16,0,0" HorizontalAlignment="Left"/>
+                    </Grid>
+                    
+                </GroupBox>
+                
+                <GroupBox Grid.Row="1" Margin="16" Header="Torrents">
+                    <DataGrid>
+
+                    </DataGrid>
+                </GroupBox>
+                
+                <TextBlock Grid.Row="2" Margin="16"/>
+            </Grid>
+            
             <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel Background="LightGray" Opacity="0.5"/>
+                <StackPanel Background="LightGray" Opacity="0.5"/> <!-- prevents user clicks-->
                 <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Visibility="Visible" Margin="16,16,16,16"/>
             </Grid>
         </Grid>
