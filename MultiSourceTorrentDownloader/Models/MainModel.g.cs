@@ -1,4 +1,5 @@
-﻿using MultiSourceTorrentDownloader.Enums;
+﻿using MultiSourceTorrentDownloader.Data;
+using MultiSourceTorrentDownloader.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +17,11 @@ namespace MultiSourceTorrentDownloader.Models
         public string SearchValue
         {
             get => _searchValue;
-            set => this.MutateVerbose(ref _searchValue, value, RaisePropertyChanged());
+            set
+            {
+                this.MutateVerbose(ref _searchValue, value, RaisePropertyChanged());
+                SearchCommand.RaiseCanExecuteChanged();
+            }
         }
         
         public IEnumerable<KeyValuePair<ThePirateBayFilter, string>> Filters

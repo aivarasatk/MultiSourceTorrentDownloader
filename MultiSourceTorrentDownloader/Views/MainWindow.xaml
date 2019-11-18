@@ -15,7 +15,7 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="App"
-        Width="600" Height="400"
+        Width="800" Height="600"
         d:DataContext="{d:DesignInstance d:Type=model:MainModel}">
     
     <Window.Resources>
@@ -24,8 +24,11 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        
     </Window.Resources>
+
+    <!--<Window.InputBindings>
+        <KeyBinding Command="{Binding SearchCommand}" Key="Return"/>
+    </Window.InputBindings>-->
     <materialDesign:DialogHost Identifier="RootDialog"> <!-- to show in-window popups-->
         <Grid>
             <Grid.Resources>
@@ -41,7 +44,7 @@
                 </Grid.RowDefinitions>
 
                 <GroupBox Grid.Row="0" Margin="16" Header="Search Criteria">
-                    <Grid>
+                    <Grid FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
@@ -51,16 +54,21 @@
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding SearchValue}" Height="auto" Margin="0,0,16,0"/>
+                        <TextBox x:Name="SearchBox"  Grid.Row="0" Grid.Column="0" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" Height="auto" Margin="0,0,16,0" 
+                                 materialDesign:HintAssist.Hint="Search for torrents.." ToolTip="Pressing enter will activate search">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
+                            </TextBox.InputBindings>
+                        </TextBox>
                         <Button  Grid.Row="0" Grid.Column="1" Command="{Binding SearchCommand}" Content="Search"/>
 
-                        <ComboBox Grid.Row="1" ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" Width="150" Margin="0,16,0,0" HorizontalAlignment="Left"/>
+                        <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" Margin="0,16,0,0" HorizontalAlignment="Left"/>
                     </Grid>
                     
                 </GroupBox>
                 
                 <GroupBox Grid.Row="1" Margin="16" Header="Torrents">
-                    <DataGrid>
+                    <DataGrid ItemsSource="{Binding TorrentEntries}" IsReadOnly="True">
 
                     </DataGrid>
                 </GroupBox>

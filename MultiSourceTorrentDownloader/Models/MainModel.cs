@@ -1,10 +1,9 @@
-﻿using MultiSourceTorrentDownloader.Data;
+﻿using MultiSourceTorrentDownloader.Common;
+using MultiSourceTorrentDownloader.Data;
 using MultiSourceTorrentDownloader.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Input;
 
 namespace MultiSourceTorrentDownloader.Models
 {
@@ -22,6 +21,6 @@ namespace MultiSourceTorrentDownloader.Models
         private IEnumerable<KeyValuePair<ThePirateBayFilter, string>> _filters;
         private KeyValuePair<ThePirateBayFilter, string> _selectedFilter;
 
-        public ICommand SearchCommand { get; set; }
+        public Command SearchCommand { get; set; }
     }
 }

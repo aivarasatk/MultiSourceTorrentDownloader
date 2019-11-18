@@ -21,11 +21,9 @@ namespace MultiSourceTorrentDownloader.Common
             _execute = execute;
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, new EventArgs());
+
+        public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {
