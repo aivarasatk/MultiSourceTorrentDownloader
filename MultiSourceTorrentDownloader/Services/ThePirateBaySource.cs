@@ -29,7 +29,7 @@ namespace MultiSourceTorrentDownloader.Services
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["ThePirateBaySearchEndpoint"]);
         }
 
-        public async Task<IEnumerable<TorrentEntry>> GetTorrents(string searchFor, int page = 0, ThePirateBayFilter filterOption = ThePirateBayFilter.SeedersDesc)
+        public async Task<TorrentQueryResult> GetTorrents(string searchFor, ThePirateBayFilter filterOption, int page = 0)
         {
             var fullUrl = Path.Combine(_searchEndpoint, searchFor, page.ToString(), filterOption.ToString("D"));
             var response = await _httpClient.GetAsync(fullUrl);
@@ -37,8 +37,7 @@ namespace MultiSourceTorrentDownloader.Services
 
             var contents = await response.Content.ReadAsStringAsync();
 
-            var torrentEntries = await _parser.ParsePageForTorrentEntries(contents);
-            return torrentEntries;
+            return await _parser.ParsePageForTorrentEntries(contents);
         }
 
     }

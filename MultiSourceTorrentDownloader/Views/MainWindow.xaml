@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:model="clr-namespace:MultiSourceTorrentDownloader.Models"
+        xmlns:behaviors="clr-namespace:MultiSourceTorrentDownloader.Behaviors"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="15"
@@ -15,7 +17,7 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="App"
-        Width="800" Height="600"
+        Width="1000" Height="900"
         d:DataContext="{d:DesignInstance d:Type=model:MainModel}">
     
     <Window.Resources>
@@ -26,9 +28,6 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <!--<Window.InputBindings>
-        <KeyBinding Command="{Binding SearchCommand}" Key="Return"/>
-    </Window.InputBindings>-->
     <materialDesign:DialogHost Identifier="RootDialog"> <!-- to show in-window popups-->
         <Grid>
             <Grid.Resources>
@@ -66,11 +65,29 @@
                     </Grid>
                     
                 </GroupBox>
-                
-                <GroupBox Grid.Row="1" Margin="16" Header="Torrents">
-                    <DataGrid ItemsSource="{Binding TorrentEntries}" IsReadOnly="True">
 
-                    </DataGrid>
+                <GroupBox Grid.Row="1" Margin="16" Header="Torrents">
+                    <Grid Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <DataGrid Grid.Row="0" ItemsSource="{Binding TorrentEntries}" IsReadOnly="True" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Title" FontWeight="Bold" Binding="{Binding Title}"/>
+                                <DataGridTextColumn Header="Seeders" FontWeight="Medium" Foreground="Green" Binding="{Binding Seeders}"/>
+                                <DataGridTextColumn Header="Leechers" FontWeight="Medium" Foreground="Red" Binding="{Binding Leechers}"/>
+                                <DataGridTextColumn Header="Time" FontWeight="Medium" Binding="{Binding Date}"/>
+                                <DataGridTextColumn Header="Size" FontWeight="Medium" Binding="{Binding Size}"/>
+                                <DataGridTextColumn Header="Uploader" FontWeight="Medium" Binding="{Binding Uploader}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Button Grid.Row="1" Command="{Binding LoadMoreCommand}" Content="Load more" Margin="0,16,0,0" Width="120" HorizontalAlignment="Left"
+                                ToolTip="Loads more data from next torrent page"/>
+                    </Grid>
+                    
                 </GroupBox>
                 
                 <TextBlock Grid.Row="2" Margin="16"/>

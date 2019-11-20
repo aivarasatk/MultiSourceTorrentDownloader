@@ -21,6 +21,7 @@ namespace MultiSourceTorrentDownloader.Models
         private IEnumerable<KeyValuePair<ThePirateBayFilter, string>> _filters;
         private KeyValuePair<ThePirateBayFilter, string> _selectedFilter;
 
+        public Command LoadMoreCommand { get; set; }
         public Command SearchCommand { get; set; }
     }
 }

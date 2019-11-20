@@ -9,6 +9,6 @@ namespace MultiSourceTorrentDownloader.Interfaces
 {
     public interface IThePirateBayParser
     {
-        Task<IEnumerable<TorrentEntry>> ParsePageForTorrentEntries(string pageContents); 
+        Task<TorrentQueryResult> ParsePageForTorrentEntries(string pageContents); 
     }
 }

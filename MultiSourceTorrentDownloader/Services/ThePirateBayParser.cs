@@ -19,7 +19,7 @@ namespace MultiSourceTorrentDownloader.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<TorrentEntry>> ParsePageForTorrentEntries(string pageContents)
+        public async Task<TorrentQueryResult> ParsePageForTorrentEntries(string pageContents)
         {
             return await Task.Run(() =>
             {
@@ -28,7 +28,7 @@ namespace MultiSourceTorrentDownloader.Services
 
                 var tableRows = htmlAgility.DocumentNode.SelectNodes("//table[@id='searchResult']/tr");//gets table rows that contain torrent data
                 if (NoTableEntries(tableRows))//probably end of results
-                    return Enumerable.Empty<TorrentEntry>();
+                    return new TorrentQueryResult { LastPage = true };
 
                 var result = new List<TorrentEntry>();
                 foreach (var dataRow in tableRows)
@@ -103,7 +103,12 @@ namespace MultiSourceTorrentDownloader.Services
                     });
                 }
 
-                return result;
+                var pagination = htmlAgility.DocumentNode.SelectNodes("//img[@alt='Next']");
+                return new TorrentQueryResult
+                {
+                    TorrentEntries = result,
+                    LastPage = pagination == null
+                };
             });
         }
 
