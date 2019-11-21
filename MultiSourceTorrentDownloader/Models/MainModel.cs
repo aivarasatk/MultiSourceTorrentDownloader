@@ -17,6 +17,8 @@ namespace MultiSourceTorrentDownloader.Models
 
         private bool _isLoading;
         private string _searchValue;
+        private bool _thePirateBaySourceSelected;
+        //private bool _leetxSelected;
         public ObservableCollection<TorrentEntry> TorrentEntries { get; set; }
         private IEnumerable<KeyValuePair<ThePirateBayFilter, string>> _filters;
         private KeyValuePair<ThePirateBayFilter, string> _selectedFilter;

@@ -23,7 +23,29 @@ namespace MultiSourceTorrentDownloader.Models
                 SearchCommand.RaiseCanExecuteChanged();
             }
         }
-        
+
+        public bool ThePirateBaySourceSelected
+        {
+            get => _thePirateBaySourceSelected;
+            set
+            {
+                this.MutateVerbose(ref _thePirateBaySourceSelected, value, RaisePropertyChanged());
+                SearchCommand?.RaiseCanExecuteChanged();
+                LoadMoreCommand?.RaiseCanExecuteChanged();
+            }
+        }
+
+        //public bool LeetxSelected
+        //{
+        //    get => _leetxSelected;
+        //    set
+        //    {
+        //        this.MutateVerbose(ref _leetxSelected, value, RaisePropertyChanged());
+        //        SearchCommand?.RaiseCanExecuteChanged();
+        //        LoadMoreCommand?.RaiseCanExecuteChanged();
+        //    }
+        //}
+
         public IEnumerable<KeyValuePair<ThePirateBayFilter, string>> Filters
         {
             get => _filters;

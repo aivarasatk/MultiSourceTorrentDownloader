@@ -95,7 +95,7 @@
     <Compile Include="Data\TorrentEntry.cs" />
     <Compile Include="Data\TorrentPaging.cs" />
     <Compile Include="Data\TorrentQueryResult.cs" />
-    <Compile Include="Enums\ThePirateBayDetails.cs" />
+    <Compile Include="Enums\TorrentSource.cs" />
     <Compile Include="Interfaces\IThePirateBayParser.cs" />
     <Compile Include="Services\LogService.cs" />
     <Compile Include="Services\ThePirateBayParser.cs" />

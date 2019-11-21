@@ -14,9 +14,24 @@ namespace MultiSourceTorrentDownloader.Services
     {
         private readonly ILogService _logger;
 
+        private readonly int _dateIndex;
+        private readonly int _sizeIndex;
+        private readonly int _uploaderIndex;
+
+        private readonly string _dateStringToReplace;
+        private readonly string _sizeStringToReplace;
+        private readonly string _uploaderStringToReplace;
+
         public ThePirateBayParser(ILogService logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _dateIndex = 0;
+            _sizeIndex = 1;
+            _uploaderIndex = 2;
+
+            _dateStringToReplace = "Uploaded";
+            _sizeStringToReplace = "Size";
+            _uploaderStringToReplace = "ULed by";
         }
 
         public async Task<TorrentQueryResult> ParsePageForTorrentEntries(string pageContents)
@@ -77,11 +92,12 @@ namespace MultiSourceTorrentDownloader.Services
                     var date = string.Empty;
                     var size = string.Empty;
                     var uploader = string.Empty;
+
                     if (details.Length == 3)
                     {
-                        date = details[(int)ThePirateBayDetails.Date];
-                        size = details[(int)ThePirateBayDetails.Size];
-                        uploader = details[(int)ThePirateBayDetails.Uploader];
+                        date = PrunedDetail(details[_dateIndex], _dateStringToReplace);
+                        size = PrunedDetail(details[_sizeIndex], _sizeStringToReplace);
+                        uploader = PrunedDetail(details[_uploaderIndex], _uploaderStringToReplace);
                     }
 
                     if (!int.TryParse(dataColumns[1].InnerText, out var seeders))
@@ -111,6 +127,8 @@ namespace MultiSourceTorrentDownloader.Services
                 };
             });
         }
+
+        private string PrunedDetail(string source, string toRemove) => source.Replace(toRemove, "").Trim();
 
         private bool NoTableEntries(HtmlNodeCollection tableRows) => tableRows == null;
     }

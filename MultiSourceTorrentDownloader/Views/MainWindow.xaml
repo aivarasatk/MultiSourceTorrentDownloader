@@ -48,20 +48,42 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
+                        
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
 
-                        <TextBox x:Name="SearchBox"  Grid.Row="0" Grid.Column="0" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" Height="auto" Margin="0,0,16,0" 
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="SearchBox"  Grid.Row="0" Grid.Column="0" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" Height="auto" Margin="0,0,16,0" 
                                  materialDesign:HintAssist.Hint="Search for torrents.." ToolTip="Pressing enter will activate search">
-                            <TextBox.InputBindings>
-                                <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
-                            </TextBox.InputBindings>
-                        </TextBox>
-                        <Button  Grid.Row="0" Grid.Column="1" Command="{Binding SearchCommand}" Content="Search"/>
+                                <TextBox.InputBindings>
+                                    <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
+                                </TextBox.InputBindings>
+                            </TextBox>
+                            <Button  Grid.Row="0" Grid.Column="1" Command="{Binding SearchCommand}" Content="Search"/>
 
-                        <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" Margin="0,16,0,0" HorizontalAlignment="Left"/>
+                            <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" Margin="0,16,0,0" HorizontalAlignment="Left"/>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,32,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <GroupBox  Header="Sources" Width="auto">
+                                <StackPanel Orientation="Horizontal" Margin="8">
+                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatPrimaryToggleButton}" FontSize="14" Content="The Pirate Bay" Width="100" IsChecked="{Binding ThePirateBaySourceSelected}"/>
+                                    <!--<ToggleButton Style="{DynamicResource MaterialDesignFlatPrimaryToggleButton}" FontSize="14" Content="1337X" Width="100" IsChecked="{Binding LeetxSelected}" Margin="16,0,0,0"/>-->
+                                </StackPanel>
+                            </GroupBox>
+                        </Grid>
+                        
                     </Grid>
                     
                 </GroupBox>
@@ -76,11 +98,11 @@
                         <DataGrid Grid.Row="0" ItemsSource="{Binding TorrentEntries}" IsReadOnly="True" AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Title" FontWeight="Bold" Binding="{Binding Title}"/>
-                                <DataGridTextColumn Header="Seeders" FontWeight="Medium" Foreground="Green" Binding="{Binding Seeders}"/>
-                                <DataGridTextColumn Header="Leechers" FontWeight="Medium" Foreground="Red" Binding="{Binding Leechers}"/>
-                                <DataGridTextColumn Header="Time" FontWeight="Medium" Binding="{Binding Date}"/>
-                                <DataGridTextColumn Header="Size" FontWeight="Medium" Binding="{Binding Size}"/>
-                                <DataGridTextColumn Header="Uploader" FontWeight="Medium" Binding="{Binding Uploader}"/>
+                                <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}"/>
+                                <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}"/>
+                                <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date}"/>
+                                <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}"/>
+                                <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}"/>
                             </DataGrid.Columns>
                         </DataGrid>
 

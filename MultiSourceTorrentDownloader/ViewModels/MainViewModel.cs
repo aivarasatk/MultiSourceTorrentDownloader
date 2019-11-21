@@ -35,6 +35,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void InitializeViewModel()
         {
+            Model.ThePirateBaySourceSelected = true;
+
             Model.Filters = ThePirateBayFilters();
             Model.SelectedFilter = Model.Filters.First();
             Model.SearchCommand = new Command(OnSearch, CanExecuteSearch);
@@ -50,7 +52,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private bool CanLoadMore(object obj)
         {
-            return !_torrentPaging.AllSourcesReachedEnd() && Model.TorrentEntries.Count != 0;
+            return !_torrentPaging.AllSourcesReachedEnd() && Model.TorrentEntries.Count != 0 
+                && (Model.ThePirateBaySourceSelected /*|| Model.LeetxSelected*/);
         }
 
         private async void OnSearch(object obj)
@@ -70,17 +73,12 @@ namespace MultiSourceTorrentDownloader.ViewModels
             try
             {
                 //TODO: show info if no results found
-                var pirateResult = await _thePirateBaySource.GetTorrents(Model.SearchValue, Model.SelectedFilter.Key, _torrentPaging.ThePirateBayCurrentPage);
-
-                if (pirateResult.LastPage)
-                    _torrentPaging.ThePirateBayPagingEnded = true;
-                else
-                    _torrentPaging.ThePirateBayCurrentPage++;
-
-                foreach (var entry in pirateResult.TorrentEntries)
+                if (Model.ThePirateBaySourceSelected)
                 {
-                    Model.TorrentEntries.Add(entry);
+                    var lastPage = await LoadFromTorrentSource(_torrentPaging.ThePirateBayCurrentPage);
+                    AdjustPaging(TorrentSource.ThePirateBay, lastPage);
                 }
+                
 
                 if (_torrentPaging.AllSourcesReachedEnd())
                     MessageBox.Show("No more records to load", "End of data", MessageBoxButton.OK, MessageBoxImage.Information);//REPLACE WITH CLEANER
@@ -94,7 +92,35 @@ namespace MultiSourceTorrentDownloader.ViewModels
             }
         }
 
-        private bool CanExecuteSearch(object obj) => !string.IsNullOrEmpty(Model.SearchValue);
+        private async Task<bool> LoadFromTorrentSource(int currentPage)
+        {
+            var pirateResult = await _thePirateBaySource.GetTorrents(Model.SearchValue, Model.SelectedFilter.Key, currentPage);
+
+            foreach (var entry in pirateResult.TorrentEntries)
+                Model.TorrentEntries.Add(entry);
+
+            return pirateResult.LastPage;
+        }
+
+        private void AdjustPaging(TorrentSource source, bool isLastPage)
+        {
+            switch (source)
+            {
+                case TorrentSource.ThePirateBay:
+                    if (isLastPage)
+                        _torrentPaging.ThePirateBayPagingEnded = true;
+                    else
+                        _torrentPaging.ThePirateBayCurrentPage++;
+                    break;
+                //case TorrentSource.Leetx:
+                //    break;
+            }
+        }
+
+        private bool CanExecuteSearch(object obj)
+        {
+            return !string.IsNullOrEmpty(Model.SearchValue) && (Model.ThePirateBaySourceSelected /*|| Model.LeetxSelected*/);
+        }
 
         private IEnumerable<KeyValuePair<ThePirateBayFilter, string>> ThePirateBayFilters()
         {

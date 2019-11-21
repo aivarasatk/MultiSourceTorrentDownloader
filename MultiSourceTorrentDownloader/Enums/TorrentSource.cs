@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Enums
 {
-    public enum ThePirateBayDetails
+    public enum TorrentSource
     {
-        Date = 0,
-        Size = 1,
-        Uploader = 2
+        ThePirateBay = 0,
+        //Leetx = 1
     }
 }
