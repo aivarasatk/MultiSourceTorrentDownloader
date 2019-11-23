@@ -47,41 +47,29 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         
-                        <Grid Grid.Row="0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBox x:Name="SearchBox"  Grid.Row="0" Grid.Column="0" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" Height="auto" Margin="0,0,16,0" 
+                        <TextBox x:Name="SearchBox"  Grid.Row="0" Grid.Column="0" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" Height="auto" Margin="0,0,16,0" 
                                  materialDesign:HintAssist.Hint="Search for torrents.." ToolTip="Pressing enter will activate search">
-                                <TextBox.InputBindings>
-                                    <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
-                                </TextBox.InputBindings>
-                            </TextBox>
-                            <Button  Grid.Row="0" Grid.Column="1" Command="{Binding SearchCommand}" Content="Search"/>
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <Button  Grid.Row="0" Grid.Column="1" Command="{Binding SearchCommand}" Content="Search"/>
 
-                            <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" Margin="0,16,0,0" HorizontalAlignment="Left"/>
-                        </Grid>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" >
+                            <ComboBox   ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" Margin="0,16,0,0" HorizontalAlignment="Left"/>
 
-                        <Grid Grid.Row="1" Margin="0,32,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <GroupBox  Header="Sources" Width="auto">
+                            <Expander Header="Sources" Width="auto" IsExpanded="False" Margin="104,16,0,0">
                                 <StackPanel Orientation="Horizontal" Margin="8">
-                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatPrimaryToggleButton}" FontSize="14" Content="The Pirate Bay" Width="100" IsChecked="{Binding ThePirateBaySourceSelected}"/>
-                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatPrimaryToggleButton}" FontSize="14" Content="1337X" Width="100" IsChecked="{Binding LeetxSelected}" Margin="16,0,0,0"/>
+                                    <CheckBox Content="The Pirate Bay"  IsChecked="{Binding ThePirateBaySourceSelected}"/>
+                                    <CheckBox Content="1337X"  IsChecked="{Binding LeetxSelected}" Margin="16,0,0,0"/>
                                 </StackPanel>
-                            </GroupBox>
-                        </Grid>
-                        
+                            </Expander>
+                        </StackPanel>
                     </Grid>
                     
                 </GroupBox>
@@ -95,16 +83,16 @@
 
                         <DataGrid Grid.Row="0" ItemsSource="{Binding TorrentEntries}" IsReadOnly="True" AutoGenerateColumns="False">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Title" FontWeight="Bold" Binding="{Binding Title}"/>
-                                <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}"/>
-                                <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}"/>
-                                <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date}"/>
-                                <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}"/>
-                                <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}"/>
+                                <DataGridTextColumn Header="Title" FontWeight="Bold" Binding="{Binding Title}" CanUserSort="True"/>
+                                <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True"/>
+                                <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True"/>
+                                <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date}" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}" CanUserSort="True"/>
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <Button Grid.Row="1" Command="{Binding LoadMoreCommand}" Content="Load more" Margin="0,16,0,0" Width="120" HorizontalAlignment="Left"
+                        <Button Grid.Row="1" Command="{Binding LoadMoreCommand}" Content="Load more" Margin="0,16,0,0" Width="120" HorizontalAlignment="Center"
                                 ToolTip="Loads more data from next torrent page"/>
                     </Grid>
                     

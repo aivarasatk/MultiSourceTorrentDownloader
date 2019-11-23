@@ -38,6 +38,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private void InitializeViewModel()
         {
             Model.ThePirateBaySourceSelected = true;
+            Model.LeetxSelected= true;
 
             Model.Filters = ThePirateBayFilters();
             Model.SelectedFilter = Model.Filters.First();

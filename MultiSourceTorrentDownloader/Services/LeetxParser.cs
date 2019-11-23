@@ -72,7 +72,7 @@ namespace MultiSourceTorrentDownloader.Services
                         _logger.Warning($"Could not parse leechers {Environment.NewLine}{dataColumns[LeetxTorrentColumnIndexer.Leechers].OuterHtml}");
 
                     var date = dataColumns[LeetxTorrentColumnIndexer.Date].InnerText;
-                    var size = dataColumns[LeetxTorrentColumnIndexer.Size].InnerText;
+                    var size = dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.Substring(0, dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.IndexOf('<'));
                     var uploader = dataColumns[LeetxTorrentColumnIndexer.Uploader].SelectSingleNode("a")?.InnerText;
 
                     result.Add(new TorrentEntry
