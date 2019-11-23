@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Interfaces
 {
-    public interface IThePirateBayParser : ITorrentParser
+    public interface ITorrentParser
     {
+        Task<TorrentQueryResult> ParsePageForTorrentEntries(string pageContents);
     }
 }

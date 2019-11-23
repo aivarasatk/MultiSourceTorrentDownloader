@@ -6,30 +6,33 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Services
 {
-    public class ThePirateBaySource : SourceBase, IThePirateBaySource 
+    public class LeetxSource : SourceBase, ILeetxSource
     {
         private readonly ILogService _logger;
-        private readonly IThePirateBayParser _parser;
+        private readonly ILeetxParser _parser;
 
-        public ThePirateBaySource(ILogService logger, IThePirateBayParser parser)
+        public LeetxSource(ILogService logger, ILeetxParser parser)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
 
             _httpClient = new HttpClient();
-            _baseUrl = ConfigurationManager.AppSettings["ThePirateBayUrl"];
-            _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["ThePirateBaySearchEndpoint"]);
+            _baseUrl = ConfigurationManager.AppSettings["LeetxUrl"];
+            _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["LeetxSearchEndpoint"]);
         }
 
         public async Task<TorrentQueryResult> GetTorrents(string searchFor, int page, Sorting sorting)
         {
-            var mappedSortOption = SortingMapper.SortingToThePirateBaySorting(sorting);
-            var fullUrl = Path.Combine(_searchEndpoint, searchFor, page.ToString(), mappedSortOption.ToString());
+            var mapperSorting = SortingMapper.SortingToLeetxSorting(sorting);
+
+            var fullUrl = Path.Combine(_searchEndpoint, searchFor, mapperSorting.SortedBy, mapperSorting.Order, page.ToString()) + Path.DirectorySeparatorChar;
             var response = await _httpClient.GetAsync(fullUrl);
             response.EnsureSuccessStatusCode();
 
@@ -37,6 +40,5 @@ namespace MultiSourceTorrentDownloader.Services
 
             return await _parser.ParsePageForTorrentEntries(contents);
         }
-
     }
 }

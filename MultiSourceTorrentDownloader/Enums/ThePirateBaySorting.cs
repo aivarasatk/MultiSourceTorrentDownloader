@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Enums
 {
-    public enum ThePirateBayFilter
+    public enum ThePirateBaySorting
     {
         UploadedDesc = 3,
         UploadedAsc = 4,

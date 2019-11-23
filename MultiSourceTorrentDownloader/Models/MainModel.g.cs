@@ -35,24 +35,24 @@ namespace MultiSourceTorrentDownloader.Models
             }
         }
 
-        //public bool LeetxSelected
-        //{
-        //    get => _leetxSelected;
-        //    set
-        //    {
-        //        this.MutateVerbose(ref _leetxSelected, value, RaisePropertyChanged());
-        //        SearchCommand?.RaiseCanExecuteChanged();
-        //        LoadMoreCommand?.RaiseCanExecuteChanged();
-        //    }
-        //}
+        public bool LeetxSelected
+        {
+            get => _leetxSelected;
+            set
+            {
+                this.MutateVerbose(ref _leetxSelected, value, RaisePropertyChanged());
+                SearchCommand?.RaiseCanExecuteChanged();
+                LoadMoreCommand?.RaiseCanExecuteChanged();
+            }
+        }
 
-        public IEnumerable<KeyValuePair<ThePirateBayFilter, string>> Filters
+        public IEnumerable<KeyValuePair<Sorting, string>> Filters
         {
             get => _filters;
             set => this.MutateVerbose(ref _filters, value, RaisePropertyChanged());
         }
 
-        public KeyValuePair<ThePirateBayFilter, string> SelectedFilter
+        public KeyValuePair<Sorting, string> SelectedFilter
         {
             get => _selectedFilter;
             set => this.MutateVerbose(ref _selectedFilter, value, RaisePropertyChanged());

@@ -14,6 +14,10 @@ namespace MultiSourceTorrentDownloader.Common
         {
             Bind<MainViewModel>().ToSelf();
             Bind<ILogService>().To<LogService>().InSingletonScope();
+
+            Bind<ILeetxSource>().To<LeetxSource>().InTransientScope();
+            Bind<ILeetxParser>().To<LeetxParser>().InTransientScope();
+
             Bind<IThePirateBaySource>().To<ThePirateBaySource>();
             Bind<IThePirateBayParser>().To<ThePirateBayParser>();
         }

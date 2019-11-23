@@ -12,16 +12,16 @@ namespace MultiSourceTorrentDownloader.Models
         public MainModel()
         {
             TorrentEntries = new ObservableCollection<TorrentEntry>();
-            Filters = new List<KeyValuePair<ThePirateBayFilter, string>>();
+            Filters = new List<KeyValuePair<Sorting, string>>();
         }
 
         private bool _isLoading;
         private string _searchValue;
         private bool _thePirateBaySourceSelected;
-        //private bool _leetxSelected;
+        private bool _leetxSelected;
         public ObservableCollection<TorrentEntry> TorrentEntries { get; set; }
-        private IEnumerable<KeyValuePair<ThePirateBayFilter, string>> _filters;
-        private KeyValuePair<ThePirateBayFilter, string> _selectedFilter;
+        private IEnumerable<KeyValuePair<Sorting, string>> _filters;
+        private KeyValuePair<Sorting, string> _selectedFilter;
 
         public Command LoadMoreCommand { get; set; }
         public Command SearchCommand { get; set; }

@@ -89,15 +89,26 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Behaviors\ScrolledToEndBehavior.cs" />
     <Compile Include="Common\Command.cs" />
     <Compile Include="Common\ContainerConfig.cs" />
+    <Compile Include="Constants\ThePirateBayTorrentColumnIndexer.cs" />
+    <Compile Include="Data\LeetxSorting.cs" />
     <Compile Include="Data\TorrentEntry.cs" />
     <Compile Include="Data\TorrentPaging.cs" />
     <Compile Include="Data\TorrentQueryResult.cs" />
+    <Compile Include="Enums\ThePirateBaySorting.cs" />
     <Compile Include="Enums\TorrentSource.cs" />
+    <Compile Include="Interfaces\ILeetxParser.cs" />
+    <Compile Include="Interfaces\ILeetxSource.cs" />
     <Compile Include="Interfaces\IThePirateBayParser.cs" />
+    <Compile Include="Interfaces\ITorrentParser.cs" />
+    <Compile Include="Interfaces\ITorrentSource.cs" />
+    <Compile Include="Constants\LeetxTorrentColumnIndexer.cs" />
+    <Compile Include="Mapping\SortingMapper.cs" />
+    <Compile Include="Services\LeetxParser.cs" />
+    <Compile Include="Services\LeetxSource.cs" />
     <Compile Include="Services\LogService.cs" />
+    <Compile Include="Services\SourceBase.cs" />
     <Compile Include="Services\ThePirateBayParser.cs" />
     <Compile Include="Services\ThePirateBaySource.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -106,7 +117,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums\ThePirateBayFilter.cs" />
+    <Compile Include="Enums\Sorting.cs" />
     <Compile Include="Interfaces\ILogService.cs" />
     <Compile Include="Interfaces\IThePirateBaySource.cs" />
     <Compile Include="Models\MainModel.cs" />
@@ -144,5 +155,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
