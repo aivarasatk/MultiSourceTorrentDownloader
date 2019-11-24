@@ -38,7 +38,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private void InitializeViewModel()
         {
             Model.ThePirateBaySourceSelected = true;
-            Model.LeetxSelected= true;
+            Model.LeetxSelected = true;
 
             Model.Filters = ThePirateBayFilters();
             Model.SelectedFilter = Model.Filters.First();
@@ -101,7 +101,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             }
         }
 
-        private async Task<bool> LoadFromTorrentSource(ITorrentSource source, int currentPage)
+        private async Task<bool> LoadFromTorrentSource(ITorrentDataSource source, int currentPage)
         {
             var pirateResult = await source.GetTorrents(Model.SearchValue, currentPage, Model.SelectedFilter.Key);
 

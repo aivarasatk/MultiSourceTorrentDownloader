@@ -1,7 +1,7 @@
 ﻿
 namespace MultiSourceTorrentDownloader.Interfaces
 {
-    public interface IThePirateBaySource : ITorrentSource
+    public interface IThePirateBaySource : ITorrentDataSource
     {
         
     }

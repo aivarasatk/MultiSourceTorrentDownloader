@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Interfaces
 {
-    public interface ITorrentSource
+    public interface ITorrentDataSource
     {
         Task<TorrentQueryResult> GetTorrents(string searchFor, int page, Sorting sorting);
     }

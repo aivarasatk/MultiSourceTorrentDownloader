@@ -70,8 +70,6 @@
                                 </StackPanel>
                             </Expander>
                         </StackPanel>
-
-                        <!--<Button  Grid.Row="0" Grid.Column="1" Command="{Binding SearchCommand}" Content="Search"/>-->
                     </Grid>
                     
                 </GroupBox>

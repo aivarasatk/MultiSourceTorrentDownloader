@@ -93,6 +93,7 @@
     <Compile Include="Common\ContainerConfig.cs" />
     <Compile Include="Constants\ThePirateBayTorrentIndexer.cs" />
     <Compile Include="Data\LeetxSorting.cs" />
+    <Compile Include="Data\Source.cs" />
     <Compile Include="Data\TorrentEntry.cs" />
     <Compile Include="Data\TorrentPaging.cs" />
     <Compile Include="Data\TorrentQueryResult.cs" />
@@ -102,7 +103,7 @@
     <Compile Include="Interfaces\ILeetxSource.cs" />
     <Compile Include="Interfaces\IThePirateBayParser.cs" />
     <Compile Include="Interfaces\ITorrentParser.cs" />
-    <Compile Include="Interfaces\ITorrentSource.cs" />
+    <Compile Include="Interfaces\ITorrentDataSource.cs" />
     <Compile Include="Constants\LeetxTorrentColumnIndexer.cs" />
     <Compile Include="Mapping\SortingMapper.cs" />
     <Compile Include="Services\LeetxParser.cs" />

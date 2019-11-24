@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Interfaces
 {
-    public interface ILeetxSource : ITorrentSource
+    public interface ILeetxSource : ITorrentDataSource
     {
     }
 }
