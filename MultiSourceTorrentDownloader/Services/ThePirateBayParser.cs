@@ -23,7 +23,6 @@ namespace MultiSourceTorrentDownloader.Services
         private readonly string[] _formats = new string[]
         {
             "'Today' HH:mm",
-            "'Y-day' HH:mm",
             "MM-dd HH:mm"
         };
 
@@ -137,7 +136,11 @@ namespace MultiSourceTorrentDownloader.Services
 
         protected override DateTime ParseDate(string date, string[] formats)
         {
-            if (!DateTime.TryParse(date, out var parsedDate))
+            var yesterdayFormat = "'Y-day' HH:mm";
+            if (DateTime.TryParseExact(date, yesterdayFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                return parsedDate.AddDays(-1);
+
+            if (!DateTime.TryParse(date, out parsedDate))
                 DateTime.TryParseExact(date, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate);
 
             return parsedDate;
