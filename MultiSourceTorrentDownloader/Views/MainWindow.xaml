@@ -26,6 +26,10 @@
         </ResourceDictionary>
     </Window.Resources>
 
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
+    </Window.InputBindings>
+
     <materialDesign:DialogHost Identifier="RootDialog"> <!-- to show in-window popups-->
         <Grid>
             <Grid.Resources>
@@ -44,32 +48,30 @@
                     <Grid FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="SearchBox"  Grid.Row="0" Grid.Column="0" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" Height="auto" Margin="0,0,16,0" 
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" >
+                            <TextBox x:Name="SearchBox" Style="{StaticResource MaterialDesignFilledTextFieldTextBox}" 
+                                 Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap"
+                                 Width="300"
                                  materialDesign:HintAssist.Hint="Search for torrents.." ToolTip="Pressing enter will activate search">
-                            <TextBox.InputBindings>
-                                <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
-                            </TextBox.InputBindings>
-                        </TextBox>
-                        <Button  Grid.Row="0" Grid.Column="1" Command="{Binding SearchCommand}" Content="Search"/>
+                            </TextBox>
+                            
+                            <Button Command="{Binding SearchCommand}" Height="62">
+                                <materialDesign:PackIcon Kind="Search"/>
+                            </Button>
+                            
+                            <ComboBox   ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
 
-                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" >
-                            <ComboBox   ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" Margin="0,16,0,0" HorizontalAlignment="Left"/>
-
-                            <Expander Header="Sources" Width="auto" IsExpanded="False" Margin="104,16,0,0">
+                            <Expander Header="Sources" Width="auto" IsExpanded="False" Margin="104,0,0,0">
                                 <StackPanel Orientation="Horizontal" Margin="8">
                                     <CheckBox Content="The Pirate Bay"  IsChecked="{Binding ThePirateBaySourceSelected}"/>
                                     <CheckBox Content="1337X"  IsChecked="{Binding LeetxSelected}" Margin="16,0,0,0"/>
                                 </StackPanel>
                             </Expander>
                         </StackPanel>
+
+                        <!--<Button  Grid.Row="0" Grid.Column="1" Command="{Binding SearchCommand}" Content="Search"/>-->
                     </Grid>
                     
                 </GroupBox>

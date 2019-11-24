@@ -24,6 +24,7 @@ namespace MultiSourceTorrentDownloader.Services
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
 
             _httpClient = new HttpClient();
+            _httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
             _baseUrl = ConfigurationManager.AppSettings["LeetxUrl"];
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["LeetxSearchEndpoint"]);
         }
