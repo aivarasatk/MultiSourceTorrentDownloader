@@ -4,16 +4,30 @@ using MultiSourceTorrentDownloader.Data;
 using MultiSourceTorrentDownloader.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Services
 {
-    public class LeetxParser : ILeetxParser
+    public class LeetxParser : ParserBase, ILeetxParser
     {
         private readonly ILogService _logger;
-        public LeetxParser(ILogService logger)
+
+        private readonly string[] _formats = new string[]
+        {
+            "htt MMM. d\\t\\h", //11am Nov. 8th
+            "htt MMM. d\\s\\t", //11am Nov. 1st
+            "htt MMM. dn\\d",   //11am Nov. 2nd
+            "htt MMM. dr\\d",   //11am Nov. 3rd
+
+            "MMM. d\\t\\h \\'yy", //Oct. 9th '19
+            "MMM. d\\s\\t \\'yy", //Oct. 1st '19
+            "MMM. dn\\d \\'yy",   //Oct. 2nd '19
+            "MMM. dr\\d \\'yy",   //Oct. 3rd '19
+        };
+    public LeetxParser(ILogService logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -41,7 +55,7 @@ namespace MultiSourceTorrentDownloader.Services
                     }
 
                     var titleNode = dataColumns[LeetxTorrentColumnIndexer.Name]
-                                    .SelectNodes("//td[@class='coll-1 name']/a")?
+                                    .SelectNodes("a")?
                                     .FirstOrDefault(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("torrent")));
                     if (titleNode == null)
                     {
@@ -72,6 +86,7 @@ namespace MultiSourceTorrentDownloader.Services
                         _logger.Warning($"Could not parse leechers {Environment.NewLine}{dataColumns[LeetxTorrentColumnIndexer.Leechers].OuterHtml}");
 
                     var date = dataColumns[LeetxTorrentColumnIndexer.Date].InnerText;
+                    
                     var size = dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.Substring(0, dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.IndexOf('<'));
                     var uploader = dataColumns[LeetxTorrentColumnIndexer.Uploader].SelectSingleNode("a")?.InnerText;
 
@@ -80,7 +95,7 @@ namespace MultiSourceTorrentDownloader.Services
                         Title = title,
                         TorrentUri = torrentUri,
                         TorrentMagnet = magnetLink,
-                        Date = date,
+                        Date = ParseDate(date, _formats),
                         Size = size,
                         Uploader = uploader,
                         Seeders = seeders,
@@ -98,5 +113,6 @@ namespace MultiSourceTorrentDownloader.Services
         }
 
         private bool NoTableEntries(HtmlNodeCollection tableRows) => tableRows == null;
+
     }
 }

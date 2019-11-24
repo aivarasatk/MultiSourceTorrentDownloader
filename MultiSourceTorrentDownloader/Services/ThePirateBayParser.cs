@@ -5,30 +5,31 @@ using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Services
 {
-    public class ThePirateBayParser : IThePirateBayParser
+    public class ThePirateBayParser : ParserBase, IThePirateBayParser
     {
         private readonly ILogService _logger;
-
-        private readonly int _dateIndex;
-        private readonly int _sizeIndex;
-        private readonly int _uploaderIndex;
 
         private readonly string _dateStringToReplace;
         private readonly string _sizeStringToReplace;
         private readonly string _uploaderStringToReplace;
 
+        private readonly string[] _formats = new string[]
+        {
+            "'Today' HH:mm",
+            "'Y-day' HH:mm",
+            "MM-dd HH:mm"
+        };
+
         public ThePirateBayParser(ILogService logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _dateIndex = 0;
-            _sizeIndex = 1;
-            _uploaderIndex = 2;
 
             _dateStringToReplace = "Uploaded";
             _sizeStringToReplace = "Size";
@@ -53,14 +54,14 @@ namespace MultiSourceTorrentDownloader.Services
                     var dataColumns = dataRow.SelectNodes("td[position()>1]");//skips first column because it does not contain useful info
                     if (dataColumns == null || dataColumns.Count != 3)
                     {
-                        _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {dataColumns[ThePirateBayTorrentColumnIndexer.TitleNode].OuterHtml}");
+                        _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {dataColumns[ThePirateBayTorrentIndexer.TitleNode].OuterHtml}");
                         continue;
                     }
 
-                    var titleNode = dataColumns[ThePirateBayTorrentColumnIndexer.TitleNode].SelectSingleNode("div[@class='detName']/a[@class='detLink']");
+                    var titleNode = dataColumns[ThePirateBayTorrentIndexer.TitleNode].SelectSingleNode("div[@class='detName']/a[@class='detLink']");
                     if (titleNode == null)
                     {
-                        _logger.Warning($"Could not find title node for torrent {Environment.NewLine} {dataColumns[ThePirateBayTorrentColumnIndexer.TitleNode].OuterHtml}");
+                        _logger.Warning($"Could not find title node for torrent {Environment.NewLine} {dataColumns[ThePirateBayTorrentIndexer.TitleNode].OuterHtml}");
                         continue;
                     }
 
@@ -75,20 +76,20 @@ namespace MultiSourceTorrentDownloader.Services
                     var magnetLink = string.Empty;
                     try
                     {
-                        magnetLink = dataColumns[ThePirateBayTorrentColumnIndexer.TitleNode].SelectNodes("a")
+                        magnetLink = dataColumns[ThePirateBayTorrentIndexer.TitleNode].SelectNodes("a")
                                                    .First(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("magnet")))
                                                    .Attributes.First(atr => atr.Name == "href")
                                                    .Value;
                     }
                     catch (Exception ex)
                     {
-                        _logger.Warning($"Could not find magnet link for {Environment.NewLine}{dataColumns[ThePirateBayTorrentColumnIndexer.TitleNode].OuterHtml}", ex);
+                        _logger.Warning($"Could not find magnet link for {Environment.NewLine}{dataColumns[ThePirateBayTorrentIndexer.TitleNode].OuterHtml}", ex);
                         continue;//no point in showing non-downloadable entry
                     }
 
-                    var detailsNode = dataColumns[ThePirateBayTorrentColumnIndexer.TitleNode].SelectSingleNode("font[@class='detDesc']");
+                    var detailsNode = dataColumns[ThePirateBayTorrentIndexer.TitleNode].SelectSingleNode("font[@class='detDesc']");
                     if (detailsNode == null)
-                        _logger.Warning($"Could not find details node for {Environment.NewLine}{dataColumns[ThePirateBayTorrentColumnIndexer.TitleNode].OuterHtml}");
+                        _logger.Warning($"Could not find details node for {Environment.NewLine}{dataColumns[ThePirateBayTorrentIndexer.TitleNode].OuterHtml}");
 
                     var details = (detailsNode.InnerText + detailsNode.SelectSingleNode("a")?.InnerText).Replace("&nbsp;", " ").Split(',');//date, size, uploader
                     var date = string.Empty;
@@ -97,23 +98,23 @@ namespace MultiSourceTorrentDownloader.Services
 
                     if (details.Length == 3)
                     {
-                        date = PrunedDetail(details[_dateIndex], _dateStringToReplace);
-                        size = PrunedDetail(details[_sizeIndex], _sizeStringToReplace);
-                        uploader = PrunedDetail(details[_uploaderIndex], _uploaderStringToReplace);
+                        date = PrunedDetail(details[ThePirateBayTorrentIndexer.DateIndex], _dateStringToReplace);
+                        size = PrunedDetail(details[ThePirateBayTorrentIndexer.SizeIndex], _sizeStringToReplace);
+                        uploader = PrunedDetail(details[ThePirateBayTorrentIndexer.UploaderIndex], _uploaderStringToReplace);
                     }
 
-                    if (!int.TryParse(dataColumns[ThePirateBayTorrentColumnIndexer.Seeders].InnerText, out var seeders))
-                        _logger.Warning($"Could not parse seeders {Environment.NewLine}{dataColumns[ThePirateBayTorrentColumnIndexer.Seeders].OuterHtml}");
+                    if (!int.TryParse(dataColumns[ThePirateBayTorrentIndexer.Seeders].InnerText, out var seeders))
+                        _logger.Warning($"Could not parse seeders {Environment.NewLine}{dataColumns[ThePirateBayTorrentIndexer.Seeders].OuterHtml}");
 
-                    if (!int.TryParse(dataColumns[ThePirateBayTorrentColumnIndexer.Leechers].InnerText, out var leechers))
-                        _logger.Warning($"Could not parse leechers {Environment.NewLine}{dataColumns[ThePirateBayTorrentColumnIndexer.Leechers].OuterHtml}");
+                    if (!int.TryParse(dataColumns[ThePirateBayTorrentIndexer.Leechers].InnerText, out var leechers))
+                        _logger.Warning($"Could not parse leechers {Environment.NewLine}{dataColumns[ThePirateBayTorrentIndexer.Leechers].OuterHtml}");
 
                     result.Add(new TorrentEntry
                     {
                         Title = title,
                         TorrentUri = torrentUri,
                         TorrentMagnet = magnetLink,
-                        Date = date,
+                        Date = ParseDate(date, _formats),
                         Size = size,
                         Uploader = uploader,
                         Seeders = seeders,
@@ -133,5 +134,13 @@ namespace MultiSourceTorrentDownloader.Services
         private string PrunedDetail(string source, string toRemove) => source.Replace(toRemove, "").Trim();
 
         private bool NoTableEntries(HtmlNodeCollection tableRows) => tableRows == null;
+
+        protected override DateTime ParseDate(string date, string[] formats)
+        {
+            if (!DateTime.TryParse(date, out var parsedDate))
+                DateTime.TryParseExact(date, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate);
+
+            return parsedDate;
+        }
     }
 }

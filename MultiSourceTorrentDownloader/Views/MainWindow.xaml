@@ -86,7 +86,7 @@
                                 <DataGridTextColumn Header="Title" FontWeight="Bold" Binding="{Binding Title}" CanUserSort="True"/>
                                 <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True"/>
                                 <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True"/>
-                                <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date}" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date}" CanUserSort="True"/>
                                 <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="False"/>
                                 <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}" CanUserSort="True"/>
                             </DataGrid.Columns>

@@ -91,7 +91,7 @@
     </Compile>
     <Compile Include="Common\Command.cs" />
     <Compile Include="Common\ContainerConfig.cs" />
-    <Compile Include="Constants\ThePirateBayTorrentColumnIndexer.cs" />
+    <Compile Include="Constants\ThePirateBayTorrentIndexer.cs" />
     <Compile Include="Data\LeetxSorting.cs" />
     <Compile Include="Data\TorrentEntry.cs" />
     <Compile Include="Data\TorrentPaging.cs" />
@@ -108,9 +108,11 @@
     <Compile Include="Services\LeetxParser.cs" />
     <Compile Include="Services\LeetxSource.cs" />
     <Compile Include="Services\LogService.cs" />
+    <Compile Include="Services\ParserBase.cs" />
     <Compile Include="Services\SourceBase.cs" />
     <Compile Include="Services\ThePirateBayParser.cs" />
     <Compile Include="Services\ThePirateBaySource.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -142,7 +144,7 @@
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>

@@ -9,7 +9,7 @@ namespace MultiSourceTorrentDownloader.Data
     public class TorrentEntry
     {
         public string Title { get; set; }
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         public string Size { get; set; }
         public string Uploader { get; set; }
         public int Seeders { get; set; }
