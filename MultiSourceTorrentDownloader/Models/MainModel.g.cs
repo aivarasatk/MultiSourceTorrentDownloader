@@ -20,30 +20,21 @@ namespace MultiSourceTorrentDownloader.Models
             set
             {
                 this.MutateVerbose(ref _searchValue, value, RaisePropertyChanged());
-                SearchCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        public bool ThePirateBaySourceSelected
-        {
-            get => _thePirateBaySourceSelected;
-            set
-            {
-                this.MutateVerbose(ref _thePirateBaySourceSelected, value, RaisePropertyChanged());
                 SearchCommand?.RaiseCanExecuteChanged();
                 LoadMoreCommand?.RaiseCanExecuteChanged();
             }
         }
 
-        public bool LeetxSelected
+        public string Message
         {
-            get => _leetxSelected;
-            set
-            {
-                this.MutateVerbose(ref _leetxSelected, value, RaisePropertyChanged());
-                SearchCommand?.RaiseCanExecuteChanged();
-                LoadMoreCommand?.RaiseCanExecuteChanged();
-            }
+            get => _message;
+            set => this.MutateVerbose(ref _message, value, RaisePropertyChanged());
+        }
+
+        public MessageType MessageType
+        {
+            get => _messageType;
+            set => this.MutateVerbose(ref _messageType, value, RaisePropertyChanged());
         }
 
         public IEnumerable<KeyValuePair<Sorting, string>> Filters
