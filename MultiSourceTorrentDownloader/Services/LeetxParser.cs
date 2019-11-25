@@ -27,7 +27,8 @@ namespace MultiSourceTorrentDownloader.Services
             "MMM. dn\\d \\'yy",   //Oct. 2nd '19
             "MMM. dr\\d \\'yy",   //Oct. 3rd '19
         };
-    public LeetxParser(ILogService logger)
+
+        public LeetxParser(ILogService logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
