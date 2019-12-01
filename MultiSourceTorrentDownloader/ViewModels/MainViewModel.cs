@@ -18,37 +18,22 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private readonly ILogService _logger;
 
         private string _loadMoreString = string.Empty;
+        private Dictionary<TorrentSource, SourceInformation> _torrentSourceDictionary;
 
         public MainModel Model { get; private set; }
 
 
         public MainViewModel(IThePirateBaySource thePirateBaySource, ILogService logger, ILeetxSource leetxSource)
         {
+            _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
+
             Model = new MainModel();
+            Model.AvailableSources = new ObservableCollection<DisplaySource>();
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            Model.AvailableSources = new ObservableCollection<Source>
-            {
-                new Source
-                {
-                    Selected = true,
-                    SourceName = "The Pirate Bay",
-                    DataSource = thePirateBaySource ?? throw new ArgumentNullException(nameof(thePirateBaySource)),
-                    CurrentPage = 0,
-                    StartPage = 0,
-                    LastPage = false
-                },
-                new Source
-                {
-                    Selected = true,
-                    SourceName = "1337X",
-                    DataSource = leetxSource ?? throw new ArgumentNullException(nameof(leetxSource)),
-                    CurrentPage = 1,
-                    StartPage = 0,
-                    LastPage = false
-                },
-            };
+            AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, sourceName: "The Pirate Bay");
+            AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, sourceName: "1337X");
 
             InitializeViewModel();
         }
@@ -59,6 +44,24 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.SelectedFilter = Model.Filters.First();
             Model.SearchCommand = new Command(OnSearch, CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
+        }
+
+        private void AddTorrentSource(TorrentSource source, ITorrentDataSource dataSource, int startPage, string sourceName)
+        {
+            Model.AvailableSources.Add(new DisplaySource
+            {
+                Selected = true,
+                SourceName = sourceName,
+                Source = source,
+            });
+
+            _torrentSourceDictionary.Add(source, new SourceInformation
+            {
+                DataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource)),
+                CurrentPage = startPage,
+                StartPage = startPage,
+                LastPage = false
+            });
         }
 
         private async void OnLoadMore(object obj)
@@ -73,7 +76,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
            return !string.IsNullOrEmpty(_loadMoreString) 
                 && Model.TorrentEntries.Count != 0 
-                && Model.AvailableSources.Any(s => s.Selected && !s.LastPage);
+                && Model.AvailableSources.Any(s => s.Selected && !_torrentSourceDictionary[s.Source].LastPage);
         }
 
         private async void OnSearch(object obj)
@@ -94,8 +97,9 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
             foreach (var source in Model.AvailableSources)
             {
-                source.CurrentPage = source.StartPage;
-                source.LastPage = false;
+                var sourceInfo = _torrentSourceDictionary[source.Source];
+                sourceInfo.CurrentPage = sourceInfo.StartPage;
+                sourceInfo.LastPage = false;
             }
         }
 
@@ -105,17 +109,18 @@ namespace MultiSourceTorrentDownloader.ViewModels
             {
                 foreach(var source in Model.AvailableSources)
                 {
+                    var sourceInfo = _torrentSourceDictionary[source.Source];
                     if (!source.Selected) continue;
 
-                    var isLastPage = await LoadFromTorrentSource(source.DataSource, source.CurrentPage);
+                    var isLastPage = await LoadFromTorrentSource(sourceInfo.DataSource, sourceInfo.CurrentPage);
                     if (isLastPage)
-                        source.LastPage = true;
+                        sourceInfo.LastPage = true;
                     else
-                        source.CurrentPage++;
+                        sourceInfo.CurrentPage++;
                 }
 
                 ShowStatusBarMessage(MessageType.Information, $"{Model.TorrentEntries.Count} - torrents");
-                if (Model.AvailableSources.Where(s => s.Selected).All(src => src.LastPage))
+                if (Model.AvailableSources.Where(s => s.Selected).All(src => _torrentSourceDictionary[src.Source].LastPage))
                     ShowStatusBarMessage(MessageType.Information, "No more records to load");
 
                 Model.LoadMoreCommand.RaiseCanExecuteChanged();//BETTRE PLACE FOR THIS?

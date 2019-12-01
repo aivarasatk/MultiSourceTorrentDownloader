@@ -8,16 +8,10 @@ using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Data
 {
-    public class Source
+    public class DisplaySource
     {
         public bool Selected { get; set; }
         public string SourceName { get; set; }
-        public ITorrentDataSource DataSource { get; set; }
-
-        public int CurrentPage { get; set; }
-        public int StartPage { get; set; }
-        public bool LastPage { get; set; }
-
-
+        public TorrentSource Source { get; set; }
     }
 }

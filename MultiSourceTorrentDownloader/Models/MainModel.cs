@@ -13,7 +13,7 @@ namespace MultiSourceTorrentDownloader.Models
         {
             TorrentEntries = new ObservableCollection<TorrentEntry>();
             Filters = new List<KeyValuePair<Sorting, string>>();
-            AvailableSources = new ObservableCollection<Source>();
+            AvailableSources = new ObservableCollection<DisplaySource>();
         }
 
         private bool _isLoading;
@@ -22,7 +22,7 @@ namespace MultiSourceTorrentDownloader.Models
         private MessageType _messageType;
         private string _message;
 
-        public ObservableCollection<Source> AvailableSources { get; set; }
+        public ObservableCollection<DisplaySource> AvailableSources { get; set; }
         public ObservableCollection<TorrentEntry> TorrentEntries { get; set; }
 
         private IEnumerable<KeyValuePair<Sorting, string>> _filters;
