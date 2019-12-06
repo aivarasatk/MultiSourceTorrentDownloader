@@ -3,6 +3,7 @@ using MultiSourceTorrentDownloader.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reactive.Subjects;
 
 namespace MultiSourceTorrentDownloader.Models
 {
@@ -25,12 +26,6 @@ namespace MultiSourceTorrentDownloader.Models
             }
         }
 
-        public string Message
-        {
-            get => _message;
-            set => this.MutateVerbose(ref _message, value, RaisePropertyChanged());
-        }
-
         public MessageType MessageType
         {
             get => _messageType;
@@ -48,6 +43,32 @@ namespace MultiSourceTorrentDownloader.Models
             get => _selectedFilter;
             set => this.MutateVerbose(ref _selectedFilter, value, RaisePropertyChanged());
         }
+
+        public TorrentEntry SelectedTorrent
+        {
+            get => _selectedTorrent;
+            set
+            {
+                if(value != _selectedTorrent)
+                {
+                    this.MutateVerbose(ref _selectedTorrent, value, RaisePropertyChanged());
+                    _selectedTorrentObservable.OnNext(value);
+                }
+            }
+        }
+
+        private ISubject<TorrentEntry> _selectedTorrentObservable = new Subject<TorrentEntry>();
+
+        public ISubject<TorrentEntry> SelectedTorrentObservable
+        {
+            get => _selectedTorrentObservable;
+            set
+            {
+                if (value != _selectedTorrentObservable)
+                    _selectedTorrentObservable = value;
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private Action<PropertyChangedEventArgs> RaisePropertyChanged()

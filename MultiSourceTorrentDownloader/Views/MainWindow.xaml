@@ -100,7 +100,7 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
 
-                        <DataGrid Grid.Row="0" ItemsSource="{Binding TorrentEntries}" IsReadOnly="True" AutoGenerateColumns="False">
+                        <DataGrid Grid.Row="0" ItemsSource="{Binding TorrentEntries}" SelectedItem="{Binding SelectedTorrent}" IsReadOnly="True" AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Title" FontWeight="Bold" Binding="{Binding Title}" CanUserSort="True"/>
                                 <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True"/>
@@ -114,19 +114,18 @@
                         <Button Grid.Row="1" Command="{Binding LoadMoreCommand}" Content="Load more" Margin="0,16,0,0" Width="120" HorizontalAlignment="Center"
                                 ToolTip="Loads more data from next torrent page"/>
                     </Grid>
-                    
+
                 </GroupBox>
 
-                <StackPanel Grid.Row="2" Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}">
-                    <TextBlock Text="{Binding Message}" Margin="8" Foreground="White"/>
-                </StackPanel>
-                
+
             </Grid>
             
             <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel Background="LightGray" Opacity="0.5"/> <!-- prevents user clicks-->
                 <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Visibility="Visible" Margin="16,16,16,16"/>
             </Grid>
+            <materialDesign:Snackbar MessageQueue="{Binding MessageQueue}" HorizontalAlignment="Stretch"
+                    Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}" IsActive="False" />
         </Grid>
     </materialDesign:DialogHost>
 </Window>

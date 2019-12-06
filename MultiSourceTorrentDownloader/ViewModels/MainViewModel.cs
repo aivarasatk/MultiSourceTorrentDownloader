@@ -1,4 +1,5 @@
-﻿using MultiSourceTorrentDownloader.Common;
+﻿using MaterialDesignThemes.Wpf;
+using MultiSourceTorrentDownloader.Common;
 using MultiSourceTorrentDownloader.Data;
 using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
@@ -6,6 +7,7 @@ using MultiSourceTorrentDownloader.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,8 +44,17 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
             Model.Filters = ThePirateBayFilters();
             Model.SelectedFilter = Model.Filters.First();
+            Model.MessageQueue = new SnackbarMessageQueue(TimeSpan.FromSeconds(7));
             Model.SearchCommand = new Command(OnSearch, CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
+
+            Model.SelectedTorrentObservable.Subscribe(OnTorrentSeleceted);
+
+        }
+
+        private void OnTorrentSeleceted(object obj)
+        {
+            Process.Start(Model.SelectedTorrent.TorrentMagnet);
         }
 
         private void AddTorrentSource(TorrentSource source, ITorrentDataSource dataSource, int startPage, string sourceName)
@@ -118,6 +129,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
                     else
                         sourceInfo.CurrentPage++;
                 }
+                throw new Exception("NASTY CODE HAHAHA FAILED TO DO SOMETHING");
 
                 ShowStatusBarMessage(MessageType.Information, $"{Model.TorrentEntries.Count} - torrents");
                 if (Model.AvailableSources.Where(s => s.Selected).All(src => _torrentSourceDictionary[src.Source].LastPage))
@@ -128,7 +140,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             catch (Exception ex)
             {
                 _logger.Warning("Could not complete torrent search", ex);
-                ShowStatusBarMessage(MessageType.Error, "Could not complete torrent search");
+                ShowStatusBarMessage(MessageType.Error, $"Could not complete torrent search: {ex.Message}");
             }
         }
 
@@ -165,7 +177,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private void ShowStatusBarMessage(MessageType messageType, string message)
         {
             Model.MessageType = messageType;
-            Model.Message = message;
+            Model.MessageQueue.Enqueue(message);
         }
     }
 }

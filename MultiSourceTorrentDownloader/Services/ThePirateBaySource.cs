@@ -21,8 +21,10 @@ namespace MultiSourceTorrentDownloader.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
 
-            _httpClient = new HttpClient();
-            _httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
+            _httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromMilliseconds(5000)
+            };
             _baseUrl = ConfigurationManager.AppSettings["ThePirateBayUrl"];
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["ThePirateBaySearchEndpoint"]);
         }

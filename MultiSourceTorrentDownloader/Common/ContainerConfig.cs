@@ -1,4 +1,5 @@
-﻿using MultiSourceTorrentDownloader.Interfaces;
+﻿using MaterialDesignThemes.Wpf;
+using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Services;
 using MultiSourceTorrentDownloader.ViewModels;
 using Ninject.Modules;
@@ -18,8 +19,8 @@ namespace MultiSourceTorrentDownloader.Common
             Bind<ILeetxSource>().To<LeetxSource>().InTransientScope();
             Bind<ILeetxParser>().To<LeetxParser>().InTransientScope();
 
-            Bind<IThePirateBaySource>().To<ThePirateBaySource>();
-            Bind<IThePirateBayParser>().To<ThePirateBayParser>();
+            Bind<IThePirateBaySource>().To<ThePirateBaySource>().InTransientScope();
+            Bind<IThePirateBayParser>().To<ThePirateBayParser>().InTransientScope();
         }
     }
 }
