@@ -11,5 +11,6 @@ namespace MultiSourceTorrentDownloader.Interfaces
     public interface ITorrentDataSource
     {
         Task<TorrentQueryResult> GetTorrents(string searchFor, int page, Sorting sorting);
+        Task<string> GetTorrentMagnet(string detailsUri);
     }
 }

@@ -18,6 +18,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
     public class MainViewModel
     {
         private readonly ILogService _logger;
+        private readonly ILeetxSource _leetxSource;
 
         private string _loadMoreString = string.Empty;
         private Dictionary<TorrentSource, SourceInformation> _torrentSourceDictionary;
@@ -33,6 +34,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.AvailableSources = new ObservableCollection<DisplaySource>();
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _leetxSource = leetxSource ?? throw new ArgumentNullException(nameof(leetxSource));
 
             AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, sourceName: "The Pirate Bay");
             AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, sourceName: "1337X");
@@ -44,7 +46,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
             Model.Filters = ThePirateBayFilters();
             Model.SelectedFilter = Model.Filters.First();
-            Model.MessageQueue = new SnackbarMessageQueue(TimeSpan.FromSeconds(7));
+            Model.MessageQueue = new SnackbarMessageQueue();
             Model.SearchCommand = new Command(OnSearch, CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
 
@@ -52,9 +54,41 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         }
 
-        private void OnTorrentSeleceted(object obj)
+        private async void OnTorrentSeleceted(object obj)
         {
-            Process.Start(Model.SelectedTorrent.TorrentMagnet);
+            if (Model.SelectedTorrent == null) return;
+            Model.IsLoading = true;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(Model.SelectedTorrent.TorrentMagnet))
+                {
+                    Process.Start(Model.SelectedTorrent.TorrentMagnet);
+                }
+                else
+                {
+                    var magnetLink = await GetMagnetLinkFromTorrentEntry(Model.SelectedTorrent);
+                    Process.Start(magnetLink);
+                }
+            }
+            catch(Exception ex)
+            {
+                _logger.Warning($"Failed to get magnet from selected torrent uri: {Model.SelectedTorrent.TorrentUri}", ex);
+                ShowStatusBarMessage(MessageType.Error, "Could not load magnet from torrent link");
+            }
+
+            Model.IsLoading = false;
+        }
+
+        private async Task<string> GetMagnetLinkFromTorrentEntry(TorrentEntry selectedTorrent)
+        {
+            switch (selectedTorrent.Source)
+            {
+                case TorrentSource.Leetx:
+                    return await _leetxSource.GetTorrentMagnet(selectedTorrent.TorrentUri);
+                default:
+                    throw new Exception("Source not defined for getting magnet link");
+            }        
         }
 
         private void AddTorrentSource(TorrentSource source, ITorrentDataSource dataSource, int startPage, string sourceName)
@@ -129,9 +163,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
                     else
                         sourceInfo.CurrentPage++;
                 }
-                throw new Exception("NASTY CODE HAHAHA FAILED TO DO SOMETHING");
 
-                ShowStatusBarMessage(MessageType.Information, $"{Model.TorrentEntries.Count} - torrents");
+                ShowStatusBarMessage(MessageType.Information, $"Loaded {Model.TorrentEntries.Count} torrents");
                 if (Model.AvailableSources.Where(s => s.Selected).All(src => _torrentSourceDictionary[src.Source].LastPage))
                     ShowStatusBarMessage(MessageType.Information, "No more records to load");
 
@@ -177,7 +210,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private void ShowStatusBarMessage(MessageType messageType, string message)
         {
             Model.MessageType = messageType;
-            Model.MessageQueue.Enqueue(message);
+            Model.MessageQueue.Enqueue(message, true);
         }
     }
 }

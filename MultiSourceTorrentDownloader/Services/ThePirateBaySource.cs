@@ -41,5 +41,10 @@ namespace MultiSourceTorrentDownloader.Services
             return await _parser.ParsePageForTorrentEntries(contents);
         }
 
+        public async Task<string> GetTorrentMagnet(string detailsUri)// TPB has magnets on search page
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

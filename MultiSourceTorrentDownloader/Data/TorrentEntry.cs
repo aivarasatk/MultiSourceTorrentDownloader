@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiSourceTorrentDownloader.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,7 @@ namespace MultiSourceTorrentDownloader.Data
         public int Leechers{ get; set; }
         public string TorrentUri { get; set; }
         public string TorrentMagnet { get; set; }
+
+        public TorrentSource Source { get; set; }
     }
 }

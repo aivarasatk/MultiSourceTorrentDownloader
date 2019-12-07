@@ -125,7 +125,7 @@
                 <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Visibility="Visible" Margin="16,16,16,16"/>
             </Grid>
             <materialDesign:Snackbar MessageQueue="{Binding MessageQueue}" HorizontalAlignment="Stretch"
-                    Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}" IsActive="False" />
+                    Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}" IsActive="False"/>
         </Grid>
     </materialDesign:DialogHost>
 </Window>

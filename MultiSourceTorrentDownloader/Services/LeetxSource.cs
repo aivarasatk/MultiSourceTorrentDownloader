@@ -41,5 +41,16 @@ namespace MultiSourceTorrentDownloader.Services
 
             return await _parser.ParsePageForTorrentEntries(contents);
         }
+
+        public async Task<string> GetTorrentMagnet(string detailsUri)
+        {
+            var fullUrl = Path.Combine(_baseUrl, detailsUri.TrimStart(new char[] { '\\', '/' }));
+            var response = await _httpClient.GetAsync(fullUrl);
+            response.EnsureSuccessStatusCode();
+
+            var contents = await response.Content.ReadAsStringAsync();
+
+            return await _parser.ParsePageForMagnet(contents);
+        }
     }
 }

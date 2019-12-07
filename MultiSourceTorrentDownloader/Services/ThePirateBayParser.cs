@@ -117,7 +117,8 @@ namespace MultiSourceTorrentDownloader.Services
                         Size = size,
                         Uploader = uploader,
                         Seeders = seeders,
-                        Leechers = leechers
+                        Leechers = leechers,
+                        Source = TorrentSource.ThePirateBay
                     });
                 }
 
@@ -144,6 +145,11 @@ namespace MultiSourceTorrentDownloader.Services
                 DateTime.TryParseExact(date, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate);
 
             return parsedDate;
+        }
+
+        public async Task<string> ParsePageForMagnet(string pageContents)
+        {
+            throw new NotImplementedException();
         }
     }
 }

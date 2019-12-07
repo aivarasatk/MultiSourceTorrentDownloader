@@ -1,6 +1,7 @@
 ﻿using Constants.MultiSourceTorrentDownloader;
 using HtmlAgilityPack;
 using MultiSourceTorrentDownloader.Data;
+using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -100,7 +101,8 @@ namespace MultiSourceTorrentDownloader.Services
                         Size = size,
                         Uploader = uploader,
                         Seeders = seeders,
-                        Leechers = leechers
+                        Leechers = leechers,
+                        Source = TorrentSource.Leetx
                     });
                 }
 
@@ -114,6 +116,24 @@ namespace MultiSourceTorrentDownloader.Services
         }
 
         private bool NoTableEntries(HtmlNodeCollection tableRows) => tableRows == null;
+
+        public async Task<string> ParsePageForMagnet(string pageContents)
+        {
+            return await Task.Run(() =>
+            {
+                _logger.Information("Leetx magnet parsing parsing");
+                var htmlAgility = new HtmlDocument();
+                htmlAgility.LoadHtml(pageContents);
+
+                var magnetNode = htmlAgility.DocumentNode.SelectNodes("//a")
+                .FirstOrDefault(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("magnet")));
+
+                if (magnetNode == null)
+                    throw new Exception($"Magnet node is not found");
+
+                return magnetNode.Attributes.First(m => m.Name == "href").Value;
+            });
+        }
 
     }
 }
