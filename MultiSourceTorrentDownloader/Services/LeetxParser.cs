@@ -95,7 +95,7 @@ namespace MultiSourceTorrentDownloader.Services
                     result.Add(new TorrentEntry
                     {
                         Title = title,
-                        TorrentUri = torrentUri,
+                        TorrentUri = TrimUriStart(torrentUri),
                         TorrentMagnet = magnetLink,
                         Date = ParseDate(date, _formats),
                         Size = size,

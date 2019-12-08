@@ -16,5 +16,7 @@ namespace MultiSourceTorrentDownloader.Services
 
             return parsedDate;
         }
+
+        protected string TrimUriStart(string uri) => uri.TrimStart(new char[] { '\\', '/' });
     }
 }

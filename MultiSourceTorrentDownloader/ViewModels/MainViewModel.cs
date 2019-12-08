@@ -44,14 +44,13 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void InitializeViewModel()
         {
-            Model.Filters = ThePirateBayFilters();
+            Model.Filters = Filters();
             Model.SelectedFilter = Model.Filters.First();
             Model.MessageQueue = new SnackbarMessageQueue();
             Model.SearchCommand = new Command(OnSearch, CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
 
             Model.SelectedTorrentObservable.Subscribe(OnTorrentSeleceted);
-
         }
 
         private async void OnTorrentSeleceted(object obj)
@@ -74,7 +73,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             catch(Exception ex)
             {
                 _logger.Warning($"Failed to get magnet from selected torrent uri: {Model.SelectedTorrent.TorrentUri}", ex);
-                ShowStatusBarMessage(MessageType.Error, "Could not load magnet from torrent link");
+                ShowStatusBarMessage(MessageType.Error, $"Could not load magnet from torrent link: {ex.Message}");
             }
 
             Model.IsLoading = false;
@@ -164,9 +163,10 @@ namespace MultiSourceTorrentDownloader.ViewModels
                         sourceInfo.CurrentPage++;
                 }
 
-                ShowStatusBarMessage(MessageType.Information, $"Loaded {Model.TorrentEntries.Count} torrents");
-                if (Model.AvailableSources.Where(s => s.Selected).All(src => _torrentSourceDictionary[src.Source].LastPage))
+                if (SourcesReachedLastPage())
                     ShowStatusBarMessage(MessageType.Information, "No more records to load");
+                else
+                    ShowStatusBarMessage(MessageType.Information, $"Loaded {Model.TorrentEntries.Count} torrents");
 
                 Model.LoadMoreCommand.RaiseCanExecuteChanged();//BETTRE PLACE FOR THIS?
             }
@@ -175,6 +175,13 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 _logger.Warning("Could not complete torrent search", ex);
                 ShowStatusBarMessage(MessageType.Error, $"Could not complete torrent search: {ex.Message}");
             }
+        }
+
+        private bool SourcesReachedLastPage()
+        {
+            return Model.AvailableSources
+                        .Where(s => s.Selected)
+                        .All(src => _torrentSourceDictionary[src.Source].LastPage);
         }
 
         private async Task<bool> LoadFromTorrentSource(ITorrentDataSource source, int currentPage)
@@ -192,7 +199,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             return !string.IsNullOrEmpty(Model.SearchValue) && Model.AvailableSources.Any(s => s.Selected);
         }
 
-        private IEnumerable<KeyValuePair<Sorting, string>> ThePirateBayFilters()
+        private IEnumerable<KeyValuePair<Sorting, string>> Filters()
         {
             return new List<KeyValuePair<Sorting, string>>
             {
@@ -209,6 +216,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void ShowStatusBarMessage(MessageType messageType, string message)
         {
+            //TODO: REPLACE WITH OLD STATUS BAR
+            var test = new SnackbarMessageQueue();
             Model.MessageType = messageType;
             Model.MessageQueue.Enqueue(message, true);
         }

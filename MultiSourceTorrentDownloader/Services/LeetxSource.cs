@@ -44,7 +44,7 @@ namespace MultiSourceTorrentDownloader.Services
 
         public async Task<string> GetTorrentMagnet(string detailsUri)
         {
-            var fullUrl = Path.Combine(_baseUrl, detailsUri.TrimStart(new char[] { '\\', '/' }));
+            var fullUrl = Path.Combine(_baseUrl, detailsUri);
             var response = await _httpClient.GetAsync(fullUrl);
             response.EnsureSuccessStatusCode();
 
