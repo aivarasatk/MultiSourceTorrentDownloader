@@ -64,6 +64,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Reactive, Version=4.3.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reactive.4.3.1\lib\net46\System.Reactive.dll</HintPath>
     </Reference>
@@ -124,6 +125,8 @@
     <Compile Include="Interfaces\ITorrentDataSource.cs" />
     <Compile Include="Constants\LeetxTorrentIndexer.cs" />
     <Compile Include="Mapping\SortingMapper.cs" />
+    <Compile Include="Models\TorrentInfoDialogModel.g.cs" />
+    <Compile Include="Models\TorrentInfoDialogModel.cs" />
     <Compile Include="Services\LeetxParser.cs" />
     <Compile Include="Services\LeetxSource.cs" />
     <Compile Include="Services\LogService.cs" />
@@ -133,8 +136,12 @@
     <Compile Include="Services\ThePirateBaySource.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\TorrentInfoDialogViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TorrentInfoDialogView.xaml.cs">
+      <DependentUpon>TorrentInfoDialogView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +181,10 @@
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TorrentInfoDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup />

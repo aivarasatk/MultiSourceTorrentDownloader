@@ -14,6 +14,8 @@ namespace MultiSourceTorrentDownloader.Common
         public override void Load()
         {
             Bind<MainViewModel>().ToSelf();
+            Bind<TorrentInfoDialogViewModel>().ToSelf();
+
             Bind<ILogService>().To<LogService>().InSingletonScope();
 
             Bind<ILeetxSource>().To<LeetxSource>().InTransientScope();

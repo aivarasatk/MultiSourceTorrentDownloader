@@ -4,6 +4,7 @@ using MultiSourceTorrentDownloader.Data;
 using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Models;
+using MultiSourceTorrentDownloader.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,6 +20,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
     {
         private readonly ILogService _logger;
         private readonly ILeetxSource _leetxSource;
+        private TorrentInfoDialogViewModel _torrentInfoDialogViewModel;
 
         private string _loadMoreString = string.Empty;
         private Dictionary<TorrentSource, SourceInformation> _torrentSourceDictionary;
@@ -26,7 +28,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
         public MainModel Model { get; private set; }
 
 
-        public MainViewModel(IThePirateBaySource thePirateBaySource, ILogService logger, ILeetxSource leetxSource)
+        public MainViewModel(IThePirateBaySource thePirateBaySource, ILogService logger, ILeetxSource leetxSource,
+            TorrentInfoDialogViewModel torrentInfoDialogViewModel)
         {
             _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
 
@@ -35,6 +38,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _leetxSource = leetxSource ?? throw new ArgumentNullException(nameof(leetxSource));
+            _torrentInfoDialogViewModel = torrentInfoDialogViewModel ?? throw new ArgumentNullException(nameof(torrentInfoDialogViewModel));
 
             AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, sourceName: "The Pirate Bay");
             AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, sourceName: "1337X");
@@ -60,22 +64,33 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             try
             {
-                if (!string.IsNullOrEmpty(Model.SelectedTorrent.TorrentMagnet))
+                if (string.IsNullOrEmpty(Model.SelectedTorrent.TorrentMagnet))
                 {
-                    Process.Start(Model.SelectedTorrent.TorrentMagnet);
+                    Model.SelectedTorrent.TorrentMagnet = await GetMagnetLinkFromTorrentEntry(Model.SelectedTorrent);
                 }
-                else
+
+                Model.IsLoading = false;
+
+                _torrentInfoDialogViewModel.Model.Date = Model.SelectedTorrent.Date;
+                _torrentInfoDialogViewModel.Model.Seeders = Model.SelectedTorrent.Seeders;
+                _torrentInfoDialogViewModel.Model.Size = Model.SelectedTorrent.Size;
+                _torrentInfoDialogViewModel.Model.Description = "TBD";//TODO: parse descriptions
+                _torrentInfoDialogViewModel.Model.Leechers = Model.SelectedTorrent.Leechers;
+                _torrentInfoDialogViewModel.Model.Title = Model.SelectedTorrent.Title;
+                _torrentInfoDialogViewModel.Model.TorrentMagnet = Model.SelectedTorrent.TorrentMagnet;
+                _torrentInfoDialogViewModel.Model.Uploader = Model.SelectedTorrent.Uploader;
+
+                var view = new TorrentInfoDialogView
                 {
-                    var magnetLink = await GetMagnetLinkFromTorrentEntry(Model.SelectedTorrent);
-                    Process.Start(magnetLink);
-                }
+                    DataContext = _torrentInfoDialogViewModel.Model
+                };
+                await DialogHost.Show(view, "RootDialog");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Warning($"Failed to get magnet from selected torrent uri: {Model.SelectedTorrent.TorrentUri}", ex);
                 ShowStatusBarMessage(MessageType.Error, $"Could not load magnet from torrent link: {ex.Message}");
             }
-
             Model.IsLoading = false;
         }
 
