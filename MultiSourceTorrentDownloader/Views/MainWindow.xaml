@@ -100,9 +100,20 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
 
-                        <DataGrid Grid.Row="0" ItemsSource="{Binding TorrentEntries}" SelectedItem="{Binding SelectedTorrent}" IsReadOnly="True" AutoGenerateColumns="False">
+                        <DataGrid x:Name="TorrentGrid" Grid.Row="0" ItemsSource="{Binding TorrentEntries}" SelectedItem="{Binding SelectedTorrent}" IsReadOnly="True" AutoGenerateColumns="False" SelectionMode="Single">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Title" FontWeight="Bold" Binding="{Binding Title}" CanUserSort="True"/>
+                                <DataGridTemplateColumn Header="Title" CanUserSort="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenTorrentInfoCommand}" 
+                                                           CommandParameter="{Binding}" >
+                                                    <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+                                                </Hyperlink>        
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True"/>
                                 <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True"/>
                                 <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date}" CanUserSort="True"/>

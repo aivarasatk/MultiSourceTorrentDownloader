@@ -18,10 +18,67 @@
         <KeyBinding Command="{x:Static wpf:DialogHost.CloseDialogCommand}" Key="Esc" />
     </UserControl.InputBindings>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        
+        <Button Grid.Row="0"  Command="{x:Static wpf:DialogHost.CloseDialogCommand}" 
+                HorizontalAlignment="Right" Margin="8" Background="Transparent" BorderBrush="Transparent">
+            <wpf:PackIcon Kind="WindowClose" Foreground="Black" Width="30" Height="30"></wpf:PackIcon>
+        </Button>
 
-        <StackPanel Margin="16">
-            <Button Content="Download Torrent" Command="{Binding DownloadTorrentCommand}" Background="ForestGreen" Margin="8"/>
-            <Button Content="Close" Command="{x:Static wpf:DialogHost.CloseDialogCommand}" Background="DarkRed" Margin="8"/>
+        <Grid Grid.Row="1" Margin="32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Title}" FontWeight="Bold"/>
+
+            <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,8,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Size: "/>
+                    <TextBlock Text="{Binding Size}" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0" >
+                    <TextBlock Text="Uploaded: "/>
+                    <TextBlock Text="{Binding Uploader}" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="80,8,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Seeders: " Margin="0,0,6,0"/>
+                    <TextBlock Text="{Binding Seeders}" Foreground="Green" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <TextBlock Text="Leechers: "/>
+                    <TextBlock Text="{Binding Leechers}" Foreground="DarkRed" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <TextBlock Text="Uploaded: "/>
+                    <TextBlock Text="{Binding Date}" />
+                </StackPanel>
+            </StackPanel>
+            <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"/>
+            
+            <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="HTML description" Margin="0,8,0,0"/>
+            <!--<WebBrowser Grid.Row="2" Grid.ColumnSpan="2"/>-->
+        </Grid>
+        
+        <StackPanel Grid.Row="2" Margin="32" HorizontalAlignment="Left">
+            <Button Content="Download Magnet" Command="{Binding DownloadTorrentCommand}" Background="ForestGreen" Margin="8"/>
         </StackPanel>
         
     </Grid>

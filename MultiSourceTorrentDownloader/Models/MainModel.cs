@@ -31,6 +31,7 @@ namespace MultiSourceTorrentDownloader.Models
 
         public Command LoadMoreCommand { get; set; }
         public Command SearchCommand { get; set; }
+        public Command OpenTorrentInfoCommand { get; set; }
 
         public ISnackbarMessageQueue MessageQueue { get; set; }
     }

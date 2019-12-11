@@ -53,11 +53,10 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.MessageQueue = new SnackbarMessageQueue();
             Model.SearchCommand = new Command(OnSearch, CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
-
-            Model.SelectedTorrentObservable.Subscribe(OnTorrentSeleceted);
+            Model.OpenTorrentInfoCommand = new Command(OnOpenTorrentInfoCommand);
         }
 
-        private async void OnTorrentSeleceted(object obj)
+        private async void OnOpenTorrentInfoCommand(object obj)
         {
             if (Model.SelectedTorrent == null) return;
             Model.IsLoading = true;
