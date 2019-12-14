@@ -40,10 +40,9 @@ namespace MultiSourceTorrentDownloader.Services
             return await Task.Run(() =>
             {
                 _logger.Information("ThePirateBay parsing");
-                var htmlAgility = new HtmlDocument();
-                htmlAgility.LoadHtml(pageContents);
+                var htmlDocument = LoadedHtmlDocument(pageContents);
 
-                var tableRows = htmlAgility.DocumentNode.SelectNodes("//table[@id='searchResult']/tr");//gets table rows that contain torrent data
+                var tableRows = htmlDocument.DocumentNode.SelectNodes("//table[@id='searchResult']/tr");//gets table rows that contain torrent data
                 if (NoTableEntries(tableRows))//probably end of results
                     return new TorrentQueryResult { LastPage = true };
 
@@ -88,7 +87,10 @@ namespace MultiSourceTorrentDownloader.Services
 
                     var detailsNode = dataColumns[ThePirateBayTorrentIndexer.TitleNode].SelectSingleNode("font[@class='detDesc']");
                     if (detailsNode == null)
+                    {
                         _logger.Warning($"Could not find details node for {Environment.NewLine}{dataColumns[ThePirateBayTorrentIndexer.TitleNode].OuterHtml}");
+                        continue;
+                    }
 
                     var details = (detailsNode.InnerText + detailsNode.SelectSingleNode("a")?.InnerText).Replace("&nbsp;", " ").Split(',');//date, size, uploader
                     var date = string.Empty;
@@ -122,7 +124,7 @@ namespace MultiSourceTorrentDownloader.Services
                     });
                 }
 
-                var pagination = htmlAgility.DocumentNode.SelectNodes("//img[@alt='Next']");
+                var pagination = htmlDocument.DocumentNode.SelectNodes("//img[@alt='Next']");
                 return new TorrentQueryResult
                 {
                     TorrentEntries = result,
@@ -150,6 +152,24 @@ namespace MultiSourceTorrentDownloader.Services
         public async Task<string> ParsePageForMagnet(string pageContents)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<string> ParsePageForDescriptionHtml(string pageContents)
+        {
+            return await Task.Run(() =>
+            {
+                var htmlDocument = LoadedHtmlDocument(pageContents);
+
+                var detailsNode = htmlDocument.DocumentNode.SelectSingleNode("//pre");
+                if (detailsNode == null)
+                {
+                    _logger.Warning($"Could not find details node for thepiratebay");
+                    return string.Empty;
+                }
+
+                return detailsNode.OuterHtml;
+            });
+           
         }
     }
 }

@@ -68,12 +68,18 @@ namespace MultiSourceTorrentDownloader.ViewModels
                     Model.SelectedTorrent.TorrentMagnet = await GetMagnetLinkFromTorrentEntry(Model.SelectedTorrent);
                 }
 
+                if (string.IsNullOrEmpty(Model.SelectedTorrent.DescriptionHtml))
+                {
+                    var source = _torrentSourceDictionary[Model.SelectedTorrent.Source];
+                    Model.SelectedTorrent.DescriptionHtml = await source.DataSource.GetTorrentDescription(Model.SelectedTorrent.TorrentUri);
+                }
+
                 Model.IsLoading = false;
 
                 _torrentInfoDialogViewModel.Model.Date = Model.SelectedTorrent.Date;
                 _torrentInfoDialogViewModel.Model.Seeders = Model.SelectedTorrent.Seeders;
                 _torrentInfoDialogViewModel.Model.Size = Model.SelectedTorrent.Size;
-                _torrentInfoDialogViewModel.Model.Description = "TBD";//TODO: parse descriptions
+                _torrentInfoDialogViewModel.Model.Description = Model.SelectedTorrent.DescriptionHtml;
                 _torrentInfoDialogViewModel.Model.Leechers = Model.SelectedTorrent.Leechers;
                 _torrentInfoDialogViewModel.Model.Title = Model.SelectedTorrent.Title;
                 _torrentInfoDialogViewModel.Model.TorrentMagnet = Model.SelectedTorrent.TorrentMagnet;
@@ -177,6 +183,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
                         sourceInfo.CurrentPage++;
                 }
 
+                ReorderTorrentEntries();
+
                 if (SourcesReachedLastPage())
                     ShowStatusBarMessage(MessageType.Information, "No more records to load");
                 else
@@ -188,6 +196,42 @@ namespace MultiSourceTorrentDownloader.ViewModels
             {
                 _logger.Warning("Could not complete torrent search", ex);
                 ShowStatusBarMessage(MessageType.Error, $"Could not complete torrent search: {ex.Message}");
+            }
+        }
+
+        private void ReorderTorrentEntries()
+        {
+            IOrderedEnumerable<TorrentEntry> reorderedList = null;
+            var listToOrder = Model.TorrentEntries.ToList();//copy of elements
+
+            switch (Model.SelectedFilter.Key)
+            {
+                case Sorting.TimeAsc:
+                    reorderedList = listToOrder.OrderBy(e => e.Date);
+                    break;
+                case Sorting.TimeDesc:
+                    reorderedList = listToOrder.OrderByDescending(e => e.Date);
+                    break;
+                case Sorting.SeedersAsc:
+                    reorderedList = listToOrder.OrderBy(e => e.Seeders);
+                    break;
+                case Sorting.SeedersDesc:
+                    reorderedList = listToOrder.OrderByDescending(e => e.Seeders);
+                    break;
+                case Sorting.LeechersAsc:
+                    reorderedList = listToOrder.OrderBy(e => e.Leechers);
+                    break;
+                case Sorting.LeecherssDesc:
+                    reorderedList = listToOrder.OrderByDescending(e => e.Leechers);
+                    break;
+            }
+
+            //if sort option Size we cannot sort due to lack of parsing
+            if(reorderedList != null)
+            {
+                Model.TorrentEntries.Clear();
+                foreach (var entry in reorderedList) 
+                    Model.TorrentEntries.Add(entry);
             }
         }
 
@@ -219,8 +263,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
             {
                 new KeyValuePair<Sorting, string>(Sorting.SeedersDesc, "Seeders Desc. (Recommended)"),
                 new KeyValuePair<Sorting, string>(Sorting.SeedersAsc, "Seeders Asc."),
-                new KeyValuePair<Sorting, string>(Sorting.UploadedDesc, "Uploaded Desc."),
-                new KeyValuePair<Sorting, string>(Sorting.UploadedAsc, "Uploaded Asc."),
+                new KeyValuePair<Sorting, string>(Sorting.TimeDesc, "Time Desc."),
+                new KeyValuePair<Sorting, string>(Sorting.TimeAsc, "Time Asc."),
                 new KeyValuePair<Sorting, string>(Sorting.SizeDesc, "Size Desc."),
                 new KeyValuePair<Sorting, string>(Sorting.SizeAsc, "Size Asc."),
                 new KeyValuePair<Sorting, string>(Sorting.LeechersAsc, "Leechers Asc."),

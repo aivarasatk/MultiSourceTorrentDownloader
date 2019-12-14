@@ -26,9 +26,9 @@ namespace MultiSourceTorrentDownloader.Mapping
                     return (int)ThePirateBaySorting.SizeAsc;
                 case Sorting.SizeDesc:
                     return (int)ThePirateBaySorting.SizeDesc;
-                case Sorting.UploadedAsc:
+                case Sorting.TimeAsc:
                     return (int)ThePirateBaySorting.UploadedAsc;
-                case Sorting.UploadedDesc:
+                case Sorting.TimeDesc:
                     return (int)ThePirateBaySorting.UploadedDesc;
 
                 default:
@@ -52,9 +52,9 @@ namespace MultiSourceTorrentDownloader.Mapping
                     return new LeetxSorting { Order = "asc", SortedBy = "size" };
                 case Sorting.SizeDesc:
                     return new LeetxSorting { Order = "desc", SortedBy = "size" };
-                case Sorting.UploadedAsc:
+                case Sorting.TimeAsc:
                     return new LeetxSorting { Order = "asc", SortedBy = "time" };
-                case Sorting.UploadedDesc:
+                case Sorting.TimeDesc:
                     return new LeetxSorting { Order = "desc", SortedBy = "time" };
 
                 default:

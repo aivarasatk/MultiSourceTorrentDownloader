@@ -10,6 +10,8 @@ namespace MultiSourceTorrentDownloader.Models
 {
     public partial class TorrentInfoDialogModel
     {
+        private bool _isLoading;
+
         private string _title;
         private DateTime _date;
         private string _size;

@@ -6,8 +6,8 @@ namespace MultiSourceTorrentDownloader.Enums
 {
     public enum Sorting
     {
-        UploadedDesc = 0,
-        UploadedAsc = 1,
+        TimeDesc = 0,
+        TimeAsc = 1,
         SizeDesc = 2,
         SizeAsc = 3,
         SeedersDesc = 4,

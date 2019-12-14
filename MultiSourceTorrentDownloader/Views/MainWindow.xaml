@@ -33,7 +33,7 @@
         <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
     </Window.InputBindings>
 
-    <materialDesign:DialogHost Identifier="RootDialog"> <!-- to show in-window popups-->
+    <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True"> <!-- to show in-window popups-->
         <Grid>
             <Grid.Resources>
                 <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

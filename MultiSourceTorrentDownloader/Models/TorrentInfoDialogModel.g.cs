@@ -10,6 +10,11 @@ namespace MultiSourceTorrentDownloader.Models
 {
     public partial class TorrentInfoDialogModel : INotifyPropertyChanged
     {
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => this.MutateVerbose(ref _isLoading, value, RaisePropertyChanged());
+        }
         public string Title
         {
             get => _title;

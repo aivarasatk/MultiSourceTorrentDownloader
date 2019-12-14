@@ -33,10 +33,8 @@ namespace MultiSourceTorrentDownloader.Services
         {
             var mappedSortOption = SortingMapper.SortingToThePirateBaySorting(sorting);
             var fullUrl = Path.Combine(_searchEndpoint, searchFor, page.ToString(), mappedSortOption.ToString());
-            var response = await _httpClient.GetAsync(fullUrl);
-            response.EnsureSuccessStatusCode();
 
-            var contents = await response.Content.ReadAsStringAsync();
+            var contents = await UrlGetResponseString(fullUrl);
 
             return await _parser.ParsePageForTorrentEntries(contents);
         }
@@ -46,5 +44,13 @@ namespace MultiSourceTorrentDownloader.Services
             throw new NotImplementedException();
         }
 
+        public async Task<string> GetTorrentDescription(string detailsUri)
+        {
+            var fullUrl = Path.Combine(_baseUrl, detailsUri);
+
+            var contents = await UrlGetResponseString(fullUrl);
+
+            return await _parser.ParsePageForDescriptionHtml(contents);
+        }
     }
 }

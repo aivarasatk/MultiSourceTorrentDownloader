@@ -32,14 +32,20 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void OnDownloadTorrentCommand(object obj)
         {
+
             try
             {
+                Model.IsLoading = true;
                 Process.Start(Model.TorrentMagnet);
             }
             catch (Exception ex)
             {
                 _logger.Warning($"Failed to open magnet '{Model.TorrentMagnet}'", ex);
                 MessageBox.Show($"Failed to open magnet link: {ex.Message}", "Torrent info", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                Model.IsLoading = false;
             }
         }
     }

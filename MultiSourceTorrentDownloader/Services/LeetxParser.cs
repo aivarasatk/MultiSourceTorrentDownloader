@@ -135,5 +135,18 @@ namespace MultiSourceTorrentDownloader.Services
             });
         }
 
+        public async Task<string> ParsePageForDescriptionHtml(string pageContents)
+        {
+            var htmlDocument = LoadedHtmlDocument(pageContents);
+
+            var descriptionNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='description']");
+            if(descriptionNode == null)
+            {
+                _logger.Warning("Could not find description node for 1337X");
+                return string.Empty;
+            }
+
+            return descriptionNode.InnerHtml;
+        }
     }
 }

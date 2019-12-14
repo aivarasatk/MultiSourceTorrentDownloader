@@ -34,10 +34,8 @@ namespace MultiSourceTorrentDownloader.Services
             var mapperSorting = SortingMapper.SortingToLeetxSorting(sorting);
 
             var fullUrl = Path.Combine(_searchEndpoint, searchFor, mapperSorting.SortedBy, mapperSorting.Order, page.ToString()) + Path.DirectorySeparatorChar;
-            var response = await _httpClient.GetAsync(fullUrl);
-            response.EnsureSuccessStatusCode();
 
-            var contents = await response.Content.ReadAsStringAsync();
+            var contents = await UrlGetResponseString(fullUrl);
 
             return await _parser.ParsePageForTorrentEntries(contents);
         }
@@ -45,12 +43,19 @@ namespace MultiSourceTorrentDownloader.Services
         public async Task<string> GetTorrentMagnet(string detailsUri)
         {
             var fullUrl = Path.Combine(_baseUrl, detailsUri);
-            var response = await _httpClient.GetAsync(fullUrl);
-            response.EnsureSuccessStatusCode();
 
-            var contents = await response.Content.ReadAsStringAsync();
+            var contents = await UrlGetResponseString(fullUrl);
 
             return await _parser.ParsePageForMagnet(contents);
+        }
+
+        public async Task<string> GetTorrentDescription(string detailsUri)
+        {
+            var fullUrl = Path.Combine(_baseUrl, detailsUri);
+
+            var contents = await UrlGetResponseString(fullUrl);
+
+            return await _parser.ParsePageForDescriptionHtml(contents);
         }
     }
 }

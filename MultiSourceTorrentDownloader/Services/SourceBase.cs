@@ -12,5 +12,13 @@ namespace MultiSourceTorrentDownloader.Services
         protected HttpClient _httpClient;
         protected string _baseUrl;
         protected string _searchEndpoint;
+
+        protected async Task<string> UrlGetResponseString(string url)
+        {
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsStringAsync();
+        }
     }
 }

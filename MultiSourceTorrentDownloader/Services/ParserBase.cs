@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -18,5 +19,12 @@ namespace MultiSourceTorrentDownloader.Services
         }
 
         protected string TrimUriStart(string uri) => uri.TrimStart(new char[] { '\\', '/' });
+
+        protected HtmlDocument LoadedHtmlDocument(string pageContents)
+        {
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(pageContents);
+            return htmlDocument;
+        }
     }
 }
