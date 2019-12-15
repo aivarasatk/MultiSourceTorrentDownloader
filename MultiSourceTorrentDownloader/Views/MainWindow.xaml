@@ -127,8 +127,6 @@
                     </Grid>
 
                 </GroupBox>
-
-
             </Grid>
             
             <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">

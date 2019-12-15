@@ -5,7 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:models="clr-namespace:MultiSourceTorrentDownloader.Models"
+             xmlns:behaviors="clr-namespace:MultiSourceTorrentDownloader.Behaviors"
+             xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:interop="clr-namespace:Microsoft.DwayneNeed.Interop;assembly=Microsoft.DwayneNeed"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="13"
@@ -82,8 +85,19 @@
                 </StackPanel>
                 <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"/>
 
-                <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="{Binding Description}" Margin="0,8,0,0" TextWrapping="Wrap"/>
-                <!--<WebBrowser Grid.Row="2" Grid.ColumnSpan="2"/>-->
+                <interop:AirspaceDecorator Grid.Row="3" Grid.ColumnSpan="2"
+                           AirspaceMode="Redirect"
+                           Background="White"
+                           IsInputRedirectionEnabled="True"
+                           IsOutputRedirectionEnabled="True"
+                           Width="600" Height="400">
+                    <WebBrowser>
+                        <i:Interaction.Behaviors>
+                        <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
+                    </i:Interaction.Behaviors>
+                    </WebBrowser>
+                </interop:AirspaceDecorator>
+                
             </Grid>
 
             <StackPanel Grid.Row="2" Margin="32" HorizontalAlignment="Left">
