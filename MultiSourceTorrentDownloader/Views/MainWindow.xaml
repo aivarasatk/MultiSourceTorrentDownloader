@@ -38,6 +38,7 @@
             <Grid.Resources>
                 <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
                 <converters:MessageTypeToBackgroundConverter x:Key="MessageTypeToBackgroundConverter"/>
+                <converters:TimeFormatConverter x:Key="TimeFormatConverter"/>
             </Grid.Resources>
 
             <Grid>
@@ -116,8 +117,8 @@
                                 </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True"/>
                                 <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True"/>
-                                <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date}" CanUserSort="True"/>
-                                <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date, Converter={StaticResource TimeFormatConverter}}" CanUserSort="True"/>
+                                <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="True"/>
                                 <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}" CanUserSort="True"/>
                             </DataGrid.Columns>
                         </DataGrid>

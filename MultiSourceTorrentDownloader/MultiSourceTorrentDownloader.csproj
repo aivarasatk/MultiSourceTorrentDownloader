@@ -114,10 +114,13 @@
     <Compile Include="Behaviors\RaiseCanExecuteBehavior.cs" />
     <Compile Include="Common\Command.cs" />
     <Compile Include="Common\ContainerConfig.cs" />
+    <Compile Include="Constants\SizePostfix.cs" />
     <Compile Include="Constants\ThePirateBayTorrentIndexer.cs" />
     <Compile Include="Converters\MessageTypeToBackgroundConverter.cs" />
+    <Compile Include="Converters\TimeFormatConverter.cs" />
     <Compile Include="Data\LeetxSorting.cs" />
     <Compile Include="Data\DisplaySource.cs" />
+    <Compile Include="Data\SizeEntity.cs" />
     <Compile Include="Data\SourceInformation.cs" />
     <Compile Include="Data\TorrentEntry.cs" />
     <Compile Include="Data\TorrentPaging.cs" />

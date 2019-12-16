@@ -1,4 +1,5 @@
 ﻿using MultiSourceTorrentDownloader.Common;
+using MultiSourceTorrentDownloader.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,7 +28,7 @@ namespace MultiSourceTorrentDownloader.Models
             set => this.MutateVerbose(ref _date, value, RaisePropertyChanged());
         }
 
-        public string Size
+        public SizeEntity Size
         {
             get => _size;
             set => this.MutateVerbose(ref _size, value, RaisePropertyChanged());

@@ -110,13 +110,18 @@ namespace MultiSourceTorrentDownloader.Services
                     if (!int.TryParse(dataColumns[ThePirateBayTorrentIndexer.Leechers].InnerText, out var leechers))
                         _logger.Warning($"Could not parse leechers {Environment.NewLine}{dataColumns[ThePirateBayTorrentIndexer.Leechers].OuterHtml}");
 
+                    var splitSize = size.Split(' ');
                     result.Add(new TorrentEntry
                     {
                         Title = title,
                         TorrentUri = TrimUriStart(torrentUri),
                         TorrentMagnet = magnetLink,
                         Date = ParseDate(date, _formats),
-                        Size = size,
+                        Size = new SizeEntity 
+                        {
+                            Value = splitSize[1] != "B" ? double.Parse(splitSize[0]) : double.Parse(splitSize[0])/1024,
+                            Postfix = ParseSizePostfix(splitSize[1])
+                        },
                         Uploader = uploader,
                         Seeders = seeders,
                         Leechers = leechers,
@@ -170,6 +175,16 @@ namespace MultiSourceTorrentDownloader.Services
                 return detailsNode.OuterHtml;
             });
            
+        }
+
+        protected override string ParseSizePostfix(string postfix)
+        {
+            if (postfix == "B") return SizePostfix.KiloBytes;
+            if (postfix == "KiB") return SizePostfix.KiloBytes;
+            if (postfix == "MiB") return SizePostfix.MegaBytes;
+            if (postfix == "GiB") return SizePostfix.GigaBytes;
+
+            return SizePostfix.Undefined;
         }
     }
 }

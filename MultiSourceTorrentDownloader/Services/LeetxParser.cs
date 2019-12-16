@@ -92,13 +92,18 @@ namespace MultiSourceTorrentDownloader.Services
                     var size = dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.Substring(0, dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.IndexOf('<'));
                     var uploader = dataColumns[LeetxTorrentColumnIndexer.Uploader].SelectSingleNode("a")?.InnerText;
 
+                    var splitSize = size.Split(' ');
                     result.Add(new TorrentEntry
                     {
                         Title = title,
                         TorrentUri = TrimUriStart(torrentUri),
                         TorrentMagnet = magnetLink,
                         Date = ParseDate(date, _formats),
-                        Size = size,
+                        Size = new SizeEntity
+                        {
+                            Value = double.Parse(splitSize[0]),
+                            Postfix = splitSize[1]
+                        },
                         Uploader = uploader,
                         Seeders = seeders,
                         Leechers = leechers,
@@ -147,6 +152,11 @@ namespace MultiSourceTorrentDownloader.Services
             }
 
             return descriptionNode.InnerHtml;
+        }
+
+        protected override string ParseSizePostfix(string postfix)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -224,6 +224,12 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 case Sorting.LeecherssDesc:
                     reorderedList = listToOrder.OrderByDescending(e => e.Leechers);
                     break;
+                case Sorting.SizeAsc:
+                    reorderedList = listToOrder.OrderBy(e => e.Size);
+                    break;
+                case Sorting.SizeDesc:
+                    reorderedList = listToOrder.OrderByDescending(e => e.Size);
+                    break;
             }
 
             //if sort option Size we cannot sort due to lack of parsing

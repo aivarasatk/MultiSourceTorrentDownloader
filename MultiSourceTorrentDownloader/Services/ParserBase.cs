@@ -18,6 +18,8 @@ namespace MultiSourceTorrentDownloader.Services
             return parsedDate;
         }
 
+        protected abstract string ParseSizePostfix(string postfix);
+
         protected string TrimUriStart(string uri) => uri.TrimStart(new char[] { '\\', '/' });
 
         protected HtmlDocument LoadedHtmlDocument(string pageContents)

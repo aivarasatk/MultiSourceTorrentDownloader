@@ -1,4 +1,5 @@
 ﻿using MultiSourceTorrentDownloader.Common;
+using MultiSourceTorrentDownloader.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +15,7 @@ namespace MultiSourceTorrentDownloader.Models
 
         private string _title;
         private DateTime _date;
-        private string _size;
+        private SizeEntity _size;
         private string _uploader;
         private int _seeders;
         private int _leechers;
