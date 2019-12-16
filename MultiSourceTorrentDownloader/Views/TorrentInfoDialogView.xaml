@@ -93,11 +93,11 @@
                            Width="600" Height="400">
                     <WebBrowser>
                         <i:Interaction.Behaviors>
-                        <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
-                    </i:Interaction.Behaviors>
+                            <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
+                        </i:Interaction.Behaviors>
                     </WebBrowser>
                 </interop:AirspaceDecorator>
-                
+
             </Grid>
 
             <StackPanel Grid.Row="2" Margin="32" HorizontalAlignment="Left">
