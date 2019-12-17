@@ -18,7 +18,10 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="App"
-        Width="1000" Height="900"
+        MinWidth="700"
+        MinHeight="800"
+        Width="1100" Height="900"
+        ResizeMode="CanResizeWithGrip"
         d:DataContext="{d:DesignInstance d:Type=model:MainModel}">
     
     <Window.Resources>

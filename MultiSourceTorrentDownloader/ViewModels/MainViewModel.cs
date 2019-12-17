@@ -76,20 +76,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
                 Model.IsLoading = false;
 
-                _torrentInfoDialogViewModel.Model.Date = Model.SelectedTorrent.Date;
-                _torrentInfoDialogViewModel.Model.Seeders = Model.SelectedTorrent.Seeders;
-                _torrentInfoDialogViewModel.Model.Size = Model.SelectedTorrent.Size;
-                _torrentInfoDialogViewModel.Model.Description = Model.SelectedTorrent.DescriptionHtml;
-                _torrentInfoDialogViewModel.Model.Leechers = Model.SelectedTorrent.Leechers;
-                _torrentInfoDialogViewModel.Model.Title = Model.SelectedTorrent.Title;
-                _torrentInfoDialogViewModel.Model.TorrentMagnet = Model.SelectedTorrent.TorrentMagnet;
-                _torrentInfoDialogViewModel.Model.Uploader = Model.SelectedTorrent.Uploader;
-
-                var view = new TorrentInfoDialogView
-                {
-                    DataContext = _torrentInfoDialogViewModel.Model
-                };
-                await DialogHost.Show(view, "RootDialog");
+                await ShowDetailsDialog();
             }
             catch (Exception ex)
             {
@@ -97,6 +84,24 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 ShowStatusBarMessage(MessageType.Error, $"Could not load magnet from torrent link: {ex.Message}");
             }
             Model.IsLoading = false;
+        }
+
+        private async Task ShowDetailsDialog()
+        {
+            _torrentInfoDialogViewModel.Model.Date = Model.SelectedTorrent.Date;
+            _torrentInfoDialogViewModel.Model.Seeders = Model.SelectedTorrent.Seeders;
+            _torrentInfoDialogViewModel.Model.Size = Model.SelectedTorrent.Size;
+            _torrentInfoDialogViewModel.Model.Description = Model.SelectedTorrent.DescriptionHtml;
+            _torrentInfoDialogViewModel.Model.Leechers = Model.SelectedTorrent.Leechers;
+            _torrentInfoDialogViewModel.Model.Title = Model.SelectedTorrent.Title;
+            _torrentInfoDialogViewModel.Model.TorrentMagnet = Model.SelectedTorrent.TorrentMagnet;
+            _torrentInfoDialogViewModel.Model.Uploader = Model.SelectedTorrent.Uploader;
+
+            var view = new TorrentInfoDialogView
+            {
+                DataContext = _torrentInfoDialogViewModel.Model
+            };
+            await DialogHost.Show(view, "RootDialog");
         }
 
         private async Task<string> GetMagnetLinkFromTorrentEntry(TorrentEntry selectedTorrent)
@@ -171,24 +176,9 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
             try
             {
-                foreach(var source in Model.AvailableSources)
-                {
-                    var sourceInfo = _torrentSourceDictionary[source.Source];
-                    if (!source.Selected) continue;
-
-                    var isLastPage = await LoadFromTorrentSource(sourceInfo.DataSource, sourceInfo.CurrentPage);
-                    if (isLastPage)
-                        sourceInfo.LastPage = true;
-                    else
-                        sourceInfo.CurrentPage++;
-                }
-
+                var errorList = (await LoadDataFromSelectedSources()).ToList();
                 ReorderTorrentEntries();
-
-                if (SourcesReachedLastPage())
-                    ShowStatusBarMessage(MessageType.Information, "No more records to load");
-                else
-                    ShowStatusBarMessage(MessageType.Information, $"Loaded {Model.TorrentEntries.Count} torrents");
+                ShowDataLoadResultMessage(errorList);
 
                 Model.LoadMoreCommand.RaiseCanExecuteChanged();//BETTRE PLACE FOR THIS?
             }
@@ -197,6 +187,46 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 _logger.Warning("Could not complete torrent search", ex);
                 ShowStatusBarMessage(MessageType.Error, $"Could not complete torrent search: {ex.Message}");
             }
+        }
+
+        private void ShowDataLoadResultMessage(List<string> errorList)
+        {
+            if (errorList.Any())
+            {
+                var message = errorList.Count == 1 ? errorList.First() : "Multile source connection issues. Try again or unselect some sources.";
+                ShowStatusBarMessage(MessageType.Error, message);
+            }
+            else if (SourcesReachedLastPage())
+                ShowStatusBarMessage(MessageType.Information, "No more records to load");
+            else
+                ShowStatusBarMessage(MessageType.Information, $"Loaded {Model.TorrentEntries.Count} torrents");
+        }
+
+        private async Task<IEnumerable<string>> LoadDataFromSelectedSources()
+        {
+            var errorList = new List<string>();
+            foreach (var source in Model.AvailableSources)
+            {
+                if (!source.Selected) continue;
+
+                var sourceInfo = _torrentSourceDictionary[source.Source];
+                var isLastPage = false;
+                try
+                {
+                    isLastPage = await LoadFromTorrentSource(sourceInfo.DataSource, sourceInfo.CurrentPage);
+                }
+                catch (Exception ex)
+                {
+                    isLastPage = true;
+                    errorList.Add($"Could not load data from {source.SourceName}: {ex.Message}.");
+                }
+
+                if (isLastPage)
+                    sourceInfo.LastPage = true;
+                else
+                    sourceInfo.CurrentPage++;
+            }
+            return errorList;
         }
 
         private void ReorderTorrentEntries()
