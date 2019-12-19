@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MultiSourceTorrentDownloader.ViewModels
 {
@@ -201,29 +202,46 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private async Task<IEnumerable<string>> LoadDataFromSelectedSources()
         {
-            var errorList = new List<string>();
+            var sourceAndTaskTuples = TuplesToProcess();
+            
+            try { await Task.WhenAll(sourceAndTaskTuples.Select(x => x.Value.Item2)); }
+            catch { }//exceptions thown here do not matter
+
+            return ProcessTaskResults(sourceAndTaskTuples);
+        }
+
+        private IDictionary<string,Tuple<SourceInformation, Task<bool>>> TuplesToProcess()
+        {
+            var sourceDictionary = new Dictionary<string, Tuple<SourceInformation, Task<bool>>>();
             foreach (var source in Model.AvailableSources)
             {
                 if (!source.Selected) continue;
 
                 var sourceInfo = _torrentSourceDictionary[source.Source];
-                var isLastPage = false;
-                try
-                {
-                    isLastPage = await LoadFromTorrentSource(sourceInfo.DataSource, sourceInfo.CurrentPage);
-                }
-                catch (Exception ex)
-                {
-                    isLastPage = true;
-                    errorList.Add($"Could not load data from {source.SourceName}: {ex.Message}.");
-                }
-
-                if (isLastPage)
-                    sourceInfo.LastPage = true;
-                else
-                    sourceInfo.CurrentPage++;
+                sourceDictionary.Add(source.SourceName, new Tuple<SourceInformation, Task<bool>>(sourceInfo,
+                    LoadFromTorrentSource(sourceInfo.DataSource, sourceInfo.CurrentPage)));
             }
-            return errorList;
+            return sourceDictionary;
+        }
+
+        private IEnumerable<string> ProcessTaskResults(IDictionary<string,Tuple<SourceInformation, Task<bool>>> sourceAndTaskTuples)
+        {
+            foreach (var tuple in sourceAndTaskTuples)
+            {
+                var value = tuple.Value;
+                if (value.Item2.Status != TaskStatus.RanToCompletion)
+                {
+                    value.Item1.LastPage = true;
+                    yield return ($"Could not load data from {tuple.Key}: {value.Item2.Exception?.Message ?? value.Item2.Status.ToString()}.");
+                }
+                else
+                {
+                    if (value.Item1.LastPage)
+                        value.Item1.LastPage = true;
+                    else
+                        value.Item1.CurrentPage++;
+                }
+            }
         }
 
         private void ReorderTorrentEntries()
@@ -279,8 +297,11 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
             var pirateResult = await source.GetTorrentsAsync(Model.SearchValue, currentPage, Model.SelectedFilter.Key);
 
-            foreach (var entry in pirateResult.TorrentEntries)
-                Model.TorrentEntries.Add(entry);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (var entry in pirateResult.TorrentEntries)
+                    Model.TorrentEntries.Add(entry);
+            });
 
             return pirateResult.LastPage;
         }
