@@ -1,11 +1,7 @@
-﻿using MaterialDesignThemes.Wpf;
-using MultiSourceTorrentDownloader.Interfaces;
+﻿using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Services;
 using MultiSourceTorrentDownloader.ViewModels;
 using Ninject.Modules;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MultiSourceTorrentDownloader.Common
 {
