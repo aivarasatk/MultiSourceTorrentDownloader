@@ -29,7 +29,7 @@ namespace MultiSourceTorrentDownloader.Services
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["ThePirateBaySearchEndpoint"]);
         }
 
-        public async Task<TorrentQueryResult> GetTorrents(string searchFor, int page, Sorting sorting)
+        public async Task<TorrentQueryResult> GetTorrentsAsync(string searchFor, int page, Sorting sorting)
         {
             var mappedSortOption = SortingMapper.SortingToThePirateBaySorting(sorting);
             var fullUrl = Path.Combine(_searchEndpoint, searchFor, page.ToString(), mappedSortOption.ToString());
@@ -39,12 +39,12 @@ namespace MultiSourceTorrentDownloader.Services
             return await _parser.ParsePageForTorrentEntries(contents);
         }
 
-        public async Task<string> GetTorrentMagnet(string detailsUri)// TPB has magnets on search page
+        public async Task<string> GetTorrentMagnetAsync(string detailsUri)// TPB has magnets on search page
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> GetTorrentDescription(string detailsUri)
+        public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
         {
             var fullUrl = Path.Combine(_baseUrl, detailsUri);
 

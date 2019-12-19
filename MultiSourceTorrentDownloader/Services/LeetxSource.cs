@@ -29,7 +29,7 @@ namespace MultiSourceTorrentDownloader.Services
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["LeetxSearchEndpoint"]);
         }
 
-        public async Task<TorrentQueryResult> GetTorrents(string searchFor, int page, Sorting sorting)
+        public async Task<TorrentQueryResult> GetTorrentsAsync(string searchFor, int page, Sorting sorting)
         {
             var mapperSorting = SortingMapper.SortingToLeetxSorting(sorting);
 
@@ -40,7 +40,7 @@ namespace MultiSourceTorrentDownloader.Services
             return await _parser.ParsePageForTorrentEntries(contents);
         }
 
-        public async Task<string> GetTorrentMagnet(string detailsUri)
+        public async Task<string> GetTorrentMagnetAsync(string detailsUri)
         {
             var fullUrl = Path.Combine(_baseUrl, detailsUri);
 
@@ -49,7 +49,7 @@ namespace MultiSourceTorrentDownloader.Services
             return await _parser.ParsePageForMagnet(contents);
         }
 
-        public async Task<string> GetTorrentDescription(string detailsUri)
+        public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
         {
             var fullUrl = Path.Combine(_baseUrl, detailsUri);
 

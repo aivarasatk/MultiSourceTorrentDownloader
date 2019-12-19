@@ -10,8 +10,8 @@ namespace MultiSourceTorrentDownloader.Interfaces
 {
     public interface ITorrentDataSource
     {
-        Task<TorrentQueryResult> GetTorrents(string searchFor, int page, Sorting sorting);
-        Task<string> GetTorrentMagnet(string detailsUri);
-        Task<string> GetTorrentDescription(string detailsUri);
+        Task<TorrentQueryResult> GetTorrentsAsync(string searchFor, int page, Sorting sorting);
+        Task<string> GetTorrentMagnetAsync(string detailsUri);
+        Task<string> GetTorrentDescriptionAsync(string detailsUri);
     }
 }

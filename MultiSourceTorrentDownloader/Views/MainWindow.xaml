@@ -64,11 +64,11 @@
                                  Width="300"
                                  materialDesign:HintAssist.Hint="Search for torrents.." ToolTip="Pressing enter will activate search">
                             </TextBox>
-                            
+
                             <Button Command="{Binding SearchCommand}" Height="62">
                                 <materialDesign:PackIcon Kind="Search"/>
                             </Button>
-                            
+
                             <ComboBox   ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
 
                             <StackPanel Orientation="Horizontal" Margin="104,0,0,0">
@@ -129,7 +129,7 @@
                         <Button Grid.Row="1" Command="{Binding LoadMoreCommand}" Content="Load more" Margin="0,16,0,0" Width="120" HorizontalAlignment="Center"
                                 ToolTip="Loads more data from next torrent page"/>
                     </Grid>
-
+                    
                 </GroupBox>
             </Grid>
             

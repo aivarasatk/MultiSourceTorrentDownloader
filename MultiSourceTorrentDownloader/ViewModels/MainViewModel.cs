@@ -71,7 +71,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 if (string.IsNullOrEmpty(Model.SelectedTorrent.DescriptionHtml))
                 {
                     var source = _torrentSourceDictionary[Model.SelectedTorrent.Source];
-                    Model.SelectedTorrent.DescriptionHtml = await source.DataSource.GetTorrentDescription(Model.SelectedTorrent.TorrentUri);
+                    Model.SelectedTorrent.DescriptionHtml = await source.DataSource.GetTorrentDescriptionAsync(Model.SelectedTorrent.TorrentUri);
                 }
 
                 Model.IsLoading = false;
@@ -109,7 +109,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             switch (selectedTorrent.Source)
             {
                 case TorrentSource.Leetx:
-                    return await _leetxSource.GetTorrentMagnet(selectedTorrent.TorrentUri);
+                    return await _leetxSource.GetTorrentMagnetAsync(selectedTorrent.TorrentUri);
                 default:
                     throw new Exception("Source not defined for getting magnet link");
             }        
@@ -280,7 +280,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private async Task<bool> LoadFromTorrentSource(ITorrentDataSource source, int currentPage)
         {
-            var pirateResult = await source.GetTorrents(Model.SearchValue, currentPage, Model.SelectedFilter.Key);
+            var pirateResult = await source.GetTorrentsAsync(Model.SearchValue, currentPage, Model.SelectedFilter.Key);
 
             foreach (var entry in pirateResult.TorrentEntries)
                 Model.TorrentEntries.Add(entry);
