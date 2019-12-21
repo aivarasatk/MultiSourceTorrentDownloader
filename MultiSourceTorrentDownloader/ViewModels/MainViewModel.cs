@@ -71,9 +71,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
                     var source = _torrentSourceDictionary[Model.SelectedTorrent.Source];
                     Model.SelectedTorrent.DescriptionHtml = await source.DataSource.GetTorrentDescriptionAsync(Model.SelectedTorrent.TorrentUri);
                 }
-
-                Model.IsLoading = false;
-
+              
                 await ShowDetailsDialog();
             }
             catch (Exception ex)

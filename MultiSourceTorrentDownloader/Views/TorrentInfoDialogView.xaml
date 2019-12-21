@@ -8,7 +8,7 @@
              xmlns:behaviors="clr-namespace:MultiSourceTorrentDownloader.Behaviors"
              xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
-             xmlns:interop="clr-namespace:Microsoft.DwayneNeed.Interop;assembly=Microsoft.DwayneNeed"
+             xmlns:wpf1="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="13"
@@ -84,19 +84,12 @@
                     </StackPanel>
                 </StackPanel>
                 <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"/>
-
-                <interop:AirspaceDecorator Grid.Row="3" Grid.ColumnSpan="2"
-                           AirspaceMode="Redirect"
-                           Background="White"
-                           IsInputRedirectionEnabled="True"
-                           IsOutputRedirectionEnabled="True"
-                           Width="600" Height="400">
-                    <WebBrowser>
-                        <i:Interaction.Behaviors>
-                            <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
-                        </i:Interaction.Behaviors>
-                    </WebBrowser>
-                </interop:AirspaceDecorator>
+                
+                <wpf1:ChromiumWebBrowser Grid.Row="3" Grid.ColumnSpan="2" Width="600" Height="400">
+                    <i:Interaction.Behaviors>
+                        <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
+                    </i:Interaction.Behaviors>
+                </wpf1:ChromiumWebBrowser>
 
             </Grid>
 

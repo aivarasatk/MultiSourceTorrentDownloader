@@ -1,10 +1,11 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using CefSharp;
+using CefSharp.Wpf;
+using System.Windows;
 using System.Windows.Interactivity;
 
 namespace MultiSourceTorrentDownloader.Behaviors
 {
-    public class BindHtmlBehavior : Behavior<WebBrowser>
+    public class BindHtmlBehavior : Behavior<ChromiumWebBrowser>
     {
         public static readonly DependencyProperty HtmlProperty =
                 DependencyProperty.Register("Html", typeof(string), typeof(BindHtmlBehavior));
@@ -17,17 +18,25 @@ namespace MultiSourceTorrentDownloader.Behaviors
 
         protected override void OnAttached()
         {
-            AssociatedObject.Loaded += Loaded;
+            AssociatedObject.IsBrowserInitializedChanged += IsBrowserInitializedChanged;
+        }
+
+        private void IsBrowserInitializedChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (AssociatedObject.IsBrowserInitialized)
+            {
+                AssociatedObject.LoadHtml(Html ?? string.Empty);
+            }
         }
 
         protected override void OnDetaching()
         {
-            AssociatedObject.Loaded -= Loaded;
+            AssociatedObject.IsBrowserInitializedChanged -= IsBrowserInitializedChanged;
         }
 
-        private void Loaded(object sender, RoutedEventArgs e)
+        private void Initialized(object sender, System.EventArgs e)
         {
-            AssociatedObject.NavigateToString(Html ?? string.Empty);
+            AssociatedObject.LoadHtml(Html ?? string.Empty);
         }
 
     }
