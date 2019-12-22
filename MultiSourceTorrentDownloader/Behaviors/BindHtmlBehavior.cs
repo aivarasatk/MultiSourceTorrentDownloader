@@ -1,5 +1,6 @@
 ﻿using CefSharp;
 using CefSharp.Wpf;
+using MultiSourceTorrentDownloader.Models;
 using System.Windows;
 using System.Windows.Interactivity;
 
@@ -32,11 +33,6 @@ namespace MultiSourceTorrentDownloader.Behaviors
         protected override void OnDetaching()
         {
             AssociatedObject.IsBrowserInitializedChanged -= IsBrowserInitializedChanged;
-        }
-
-        private void Initialized(object sender, System.EventArgs e)
-        {
-            AssociatedObject.LoadHtml(Html ?? string.Empty);
         }
 
     }
