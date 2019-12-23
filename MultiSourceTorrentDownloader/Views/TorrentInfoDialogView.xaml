@@ -85,7 +85,7 @@
                 </StackPanel>
                 <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"/>
                 
-                <wpf1:ChromiumWebBrowser Grid.Row="3" Grid.ColumnSpan="2" Width="600" Height="400">
+                <wpf1:ChromiumWebBrowser Grid.Row="3" Grid.ColumnSpan="2" Width="600" Height="400" IsBrowserInitializedChanged="ChromiumWebBrowser_IsBrowserInitializedChanged">
                     <i:Interaction.Behaviors>
                         <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
                     </i:Interaction.Behaviors>

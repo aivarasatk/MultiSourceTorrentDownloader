@@ -15,7 +15,7 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
+        FontFamily="{DynamicResource MaterialDesignFont}" 
         mc:Ignorable="d"
         Title="App"
         MinWidth="700"
