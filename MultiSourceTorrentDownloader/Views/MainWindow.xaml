@@ -15,14 +15,18 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}" 
+        FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="App"
-        MinWidth="700"
-        MinHeight="800"
-        Width="1100" Height="900"
         ResizeMode="CanResizeWithGrip"
+        MinWidth="715"
+        MinHeight="440"
         d:DataContext="{d:DesignInstance d:Type=model:MainModel}">
+    
+    <!-- Sets and saves window SizeToContent and Width/Height-->
+    <i:Interaction.Behaviors>
+        <behaviors:PersistanceBehavior />
+    </i:Interaction.Behaviors>
     
     <Window.Resources>
         <ResourceDictionary>
