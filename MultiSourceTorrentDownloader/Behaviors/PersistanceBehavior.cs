@@ -25,7 +25,7 @@ namespace MultiSourceTorrentDownloader.Behaviors
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
-            if (SettingsExist())
+            if (WindowSizeSettingsExist())
             {
                 AssociatedObject.SizeToContent = SizeToContent.Manual;
                 AssociatedObject.Width = Properties.Settings.Default.WindowWidth;
@@ -33,14 +33,35 @@ namespace MultiSourceTorrentDownloader.Behaviors
             }
             else
                 AssociatedObject.SizeToContent = SizeToContent.WidthAndHeight;
+
+            if (WindowPositionSettingsExist())
+            {
+                AssociatedObject.WindowStartupLocation = Properties.Settings.Default.WindowStartupLocation;
+                AssociatedObject.Left = Properties.Settings.Default.WindowPositionLeft;
+                AssociatedObject.Top = Properties.Settings.Default.WindowPositionTop;
+            }
         }
 
-        private bool SettingsExist() => Properties.Settings.Default.WindowWidth != 0 && Properties.Settings.Default.WindowHeight != 0;
+        private bool WindowSizeSettingsExist()
+        {
+            return Properties.Settings.Default.WindowWidth != 0 
+                && Properties.Settings.Default.WindowHeight != 0;
+        }
+
+        private bool WindowPositionSettingsExist()
+        {
+            return Properties.Settings.Default.WindowPositionTop != 0 
+                && Properties.Settings.Default.WindowPositionLeft != 0;
+        }
 
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Properties.Settings.Default.WindowWidth = AssociatedObject.Width;
             Properties.Settings.Default.WindowHeight = AssociatedObject.Height;
+
+            Properties.Settings.Default.WindowStartupLocation = WindowStartupLocation.Manual;
+            Properties.Settings.Default.WindowPositionLeft = AssociatedObject.Left;
+            Properties.Settings.Default.WindowPositionTop = AssociatedObject.Top;
 
             Properties.Settings.Default.Save();
         }

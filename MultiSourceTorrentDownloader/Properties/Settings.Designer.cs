@@ -12,7 +12,7 @@ namespace MultiSourceTorrentDownloader.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -68,6 +68,42 @@ namespace MultiSourceTorrentDownloader.Properties {
             }
             set {
                 this["WindowHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CenterScreen")]
+        public global::System.Windows.WindowStartupLocation WindowStartupLocation {
+            get {
+                return ((global::System.Windows.WindowStartupLocation)(this["WindowStartupLocation"]));
+            }
+            set {
+                this["WindowStartupLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double WindowPositionTop {
+            get {
+                return ((double)(this["WindowPositionTop"]));
+            }
+            set {
+                this["WindowPositionTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double WindowPositionLeft {
+            get {
+                return ((double)(this["WindowPositionLeft"]));
+            }
+            set {
+                this["WindowPositionLeft"] = value;
             }
         }
     }

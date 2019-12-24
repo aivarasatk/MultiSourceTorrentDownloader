@@ -14,5 +14,14 @@
     <Setting Name="WindowHeight" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="WindowStartupLocation" Type="System.Windows.WindowStartupLocation" Scope="User">
+      <Value Profile="(Default)">CenterScreen</Value>
+    </Setting>
+    <Setting Name="WindowPositionTop" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="WindowPositionLeft" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
