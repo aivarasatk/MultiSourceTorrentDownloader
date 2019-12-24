@@ -135,14 +135,18 @@
                     </Grid>
                     
                 </GroupBox>
+
+                <StackPanel Grid.Row="2"  Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}">
+                    <TextBlock Margin="8" Text="{Binding StatusBarMessage}" Foreground="White"/>
+                </StackPanel>
+               
             </Grid>
-            
+
             <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel Background="LightGray" Opacity="0.5"/> <!-- prevents user clicks-->
+                <StackPanel Background="LightGray" Opacity="0.5"/>
+                <!-- prevents user clicks-->
                 <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Visibility="Visible" Margin="16,16,16,16"/>
             </Grid>
-            <materialDesign:Snackbar MessageQueue="{Binding MessageQueue}" HorizontalAlignment="Stretch"
-                    Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}" IsActive="False"/>
         </Grid>
     </materialDesign:DialogHost>
 </Window>

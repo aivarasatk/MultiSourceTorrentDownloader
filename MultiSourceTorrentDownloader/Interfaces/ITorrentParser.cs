@@ -5,8 +5,8 @@ namespace MultiSourceTorrentDownloader.Interfaces
 {
     public interface ITorrentParser
     {
-        Task<TorrentQueryResult> ParsePageForTorrentEntries(string pageContents);
-        Task<string> ParsePageForMagnet(string pageContents);
-        Task<string> ParsePageForDescriptionHtml(string pageContents);
+        Task<TorrentQueryResult> ParsePageForTorrentEntriesAsync(string pageContents);
+        Task<string> ParsePageForMagnetAsync(string pageContents);
+        Task<string> ParsePageForDescriptionHtmlAsync(string pageContents);
     }
 }

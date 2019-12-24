@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace MultiSourceTorrentDownloader.ViewModels
 {
@@ -23,6 +24,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private string _loadMoreString = string.Empty;
         private Dictionary<TorrentSource, SourceInformation> _torrentSourceDictionary;
 
+        private readonly DispatcherTimer _timer;
+
         public MainModel Model { get; private set; }
 
 
@@ -30,6 +33,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
             TorrentInfoDialogViewModel torrentInfoDialogViewModel)
         {
             _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
+            _timer = new DispatcherTimer();
+            SetupStatusBarTimer();
 
             Model = new MainModel();
             Model.AvailableSources = new ObservableCollection<DisplaySource>();
@@ -44,14 +49,41 @@ namespace MultiSourceTorrentDownloader.ViewModels
             InitializeViewModel();
         }
 
+        private void SetupStatusBarTimer()
+        {
+            _timer.Interval = TimeSpan.FromSeconds(10);
+            _timer.Tick += OnStatusBarMessageExpired;
+        }
+
         private void InitializeViewModel()
         {
             Model.Filters = Filters();
             Model.SelectedFilter = Model.Filters.First();
-            Model.MessageQueue = new SnackbarMessageQueue();
             Model.SearchCommand = new Command(OnSearch, CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
             Model.OpenTorrentInfoCommand = new Command(OnOpenTorrentInfoCommand);
+
+            Model.MessageType = MessageType.Empty;
+            Model.StatusBarMessageObservable.Subscribe(OnStatusBarMessageChanged);
+        }
+
+        private void OnStatusBarMessageChanged(string obj)
+        {
+            if (string.IsNullOrEmpty(Model.StatusBarMessage)) return; // cutting the loop when status bar is reset
+            RestartStatusBarTimer();
+        }
+
+        private void RestartStatusBarTimer()
+        {
+            _timer.Stop();
+            _timer.Start();
+        }
+
+        private void OnStatusBarMessageExpired(object sender, EventArgs e)
+        {
+            _timer.Stop();
+            Model.StatusBarMessage = string.Empty;
+            Model.MessageType = MessageType.Empty;
         }
 
         private async void OnOpenTorrentInfoCommand(object obj)
@@ -326,10 +358,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void ShowStatusBarMessage(MessageType messageType, string message)
         {
-            //TODO: REPLACE WITH OLD STATUS BAR
-            var test = new SnackbarMessageQueue();
             Model.MessageType = messageType;
-            Model.MessageQueue.Enqueue(message, true);
+            Model.StatusBarMessage = message;
         }
     }
 }

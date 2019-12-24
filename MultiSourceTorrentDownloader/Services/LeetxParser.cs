@@ -32,7 +32,7 @@ namespace MultiSourceTorrentDownloader.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<TorrentQueryResult> ParsePageForTorrentEntries(string pageContents)
+        public async Task<TorrentQueryResult> ParsePageForTorrentEntriesAsync(string pageContents)
         {
             return await Task.Run(() =>
             {
@@ -120,7 +120,7 @@ namespace MultiSourceTorrentDownloader.Services
 
         private bool NoTableEntries(HtmlNodeCollection tableRows) => tableRows == null;
 
-        public async Task<string> ParsePageForMagnet(string pageContents)
+        public async Task<string> ParsePageForMagnetAsync(string pageContents)
         {
             return await Task.Run(() =>
             {
@@ -138,18 +138,21 @@ namespace MultiSourceTorrentDownloader.Services
             });
         }
 
-        public async Task<string> ParsePageForDescriptionHtml(string pageContents)
+        public async Task<string> ParsePageForDescriptionHtmlAsync(string pageContents)
         {
-            var htmlDocument = LoadedHtmlDocument(pageContents);
-
-            var descriptionNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='description']");
-            if(descriptionNode == null)
+            return await Task.Run(() =>
             {
-                _logger.Warning("Could not find description node for 1337X");
-                return string.Empty;
-            }
+                var htmlDocument = LoadedHtmlDocument(pageContents);
 
-            return descriptionNode.InnerHtml;
+                var descriptionNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='description']");
+                if (descriptionNode == null)
+                {
+                    _logger.Warning("Could not find description node for 1337X");
+                    return string.Empty;
+                }
+
+                return descriptionNode.InnerHtml;
+            });
         }
 
         protected override string ParseSizePostfix(string postfix)

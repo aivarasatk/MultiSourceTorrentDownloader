@@ -20,6 +20,7 @@ namespace MultiSourceTorrentDownloader.Models
         private bool _isLoading;
         private string _searchValue;
 
+        private string _statusBarMessage;
         private MessageType _messageType;
 
         public ObservableCollection<DisplaySource> AvailableSources { get; set; }
@@ -32,7 +33,5 @@ namespace MultiSourceTorrentDownloader.Models
         public Command LoadMoreCommand { get; set; }
         public Command SearchCommand { get; set; }
         public Command OpenTorrentInfoCommand { get; set; }
-
-        public ISnackbarMessageQueue MessageQueue { get; set; }
     }
 }

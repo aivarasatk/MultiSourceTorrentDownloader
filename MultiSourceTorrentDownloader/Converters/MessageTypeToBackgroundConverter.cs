@@ -16,9 +16,10 @@ namespace MultiSourceTorrentDownloader.Converters
                 {
                     case MessageType.Information: return Brushes.Indigo;
                     case MessageType.Error: return Brushes.DarkRed;
+                    case MessageType.Empty: return Brushes.White;
                 }
             } 
-            return Brushes.Indigo;
+            return Brushes.White;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

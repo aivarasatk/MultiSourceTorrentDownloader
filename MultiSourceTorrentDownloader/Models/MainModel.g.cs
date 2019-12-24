@@ -26,6 +26,28 @@ namespace MultiSourceTorrentDownloader.Models
             }
         }
 
+        public string StatusBarMessage
+        {
+            get => _statusBarMessage;
+            set
+            {
+                this.MutateVerbose(ref _statusBarMessage, value, RaisePropertyChanged());
+                _statusBarMessageObservable.OnNext(value);
+            }
+        }
+
+        private ISubject<string> _statusBarMessageObservable = new Subject<string>();
+
+        public ISubject<string> StatusBarMessageObservable
+        {
+            get => _statusBarMessageObservable;
+            set
+            {
+                if (value != _statusBarMessageObservable)
+                    _statusBarMessageObservable = value;
+            }
+        }
+
         public MessageType MessageType
         {
             get => _messageType;
@@ -47,26 +69,7 @@ namespace MultiSourceTorrentDownloader.Models
         public TorrentEntry SelectedTorrent
         {
             get => _selectedTorrent;
-            set
-            {
-                if(value != _selectedTorrent)
-                {
-                    this.MutateVerbose(ref _selectedTorrent, value, RaisePropertyChanged());
-                    _selectedTorrentObservable.OnNext(value);
-                }
-            }
-        }
-
-        private ISubject<TorrentEntry> _selectedTorrentObservable = new Subject<TorrentEntry>();
-
-        public ISubject<TorrentEntry> SelectedTorrentObservable
-        {
-            get => _selectedTorrentObservable;
-            set
-            {
-                if (value != _selectedTorrentObservable)
-                    _selectedTorrentObservable = value;
-            }
+            set => this.MutateVerbose(ref _selectedTorrent, value, RaisePropertyChanged());
         }
 
 

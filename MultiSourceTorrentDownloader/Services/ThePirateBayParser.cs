@@ -34,7 +34,7 @@ namespace MultiSourceTorrentDownloader.Services
             _uploaderStringToReplace = "ULed by";
         }
 
-        public async Task<TorrentQueryResult> ParsePageForTorrentEntries(string pageContents)
+        public async Task<TorrentQueryResult> ParsePageForTorrentEntriesAsync(string pageContents)
         {
             return await Task.Run(() =>
             {
@@ -153,12 +153,12 @@ namespace MultiSourceTorrentDownloader.Services
             return parsedDate;
         }
 
-        public async Task<string> ParsePageForMagnet(string pageContents)
+        public async Task<string> ParsePageForMagnetAsync(string pageContents)//magnet is parsed from first page
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> ParsePageForDescriptionHtml(string pageContents)
+        public async Task<string> ParsePageForDescriptionHtmlAsync(string pageContents)
         {
             return await Task.Run(() =>
             {

@@ -34,7 +34,7 @@ namespace MultiSourceTorrentDownloader.Services
 
             var contents = await UrlGetResponseString(fullUrl);
 
-            return await _parser.ParsePageForTorrentEntries(contents);
+            return await _parser.ParsePageForTorrentEntriesAsync(contents);
         }
 
         public async Task<string> GetTorrentMagnetAsync(string detailsUri)
@@ -43,7 +43,7 @@ namespace MultiSourceTorrentDownloader.Services
 
             var contents = await UrlGetResponseString(fullUrl);
 
-            return await _parser.ParsePageForMagnet(contents);
+            return await _parser.ParsePageForMagnetAsync(contents);
         }
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
@@ -52,7 +52,7 @@ namespace MultiSourceTorrentDownloader.Services
 
             var contents = await UrlGetResponseString(fullUrl);
 
-            return await _parser.ParsePageForDescriptionHtml(contents);
+            return await _parser.ParsePageForDescriptionHtmlAsync(contents);
         }
     }
 }
