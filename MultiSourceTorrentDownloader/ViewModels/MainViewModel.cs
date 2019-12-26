@@ -218,14 +218,14 @@ namespace MultiSourceTorrentDownloader.ViewModels
             }
         }
 
-        private void ShowDataLoadResultMessage(List<string> errorList)
+        private void ShowDataLoadResultMessage(IList<string> errorList)
         {
             if (errorList.Any())
             {
                 var errorMessages = string.Join(Environment.NewLine, errorList);
                 _logger.Information($"Data connention issues:{Environment.NewLine}{errorMessages}");
 
-                var message = errorList.Count == 1 ? errorList.First() : "Multile source connection issues. Try again or unselect some sources.";
+                var message = $"Connection issues. Try again or unselect some sources. Messages: {string.Join("; ", errorList)}";
                 ShowStatusBarMessage(MessageType.Error, message);
             }
             else if (SourcesReachedLastPage())
@@ -237,21 +237,13 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private async Task<IEnumerable<string>> LoadDataFromSelectedSources()
         {
             var sourcesToProcess = SourcesToProcess();
-
-            var errors = new List<string>();
-            
-            try 
-            { 
-                await Task.WhenAll(sourcesToProcess.Select(x => x.TaskToPerform)); 
-            }
-            catch (Exception ex)
+            try
             {
-                errors.Add(ex.Message);
+                await Task.WhenAll(sourcesToProcess.Select(x => x.TaskToPerform));
             }
+            catch { } // error will be visible in tasks exceptions
 
-            errors.AddRange(ProcessTaskResults(sourcesToProcess));
-
-            return errors;
+            return ProcessTaskResults(sourcesToProcess);
         }
 
         private IEnumerable<SourceToProcess> SourcesToProcess()

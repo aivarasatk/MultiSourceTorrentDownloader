@@ -25,8 +25,7 @@ namespace MultiSourceTorrentDownloader.Behaviors
         {
             if (AssociatedObject.IsBrowserInitialized)
             {
-                //hack around 1337x images. downloaded img src is pointing to empty .svg need to redirect to data-original
-                AssociatedObject.LoadHtml(Html?.Replace("src", "nothing")?.Replace("data-original", "src") ?? string.Empty);
+                AssociatedObject.LoadHtml(Html ?? string.Empty);
             }
         }
 

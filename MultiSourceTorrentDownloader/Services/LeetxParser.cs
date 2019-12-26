@@ -150,8 +150,8 @@ namespace MultiSourceTorrentDownloader.Services
                     _logger.Warning("Could not find description node for 1337X");
                     return string.Empty;
                 }
-
-                return descriptionNode.InnerHtml;
+                //hack around images. downloaded img src is pointing to empty .svg. need to redirect to data-original
+                return descriptionNode.InnerHtml.Replace("src", "nothing").Replace("data-original", "src");
             });
         }
 
