@@ -109,11 +109,12 @@ namespace MultiSourceTorrentDownloader.Services
                     });
                 }
 
-                var pagination = htmlAgility.DocumentNode.SelectNodes("//div[@class='pagination']");
+                var pagination = htmlAgility.DocumentNode.SelectSingleNode("//div[@class='pagination']");
+                
                 return new TorrentQueryResult
                 {
                     TorrentEntries = result,
-                    IsLastPage = pagination == null
+                    IsLastPage = pagination == null || !pagination.InnerHtml.Contains("href")
                 };
             });
         }

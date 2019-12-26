@@ -225,7 +225,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 var errorMessages = string.Join(Environment.NewLine, errorList);
                 _logger.Information($"Data connention issues:{Environment.NewLine}{errorMessages}");
 
-                var message = $"Connection issues. Try again or unselect some sources. Messages: {string.Join("; ", errorList)}";
+                var message = $"Connection issues. Messages: {string.Join("; ", errorList)}";
                 ShowStatusBarMessage(MessageType.Error, message);
             }
             else if (SourcesReachedLastPage())
@@ -251,9 +251,9 @@ namespace MultiSourceTorrentDownloader.ViewModels
             var sources = new List<SourceToProcess>();
             foreach (var source in Model.AvailableSources)
             {
-                if (!source.Selected) continue;
-
                 var sourceInfo = _torrentSourceDictionary[source.Source];
+                if (!source.Selected || sourceInfo.LastPage) continue;
+                
                 sources.Add(new SourceToProcess
                 {
                     SourceName = source.SourceName,
@@ -275,7 +275,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 }
                 else
                 {
-                    if (task.SourceInformation.LastPage)
+                    if (task.TaskToPerform.Result)
                         task.SourceInformation.LastPage = true;
                     else
                         task.SourceInformation.CurrentPage++;
