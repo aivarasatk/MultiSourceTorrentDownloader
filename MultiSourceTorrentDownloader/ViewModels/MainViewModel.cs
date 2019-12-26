@@ -108,8 +108,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.Warning($"Failed to get magnet from selected torrent uri: {Model.SelectedTorrent.TorrentUri}", ex);
-                ShowStatusBarMessage(MessageType.Error, $"Could not load magnet from torrent link: {ex.Message}");
+                _logger.Warning($"Failed to get magnet or details from selected torrent uri: {Model.SelectedTorrent.TorrentUri}", ex);
+                ShowStatusBarMessage(MessageType.Error, $"Could not details from torrent link: {ex.Message}");
             }
             Model.IsLoading = false;
         }
@@ -205,8 +205,9 @@ namespace MultiSourceTorrentDownloader.ViewModels
             try
             {
                 var errorList = (await LoadDataFromSelectedSources()).ToList();
-                ReorderTorrentEntries();
                 ShowDataLoadResultMessage(errorList);
+
+                ReorderTorrentEntries();
 
                 Model.LoadMoreCommand.RaiseCanExecuteChanged();//BETTRE PLACE FOR THIS?
             }
@@ -221,6 +222,9 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
             if (errorList.Any())
             {
+                var errorMessages = string.Join(Environment.NewLine, errorList);
+                _logger.Information($"Data connention issues:{Environment.NewLine}{errorMessages}");
+
                 var message = errorList.Count == 1 ? errorList.First() : "Multile source connection issues. Try again or unselect some sources.";
                 ShowStatusBarMessage(MessageType.Error, message);
             }
@@ -232,44 +236,57 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private async Task<IEnumerable<string>> LoadDataFromSelectedSources()
         {
-            var sourceAndTaskTuples = TuplesToProcess();
-            
-            try { await Task.WhenAll(sourceAndTaskTuples.Select(x => x.Value.Item2)); }
-            catch { }//exceptions thown here do not matter
+            var sourcesToProcess = SourcesToProcess();
 
-            return ProcessTaskResults(sourceAndTaskTuples);
+            var errors = new List<string>();
+            
+            try 
+            { 
+                await Task.WhenAll(sourcesToProcess.Select(x => x.TaskToPerform)); 
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex.Message);
+            }
+
+            errors.AddRange(ProcessTaskResults(sourcesToProcess));
+
+            return errors;
         }
 
-        private IDictionary<string,Tuple<SourceInformation, Task<bool>>> TuplesToProcess()
+        private IEnumerable<SourceToProcess> SourcesToProcess()
         {
-            var sourceDictionary = new Dictionary<string, Tuple<SourceInformation, Task<bool>>>();
+            var sources = new List<SourceToProcess>();
             foreach (var source in Model.AvailableSources)
             {
                 if (!source.Selected) continue;
 
                 var sourceInfo = _torrentSourceDictionary[source.Source];
-                sourceDictionary.Add(source.SourceName, new Tuple<SourceInformation, Task<bool>>(sourceInfo,
-                    LoadFromTorrentSource(sourceInfo.DataSource, sourceInfo.CurrentPage)));
+                sources.Add(new SourceToProcess
+                {
+                    SourceName = source.SourceName,
+                    SourceInformation = sourceInfo,
+                    TaskToPerform = LoadFromTorrentSource(sourceInfo.DataSource, sourceInfo.CurrentPage)
+                });
             }
-            return sourceDictionary;
+            return sources;
         }
 
-        private IEnumerable<string> ProcessTaskResults(IDictionary<string,Tuple<SourceInformation, Task<bool>>> sourceAndTaskTuples)
+        private IEnumerable<string> ProcessTaskResults(IEnumerable<SourceToProcess> sourceToProcess)
         {
-            foreach (var tuple in sourceAndTaskTuples)
+            foreach (var task in sourceToProcess)
             {
-                var value = tuple.Value;
-                if (value.Item2.Status != TaskStatus.RanToCompletion)
+                if (task.TaskToPerform.Status != TaskStatus.RanToCompletion)
                 {
-                    value.Item1.LastPage = true;
-                    yield return ($"Could not load data from {tuple.Key}: {value.Item2.Exception?.Message ?? value.Item2.Status.ToString()}.");
+                    task.SourceInformation.LastPage = true;
+                    yield return ($"Could not load data from {task.SourceName}: {task.TaskToPerform.Exception?.Message ?? task.TaskToPerform.Status.ToString()}.");
                 }
                 else
                 {
-                    if (value.Item1.LastPage)
-                        value.Item1.LastPage = true;
+                    if (task.SourceInformation.LastPage)
+                        task.SourceInformation.LastPage = true;
                     else
-                        value.Item1.CurrentPage++;
+                        task.SourceInformation.CurrentPage++;
                 }
             }
         }
@@ -307,7 +324,6 @@ namespace MultiSourceTorrentDownloader.ViewModels
                     break;
             }
 
-            //if sort option Size we cannot sort due to lack of parsing
             if(reorderedList != null)
             {
                 Model.TorrentEntries.Clear();
@@ -323,17 +339,20 @@ namespace MultiSourceTorrentDownloader.ViewModels
                         .All(src => _torrentSourceDictionary[src.Source].LastPage);
         }
 
-        private async Task<bool> LoadFromTorrentSource(ITorrentDataSource source, int currentPage)
+        private Task<bool> LoadFromTorrentSource(ITorrentDataSource source, int currentPage)
         {
-            var pirateResult = await source.GetTorrentsAsync(Model.SearchValue, currentPage, Model.SelectedFilter.Key);
-
-            Application.Current.Dispatcher.Invoke(() =>
+            return Task.Run(async () =>
             {
-                foreach (var entry in pirateResult.TorrentEntries)
-                    Model.TorrentEntries.Add(entry);
-            });
+                var pirateResult = await source.GetTorrentsAsync(Model.SearchValue, currentPage, Model.SelectedFilter.Key);
 
-            return pirateResult.LastPage;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (var entry in pirateResult.TorrentEntries)
+                        Model.TorrentEntries.Add(entry);
+                });
+
+                return pirateResult.IsLastPage;
+            });
         }
 
         private bool CanExecuteSearch(object obj)

@@ -42,7 +42,7 @@ namespace MultiSourceTorrentDownloader.Services
 
                 var tableRows = htmlAgility.DocumentNode.SelectNodes("//table[@class='table-list table table-responsive table-striped']/tbody/tr");//gets table rows that contain torrent data
                 if (NoTableEntries(tableRows))
-                    return new TorrentQueryResult { LastPage = true };
+                    return new TorrentQueryResult { IsLastPage = true };
 
                 var result = new List<TorrentEntry>();
                 foreach (var dataRow in tableRows)
@@ -113,7 +113,7 @@ namespace MultiSourceTorrentDownloader.Services
                 return new TorrentQueryResult
                 {
                     TorrentEntries = result,
-                    LastPage = pagination == null
+                    IsLastPage = pagination == null
                 };
             });
         }

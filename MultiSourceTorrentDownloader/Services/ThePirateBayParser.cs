@@ -43,7 +43,7 @@ namespace MultiSourceTorrentDownloader.Services
 
                 var tableRows = htmlDocument.DocumentNode.SelectNodes("//table[@id='searchResult']/tr");//gets table rows that contain torrent data
                 if (NoTableEntries(tableRows))//probably end of results
-                    return new TorrentQueryResult { LastPage = true };
+                    return new TorrentQueryResult { IsLastPage = true };
 
                 var result = new List<TorrentEntry>();
                 foreach (var dataRow in tableRows)
@@ -132,7 +132,7 @@ namespace MultiSourceTorrentDownloader.Services
                 return new TorrentQueryResult
                 {
                     TorrentEntries = result,
-                    LastPage = pagination == null
+                    IsLastPage = pagination == null
                 };
             });
         }

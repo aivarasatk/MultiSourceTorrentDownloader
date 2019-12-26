@@ -9,6 +9,6 @@ namespace MultiSourceTorrentDownloader.Data
             TorrentEntries = new List<TorrentEntry>();
         }
         public IEnumerable<TorrentEntry> TorrentEntries { get; set; }
-        public bool LastPage { get; set; }
+        public bool IsLastPage { get; set; }
     }
 }

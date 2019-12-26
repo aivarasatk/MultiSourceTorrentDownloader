@@ -148,6 +148,7 @@
     <Compile Include="Data\DisplaySource.cs" />
     <Compile Include="Data\SizeEntity.cs" />
     <Compile Include="Data\SourceInformation.cs" />
+    <Compile Include="Data\SourceToProcess.cs" />
     <Compile Include="Data\TorrentEntry.cs" />
     <Compile Include="Data\TorrentPaging.cs" />
     <Compile Include="Data\TorrentQueryResult.cs" />

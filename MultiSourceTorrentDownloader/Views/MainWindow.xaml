@@ -110,7 +110,7 @@
 
                         <DataGrid x:Name="TorrentGrid" Grid.Row="0" ItemsSource="{Binding TorrentEntries}" SelectedItem="{Binding SelectedTorrent}" IsReadOnly="True" AutoGenerateColumns="False" SelectionMode="Single">
                             <DataGrid.Columns>
-                                <DataGridTemplateColumn Header="Title" CanUserSort="True">
+                                <DataGridTemplateColumn Header="Title" CanUserSort="True" SortMemberPath="Title">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock>
