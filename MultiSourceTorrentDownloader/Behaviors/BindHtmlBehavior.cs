@@ -1,6 +1,5 @@
 ﻿using CefSharp;
 using CefSharp.Wpf;
-using MultiSourceTorrentDownloader.Models;
 using System.Windows;
 using System.Windows.Interactivity;
 
@@ -26,7 +25,8 @@ namespace MultiSourceTorrentDownloader.Behaviors
         {
             if (AssociatedObject.IsBrowserInitialized)
             {
-                AssociatedObject.LoadHtml(Html ?? string.Empty);
+                //hack around 1337x images. downloaded img src is pointing to empty .svg need to redirect to data-original
+                AssociatedObject.LoadHtml(Html?.Replace("src", "nothing")?.Replace("data-original", "src") ?? string.Empty);
             }
         }
 
