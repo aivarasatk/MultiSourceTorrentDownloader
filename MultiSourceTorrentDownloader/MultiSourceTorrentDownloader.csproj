@@ -142,6 +142,7 @@
     <Compile Include="Common\ContainerConfig.cs" />
     <Compile Include="Constants\SizePostfix.cs" />
     <Compile Include="Constants\ThePirateBayTorrentIndexer.cs" />
+    <Compile Include="Converters\TorrentCategoryToBooleanConverter.cs" />
     <Compile Include="Converters\MessageTypeToBackgroundConverter.cs" />
     <Compile Include="Converters\TimeFormatConverter.cs" />
     <Compile Include="Data\LeetxSorting.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="Data\TorrentQueryResult.cs" />
     <Compile Include="Enums\MessageType.cs" />
     <Compile Include="Enums\ThePirateBaySorting.cs" />
+    <Compile Include="Enums\TorrentCategory.cs" />
     <Compile Include="Enums\TorrentSource.cs" />
     <Compile Include="Interfaces\ILeetxParser.cs" />
     <Compile Include="Interfaces\ILeetxSource.cs" />
@@ -161,6 +163,7 @@
     <Compile Include="Interfaces\ITorrentParser.cs" />
     <Compile Include="Interfaces\ITorrentDataSource.cs" />
     <Compile Include="Constants\LeetxTorrentIndexer.cs" />
+    <Compile Include="Mapping\TorrentCategoryMapper.cs" />
     <Compile Include="Mapping\SortingMapper.cs" />
     <Compile Include="Models\TorrentInfoDialogModel.g.cs" />
     <Compile Include="Models\TorrentInfoDialogModel.cs" />

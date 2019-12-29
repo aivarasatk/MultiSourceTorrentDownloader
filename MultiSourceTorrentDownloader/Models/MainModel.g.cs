@@ -72,6 +72,12 @@ namespace MultiSourceTorrentDownloader.Models
             set => this.MutateVerbose(ref _selectedTorrent, value, RaisePropertyChanged());
         }
 
+        public TorrentCategory SelectedTorrentCategory
+        {
+            get => _selectedTorrentCategory;
+            set => this.MutateVerbose(ref _selectedTorrentCategory, value, RaisePropertyChanged());
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private Action<PropertyChangedEventArgs> RaisePropertyChanged()

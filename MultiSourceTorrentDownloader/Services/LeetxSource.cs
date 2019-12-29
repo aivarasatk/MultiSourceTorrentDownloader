@@ -15,6 +15,8 @@ namespace MultiSourceTorrentDownloader.Services
         private readonly ILogService _logger;
         private readonly ILeetxParser _parser;
 
+        private readonly string _categorySearchEndpoint;
+
         public LeetxSource(ILogService logger, ILeetxParser parser)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -24,6 +26,7 @@ namespace MultiSourceTorrentDownloader.Services
             _httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
             _baseUrl = ConfigurationManager.AppSettings["LeetxUrl"];
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["LeetxSearchEndpoint"]);
+            _categorySearchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["LeetxCategorySearchEndpoint"]); 
         }
 
         public async Task<TorrentQueryResult> GetTorrentsAsync(string searchFor, int page, Sorting sorting)
@@ -53,6 +56,18 @@ namespace MultiSourceTorrentDownloader.Services
             var contents = await UrlGetResponseString(fullUrl);
 
             return await _parser.ParsePageForDescriptionHtmlAsync(contents);
+        }
+
+        public async Task<TorrentQueryResult> GetTorrentsByCategoryAsync(string searchFor, int page, Sorting sorting, TorrentCategory category)
+        {
+            var mapperSorting = SortingMapper.SortingToLeetxSorting(sorting);
+            var mappedCategory = TorrentCategoryMapper.ToLeetxCategory(category);
+
+            var fullUrl = Path.Combine(_categorySearchEndpoint, searchFor, mappedCategory, mapperSorting.SortedBy, mapperSorting.Order, page.ToString()) + Path.DirectorySeparatorChar;
+
+            var contents = await UrlGetResponseString(fullUrl);
+
+            return await _parser.ParsePageForTorrentEntriesAsync(contents);
         }
     }
 }

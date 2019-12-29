@@ -52,5 +52,16 @@ namespace MultiSourceTorrentDownloader.Services
 
             return await _parser.ParsePageForDescriptionHtmlAsync(contents);
         }
+
+        public async Task<TorrentQueryResult> GetTorrentsByCategoryAsync(string searchFor, int page, Sorting sorting, TorrentCategory category)
+        {
+            var mappedSortOption = SortingMapper.SortingToThePirateBaySorting(sorting);
+            var mappedCategorySearch = TorrentCategoryMapper.ToThePirateBayCategory(category);
+            var fullUrl = Path.Combine(_searchEndpoint, searchFor, page.ToString(), mappedSortOption.ToString(), mappedCategorySearch);
+
+            var contents = await UrlGetResponseString(fullUrl);
+
+            return await _parser.ParsePageForTorrentEntriesAsync(contents);
+        }
     }
 }

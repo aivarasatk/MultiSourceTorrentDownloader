@@ -9,6 +9,7 @@
         xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviors="clr-namespace:MultiSourceTorrentDownloader.Behaviors"
         xmlns:converters="clr-namespace:MultiSourceTorrentDownloader.Converters"
+        xmlns:enums="clr-namespace:MultiSourceTorrentDownloader.Enums"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="15"
@@ -46,6 +47,7 @@
                 <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
                 <converters:MessageTypeToBackgroundConverter x:Key="MessageTypeToBackgroundConverter"/>
                 <converters:TimeFormatConverter x:Key="TimeFormatConverter"/>
+                <converters:TorrentCategoryToBooleanConverter x:Key="TorrentCategoryToBooleanConverter"/>
             </Grid.Resources>
 
             <Grid>
@@ -60,6 +62,7 @@
                     <Grid FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal" >
@@ -73,7 +76,7 @@
                                 <materialDesign:PackIcon Kind="Search"/>
                             </Button>
 
-                            <ComboBox   ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
+                            <ComboBox ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
 
                             <StackPanel Orientation="Horizontal" Margin="104,0,0,0">
                                 <TextBlock Text="Sources: " VerticalAlignment="Center"/>
@@ -96,6 +99,16 @@
                                     </ListBox.ItemTemplate>
                                 </ListBox>
                             </StackPanel>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,24,16,16">
+                            <RadioButton GroupName="categories" Content="All" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.All}}" Margin="0,0,16,0"/>
+                            <RadioButton GroupName="categories" Content="Movies" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Movies}}" Margin="0,0,16,0"/>
+                            <RadioButton GroupName="categories" Content="TV" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.TV}}" Margin="0,0,16,0"/>
+                            <RadioButton GroupName="categories" Content="Games" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Games}}" Margin="0,0,16,0"/>
+                            <RadioButton GroupName="categories" Content="Music" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Music}}" Margin="0,0,16,0"/>
+                            <RadioButton GroupName="categories" Content="Applications" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Applications}}"  Margin="0,0,16,0"/>
+                            <RadioButton GroupName="categories" Content="XXX" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.XXX}}" />
                         </StackPanel>
                     </Grid>
                     

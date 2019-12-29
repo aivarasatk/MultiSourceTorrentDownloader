@@ -335,7 +335,11 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
             return Task.Run(async () =>
             {
-                var pirateResult = await source.GetTorrentsAsync(Model.SearchValue, currentPage, Model.SelectedFilter.Key);
+                TorrentQueryResult pirateResult = null;
+                if(Model.SelectedTorrentCategory == TorrentCategory.All)
+                    pirateResult = await source.GetTorrentsAsync(Model.SearchValue, currentPage, Model.SelectedFilter.Key);
+                else
+                    pirateResult = await source.GetTorrentsByCategoryAsync(Model.SearchValue, currentPage, Model.SelectedFilter.Key, Model.SelectedTorrentCategory);
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {

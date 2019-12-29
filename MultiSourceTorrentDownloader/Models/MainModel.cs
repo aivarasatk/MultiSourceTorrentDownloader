@@ -29,6 +29,7 @@ namespace MultiSourceTorrentDownloader.Models
         private IEnumerable<KeyValuePair<Sorting, string>> _filters;
         private KeyValuePair<Sorting, string> _selectedFilter;
         private TorrentEntry _selectedTorrent;
+        private TorrentCategory _selectedTorrentCategory;
 
         public Command LoadMoreCommand { get; set; }
         public Command SearchCommand { get; set; }
