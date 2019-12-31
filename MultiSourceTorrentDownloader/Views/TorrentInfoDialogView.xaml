@@ -14,36 +14,42 @@
              TextElement.FontSize="13"
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
+             Width="{Binding Width, ElementName=MainWindowElement}"
+             Height="{Binding Height, ElementName=MainWindowElement}"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DataContext="{d:DesignInstance d:Type=models:TorrentInfoDialogModel}">
+
+    
     <UserControl.InputBindings>
         <KeyBinding Command="{x:Static wpf:DialogHost.CloseDialogCommand}" Key="Esc" />
     </UserControl.InputBindings>
+
+    <i:Interaction.Behaviors>
+        <behaviors:TorrentInfoSizeReductionBehavior />
+    </i:Interaction.Behaviors>
+
     <Grid>
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </Grid.Resources>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Button Grid.Row="0"  Command="{x:Static wpf:DialogHost.CloseDialogCommand}" 
+            <Button Grid.Row="0" Command="{x:Static wpf:DialogHost.CloseDialogCommand}" 
                 HorizontalAlignment="Right" Margin="8" Background="Transparent" BorderBrush="Transparent">
                 <wpf:PackIcon Kind="WindowClose" Foreground="Black" Width="30" Height="30"></wpf:PackIcon>
             </Button>
 
             <Grid Grid.Row="1" Margin="32">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -67,7 +73,7 @@
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel Grid.Row="1" Grid.Column="1" Margin="80,8,0,0">
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="80,8,0,0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Seeders: " Margin="0,0,6,0"/>
                         <TextBlock Text="{Binding Seeders}" Foreground="Green" />
@@ -83,21 +89,23 @@
                         <TextBlock Text="{Binding Date}" />
                     </StackPanel>
                 </StackPanel>
-                <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"/>
                 
-                <wpf1:ChromiumWebBrowser Grid.Row="3" Grid.ColumnSpan="2" Width="600" Height="400" IsBrowserInitializedChanged="ChromiumWebBrowser_IsBrowserInitializedChanged">
-                    <i:Interaction.Behaviors>
-                        <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
-                    </i:Interaction.Behaviors>
-                </wpf1:ChromiumWebBrowser>
-
             </Grid>
 
-            <StackPanel Grid.Row="2" Margin="32" HorizontalAlignment="Left">
+            <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"/>
+            
+            <wpf1:ChromiumWebBrowser Grid.Row="3" IsBrowserInitializedChanged="ChromiumWebBrowser_IsBrowserInitializedChanged">
+                <i:Interaction.Behaviors>
+                    <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
+                </i:Interaction.Behaviors>
+            </wpf1:ChromiumWebBrowser>
+            
+            <StackPanel Grid.Row="4" Margin="32" HorizontalAlignment="Left">
                 <Button Content="Download Magnet" Command="{Binding DownloadTorrentCommand}" Background="ForestGreen" Margin="8"/>
             </StackPanel>
 
         </Grid>
+        
         <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Background="LightGray" Opacity="0.5"/>
             <!-- prevents user clicks-->

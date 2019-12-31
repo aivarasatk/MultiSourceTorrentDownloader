@@ -138,6 +138,7 @@
     <Compile Include="Behaviors\BindHtmlBehavior.cs" />
     <Compile Include="Behaviors\PersistanceBehavior.cs" />
     <Compile Include="Behaviors\RaiseCanExecuteBehavior.cs" />
+    <Compile Include="Behaviors\TorrentInfoSizeReductionBehavior.cs" />
     <Compile Include="Common\Command.cs" />
     <Compile Include="Common\ContainerConfig.cs" />
     <Compile Include="Constants\SizePostfix.cs" />

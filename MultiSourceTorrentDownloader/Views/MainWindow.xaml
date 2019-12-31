@@ -22,7 +22,8 @@
         ResizeMode="CanResizeWithGrip"
         MinWidth="715"
         MinHeight="440"
-        d:DataContext="{d:DesignInstance d:Type=model:MainModel}">
+        d:DataContext="{d:DesignInstance d:Type=model:MainModel}"
+        x:Name="MainWindowElement">
     
     <!-- Sets and saves window SizeToContent and Width/Height-->
     <i:Interaction.Behaviors>
@@ -51,7 +52,7 @@
             </Grid.Resources>
 
             <Grid>
-                
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
