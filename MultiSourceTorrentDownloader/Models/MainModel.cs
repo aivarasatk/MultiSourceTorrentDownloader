@@ -19,6 +19,7 @@ namespace MultiSourceTorrentDownloader.Models
 
         private bool _isLoading;
         private string _searchValue;
+        private string _torrentFilter;
 
         private string _statusBarMessage;
         private MessageType _messageType;

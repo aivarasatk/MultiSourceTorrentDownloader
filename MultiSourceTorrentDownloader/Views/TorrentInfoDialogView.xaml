@@ -11,7 +11,7 @@
              xmlns:wpf1="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
-             TextElement.FontSize="13"
+             TextElement.FontSize="15"
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Width="{Binding Width, ElementName=MainWindowElement}"
@@ -94,14 +94,14 @@
 
             <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"/>
             
-            <wpf1:ChromiumWebBrowser Grid.Row="3" IsBrowserInitializedChanged="ChromiumWebBrowser_IsBrowserInitializedChanged">
+            <wpf1:ChromiumWebBrowser Grid.Row="3" IsBrowserInitializedChanged="ChromiumWebBrowser_IsBrowserInitializedChanged" Margin="32,0,0,0">
                 <i:Interaction.Behaviors>
                     <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
                 </i:Interaction.Behaviors>
             </wpf1:ChromiumWebBrowser>
             
             <StackPanel Grid.Row="4" Margin="32" HorizontalAlignment="Left">
-                <Button Content="Download Magnet" Command="{Binding DownloadTorrentCommand}" Background="ForestGreen" Margin="8"/>
+                <Button Content="Download Magnet" Command="{Binding DownloadTorrentCommand}" Background="ForestGreen" FontSize="15" Margin="8"/>
             </StackPanel>
 
         </Grid>

@@ -26,25 +26,47 @@ namespace MultiSourceTorrentDownloader.Models
             }
         }
 
+        public string TorrentFilter
+        {
+            get => _torrentFilter;
+            set
+            {
+                this.MutateVerbose(ref _torrentFilter, value, RaisePropertyChanged());
+                _torrentFilterSubject.OnNext(value);
+            }
+        }
+
+        private ISubject<string> _torrentFilterSubject = new Subject<string>();
+
+        public ISubject<string> TorrentFilterObservable
+        {
+            get => _torrentFilterSubject;
+            set
+            {
+                if (value != _torrentFilterSubject)
+                    _torrentFilterSubject = value;
+            }
+        }
+
         public string StatusBarMessage
         {
             get => _statusBarMessage;
             set
             {
                 this.MutateVerbose(ref _statusBarMessage, value, RaisePropertyChanged());
-                _statusBarMessageObservable.OnNext(value);
+                _statusBarMessageSubject.OnNext(value);
             }
         }
 
-        private ISubject<string> _statusBarMessageObservable = new Subject<string>();
+        private ISubject<string> _statusBarMessageSubject = new Subject<string>();
 
         public ISubject<string> StatusBarMessageObservable
         {
-            get => _statusBarMessageObservable;
+            get => _statusBarMessageSubject;
             set
             {
-                if (value != _statusBarMessageObservable)
-                    _statusBarMessageObservable = value;
+                if (value != _statusBarMessageSubject)
+                    _statusBarMessageSubject = value;
             }
         }
 

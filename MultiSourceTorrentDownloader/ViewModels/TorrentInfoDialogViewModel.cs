@@ -32,7 +32,6 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void OnDownloadTorrentCommand(object obj)
         {
-
             try
             {
                 Model.IsLoading = true;

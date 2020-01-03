@@ -21,7 +21,6 @@ namespace MultiSourceTorrentDownloader.Views
             var viewModel = kernel.Get<MainViewModel>();
 
             DataContext = viewModel.Model;
-
         }
     }
 }

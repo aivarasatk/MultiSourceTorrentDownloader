@@ -24,6 +24,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private string _loadMoreString = string.Empty;
         private Dictionary<TorrentSource, SourceInformation> _torrentSourceDictionary;
 
+        private List<TorrentEntry> _unfilteredTorrentEntries;
+
         private readonly DispatcherTimer _timer;
 
         public MainModel Model { get; private set; }
@@ -35,6 +37,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
             _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
             _timer = new DispatcherTimer();
             SetupStatusBarTimer();
+
+            _unfilteredTorrentEntries = new List<TorrentEntry>();
 
             Model = new MainModel();
             Model.AvailableSources = new ObservableCollection<DisplaySource>();
@@ -65,6 +69,23 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             Model.MessageType = MessageType.Empty;
             Model.StatusBarMessageObservable.Subscribe(OnStatusBarMessageChanged);
+            Model.TorrentFilterObservable.Subscribe(ApplyTorrentFilter);
+        }
+
+        private void ApplyTorrentFilter(string obj = "")
+        {
+            if (Model.TorrentFilter == null) return;
+
+            var entries = _unfilteredTorrentEntries
+                               .Where(entry => entry.Title.ToLower().Contains(Model.TorrentFilter.ToLower()))
+                               .ToList();
+
+            Model.TorrentEntries.Clear();
+            foreach (var entry in entries)
+                Model.TorrentEntries.Add(entry);
+
+            if(_unfilteredTorrentEntries.Any())
+                ShowStatusBarMessage(MessageType.Information, $"Filter yields {entries.Count}/{_unfilteredTorrentEntries.Count} torrents");
         }
 
         private void OnStatusBarMessageChanged(string obj)
@@ -166,6 +187,10 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.IsLoading = true;
             Model.SearchValue = _loadMoreString;
             await LoadSourceData();
+
+            _unfilteredTorrentEntries.AddRange(Model.TorrentEntries.Where(e => !_unfilteredTorrentEntries.Contains(e)));
+            ApplyTorrentFilter();
+
             Model.IsLoading = false;
         }
 
@@ -183,10 +208,14 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.IsLoading = true;
 
             Model.TorrentEntries.Clear();
+            Model.TorrentFilter = null;
             ResetPagings();
 
             await LoadSourceData();
             
+            _unfilteredTorrentEntries = new List<TorrentEntry>(Model.TorrentEntries);
+            ApplyTorrentFilter();
+
             Model.IsLoading = false;
         }
 
