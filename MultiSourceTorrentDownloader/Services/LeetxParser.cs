@@ -129,8 +129,9 @@ namespace MultiSourceTorrentDownloader.Services
                 var htmlAgility = new HtmlDocument();
                 htmlAgility.LoadHtml(pageContents);
 
-                var magnetNode = htmlAgility.DocumentNode.SelectNodes("//a")
-                .FirstOrDefault(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("magnet")));
+                var magnetNode = htmlAgility.DocumentNode
+                                            .SelectNodes("//a")
+                                            .FirstOrDefault(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("magnet")));
 
                 if (magnetNode == null)
                     throw new Exception($"Magnet node is not found");

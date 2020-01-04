@@ -56,8 +56,8 @@ namespace MultiSourceTorrentDownloader.Behaviors
 
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Properties.Settings.Default.WindowWidth = AssociatedObject.Width;
-            Properties.Settings.Default.WindowHeight = AssociatedObject.Height;
+            Properties.Settings.Default.WindowWidth = AssociatedObject.ActualWidth;
+            Properties.Settings.Default.WindowHeight = AssociatedObject.ActualHeight;
 
             Properties.Settings.Default.WindowStartupLocation = WindowStartupLocation.Manual;
             Properties.Settings.Default.WindowPositionLeft = AssociatedObject.Left;
