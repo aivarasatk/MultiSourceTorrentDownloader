@@ -54,19 +54,35 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void InitializeViewModel()
         {
-            Model.Filters = Filters();
-            Model.SelectedFilter = Model.Filters.First();
-            Model.SearchCommand = new Command(OnSearch, CanExecuteSearch);
+            Model.AvailableSortOrders = SearchSortOrders();
+            Model.SelectedSearchSortOrder = Model.AvailableSortOrders.First();
+            Model.SearchCommand = new Command(async (obj) => await OnSearch(), CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
             Model.OpenTorrentInfoCommand = new Command(OnOpenTorrentInfoCommand);
 
             Model.MessageType = MessageType.Empty;
+
             Model.StatusBarMessageObservable
-                .Where(x => !string.IsNullOrEmpty(x))
-                .Subscribe(OnStatusBarMessageChanged);
+                 .Where(x => !string.IsNullOrEmpty(x))
+                 .Subscribe(OnStatusBarMessageChanged);
 
             Model.TorrentFilterObservable.Subscribe(ApplyTorrentFilter);
+            Model.SelectedSearchSortOrderObservable.Subscribe(OnSearchSortOrderChanged);
         }
+
+        private async void OnSearchSortOrderChanged(KeyValuePair<Sorting, string> obj)
+        {
+            if (_unfilteredTorrentEntries.Count == 0 || SearchValueChanged()) return;
+
+            var savedFilter = Model.TorrentFilter;
+
+            if(CanExecuteSearch())
+                await OnSearch();
+
+            Model.TorrentFilter = savedFilter;
+        }
+
+        private bool SearchValueChanged() => _loadMoreString != Model.SearchValue;
 
         private void ApplyTorrentFilter(string obj = "")
         {
@@ -191,7 +207,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 && Model.AvailableSources.Any(s => s.Selected && !_torrentSourceDictionary[s.Source].LastPage);
         }
 
-        private async void OnSearch(object obj)
+        private async Task OnSearch(object obj = null)
         {
             _loadMoreString = Model.SearchValue;
 
@@ -204,7 +220,6 @@ namespace MultiSourceTorrentDownloader.ViewModels
             await LoadSourceData();
             
             _unfilteredTorrentEntries = new List<TorrentEntry>(Model.TorrentEntries);
-            ApplyTorrentFilter();
 
             Model.IsLoading = false;
         }
@@ -307,7 +322,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             IOrderedEnumerable<TorrentEntry> reorderedList = null;
             var listToOrder = Model.TorrentEntries.ToList();//copy of elements
 
-            switch (Model.SelectedFilter.Key)
+            switch (Model.SelectedSearchSortOrder.Key)
             {
                 case Sorting.TimeAsc:
                     reorderedList = listToOrder.OrderBy(e => e.Date);
@@ -356,9 +371,9 @@ namespace MultiSourceTorrentDownloader.ViewModels
             {
                 TorrentQueryResult pirateResult = null;
                 if(Model.SelectedTorrentCategory == TorrentCategory.All)
-                    pirateResult = await source.GetTorrentsAsync(Model.SearchValue, currentPage, Model.SelectedFilter.Key);
+                    pirateResult = await source.GetTorrentsAsync(Model.SearchValue, currentPage, Model.SelectedSearchSortOrder.Key);
                 else
-                    pirateResult = await source.GetTorrentsByCategoryAsync(Model.SearchValue, currentPage, Model.SelectedFilter.Key, Model.SelectedTorrentCategory);
+                    pirateResult = await source.GetTorrentsByCategoryAsync(Model.SearchValue, currentPage, Model.SelectedSearchSortOrder.Key, Model.SelectedTorrentCategory);
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -370,12 +385,12 @@ namespace MultiSourceTorrentDownloader.ViewModels
             });
         }
 
-        private bool CanExecuteSearch(object obj)
+        private bool CanExecuteSearch(object obj = null)
         {
             return !string.IsNullOrEmpty(Model.SearchValue) && Model.AvailableSources.Any(s => s.Selected);
         }
 
-        private IEnumerable<KeyValuePair<Sorting, string>> Filters()
+        private IEnumerable<KeyValuePair<Sorting, string>> SearchSortOrders()
         {
             return new List<KeyValuePair<Sorting, string>>
             {

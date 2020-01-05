@@ -76,16 +76,32 @@ namespace MultiSourceTorrentDownloader.Models
             set => this.MutateVerbose(ref _messageType, value, RaisePropertyChanged());
         }
 
-        public IEnumerable<KeyValuePair<Sorting, string>> Filters
+        public IEnumerable<KeyValuePair<Sorting, string>> AvailableSortOrders
         {
-            get => _filters;
-            set => this.MutateVerbose(ref _filters, value, RaisePropertyChanged());
+            get => _availableSortOrders;
+            set => this.MutateVerbose(ref _availableSortOrders, value, RaisePropertyChanged());
         }
 
-        public KeyValuePair<Sorting, string> SelectedFilter
+        private ISubject<KeyValuePair<Sorting, string>> _selectedSearchSortOrderSubject = new Subject<KeyValuePair<Sorting, string>>();
+
+        public ISubject<KeyValuePair<Sorting, string>> SelectedSearchSortOrderObservable
         {
-            get => _selectedFilter;
-            set => this.MutateVerbose(ref _selectedFilter, value, RaisePropertyChanged());
+            get => _selectedSearchSortOrderSubject;
+            set
+            {
+                if (value != _selectedSearchSortOrderSubject)
+                    _selectedSearchSortOrderSubject = value;
+            }
+        }
+
+        public KeyValuePair<Sorting, string> SelectedSearchSortOrder
+        {
+            get => _selectedSearchSortOrder;
+            set
+            {
+                this.MutateVerbose(ref _selectedSearchSortOrder, value, RaisePropertyChanged());
+                _selectedSearchSortOrderSubject.OnNext(value);
+            }
         }
 
         public TorrentEntry SelectedTorrent

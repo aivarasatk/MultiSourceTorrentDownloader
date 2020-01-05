@@ -80,7 +80,7 @@
                                 <materialDesign:PackIcon Kind="Search" Width="27" Height="35"/>
                             </Button>
 
-                            <ComboBox ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
+                            <ComboBox ItemsSource="{Binding AvailableSortOrders}" SelectedItem="{Binding SelectedSearchSortOrder}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
 
                             <StackPanel Orientation="Horizontal" Margin="104,0,0,0">
                                 <TextBlock Text="Sources: " VerticalAlignment="Center"/>

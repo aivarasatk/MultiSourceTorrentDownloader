@@ -13,7 +13,7 @@ namespace MultiSourceTorrentDownloader.Models
         public MainModel()
         {
             TorrentEntries = new ObservableCollection<TorrentEntry>();
-            Filters = new List<KeyValuePair<Sorting, string>>();
+            AvailableSortOrders = new List<KeyValuePair<Sorting, string>>();
             AvailableSources = new ObservableCollection<DisplaySource>();
         }
 
@@ -27,8 +27,8 @@ namespace MultiSourceTorrentDownloader.Models
         public ObservableCollection<DisplaySource> AvailableSources { get; set; }
         public ObservableCollection<TorrentEntry> TorrentEntries { get; set; }
 
-        private IEnumerable<KeyValuePair<Sorting, string>> _filters;
-        private KeyValuePair<Sorting, string> _selectedFilter;
+        private IEnumerable<KeyValuePair<Sorting, string>> _availableSortOrders;
+        private KeyValuePair<Sorting, string> _selectedSearchSortOrder;
         private TorrentEntry _selectedTorrent;
         private TorrentCategory _selectedTorrentCategory;
 
