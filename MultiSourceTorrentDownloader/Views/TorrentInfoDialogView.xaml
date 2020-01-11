@@ -43,8 +43,8 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <Button Grid.Row="0" Command="{x:Static wpf:DialogHost.CloseDialogCommand}" 
-                HorizontalAlignment="Right" Margin="8" Background="Transparent" BorderBrush="Transparent">
+            <Button Grid.Row="0" Command="{x:Static wpf:DialogHost.CloseDialogCommand}"  Style="{DynamicResource MaterialDesignFlatButton}"
+                    HorizontalAlignment="Right" Margin="8">
                 <wpf:PackIcon Kind="WindowClose" Foreground="Black" Width="30" Height="30"></wpf:PackIcon>
             </Button>
 

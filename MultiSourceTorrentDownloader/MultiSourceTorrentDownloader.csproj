@@ -136,6 +136,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Behaviors\BindHtmlBehavior.cs" />
+    <Compile Include="Behaviors\NumericTextBoxBehavior.cs" />
     <Compile Include="Behaviors\PersistanceBehavior.cs" />
     <Compile Include="Behaviors\RaiseCanExecuteBehavior.cs" />
     <Compile Include="Behaviors\TorrentInfoSizeReductionBehavior.cs" />

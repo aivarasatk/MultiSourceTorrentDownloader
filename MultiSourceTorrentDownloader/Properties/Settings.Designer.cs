@@ -106,5 +106,28 @@ namespace MultiSourceTorrentDownloader.Properties {
                 this["WindowPositionLeft"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int PagesToLoadOnSearch {
+            get {
+                return ((int)(this["PagesToLoadOnSearch"]));
+            }
+            set {
+                this["PagesToLoadOnSearch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Generic.List<MultiSourceTorrentDownloader.Enums.TorrentSource> SelectedSources {
+            get {
+                return ((global::System.Collections.Generic.List<MultiSourceTorrentDownloader.Enums.TorrentSource>)(this["SelectedSources"]));
+            }
+            set {
+                this["SelectedSources"] = value;
+            }
+        }
     }
 }

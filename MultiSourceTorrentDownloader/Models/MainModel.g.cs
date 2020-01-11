@@ -116,6 +116,11 @@ namespace MultiSourceTorrentDownloader.Models
             set => this.MutateVerbose(ref _selectedTorrentCategory, value, RaisePropertyChanged());
         }
 
+        public int PagesToLoadBySearch
+        {
+            get => _pagesToLoadBySearch;
+            set => this.MutateVerbose(ref _pagesToLoadBySearch, value, RaisePropertyChanged());
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private Action<PropertyChangedEventArgs> RaisePropertyChanged()

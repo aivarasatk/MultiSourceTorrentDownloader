@@ -44,141 +44,192 @@
 
     <!-- TORRENT INFO CONTROL -->
     <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True"> <!-- to show in-window popups-->
-        <Grid>
-            <Grid.Resources>
-                <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-                <converters:MessageTypeToBackgroundConverter x:Key="MessageTypeToBackgroundConverter"/>
-                <converters:TimeFormatConverter x:Key="TimeFormatConverter"/>
-                <converters:TorrentCategoryToBooleanConverter x:Key="TorrentCategoryToBooleanConverter"/>
-            </Grid.Resources>
+        
+        <materialDesign:DrawerHost>
+            
+            <materialDesign:DrawerHost.RightDrawerContent>
+                <StackPanel Orientation="Vertical" Margin="8">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
+                            CommandParameter="{x:Static Dock.Right}"
+                            Margin="4"
+                            HorizontalAlignment="Left"
+                            Style="{DynamicResource MaterialDesignFlatButton}" Height="35">
+                            <materialDesign:PackIcon Kind="ArrowLeft" Width="30" Height="30"/>
+                        </Button>
 
-            <Grid>
+                        <TextBlock Text="Settings" VerticalAlignment="Center" FontSize="18"/>
+                    </StackPanel>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-
-                <GroupBox Grid.Row="0" Margin="16" Header="Search Criteria">
-                    <Grid FocusManager.FocusedElement="{Binding ElementName=SearchBox}" Margin="16,16,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <TextBox x:Name="SearchBox" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                                    Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}"                                    
-                                    TextWrapping="NoWrap"
-                                    Width="300"
-                                    materialDesign:HintAssist.Hint="Search for torrents.." 
-                                    ToolTip="Pressing enter will activate search"/>
-
-
-                            <Button Command="{Binding SearchCommand}" Height="39" Width="60">
-                                <materialDesign:PackIcon Kind="Search" Width="27" Height="35"/>
-                            </Button>
-
-                            <ComboBox ItemsSource="{Binding AvailableSortOrders}" SelectedItem="{Binding SelectedSearchSortOrder}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
-
-                            <StackPanel Orientation="Horizontal" Margin="104,0,0,0">
-                                <TextBlock Text="Sources: " VerticalAlignment="Center"/>
-                                <ListBox x:Name="SelectableSources"  ItemsSource="{Binding AvailableSources}">
-                                    <ListBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal"/>
-                                        </ItemsPanelTemplate>
-                                    </ListBox.ItemsPanel>
-
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <CheckBox Content="{Binding SourceName}" IsChecked="{Binding Selected}">
-                                                <i:Interaction.Behaviors>
-                                                    <behaviors:RaiseCanExecuteBehavior Command1="{Binding ElementName=SelectableSources, Path=DataContext.SearchCommand}"
-                                                                                       Command2="{Binding ElementName=SelectableSources, Path=DataContext.LoadMoreCommand}"/>
-                                                </i:Interaction.Behaviors>
-                                            </CheckBox>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                    <GroupBox Margin="16,32,16,16">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal" ToolTip="Sets which websites to use for torrent search">
+                                <materialDesign:PackIcon Kind="Information" Foreground="White"/>
+                                <TextBlock Text="Sources" Margin="8,0,0,0" Foreground="White"/>
                             </StackPanel>
+                        </GroupBox.Header>
+
+                        <ListBox x:Name="SelectableSources" ItemsSource="{Binding AvailableSources}">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding SourceName}" IsChecked="{Binding Selected}">
+                                        <i:Interaction.Behaviors>
+                                            <behaviors:RaiseCanExecuteBehavior Command1="{Binding ElementName=SelectableSources, Path=DataContext.SearchCommand}"
+                                                                                           Command2="{Binding ElementName=SelectableSources, Path=DataContext.LoadMoreCommand}"/>
+                                        </i:Interaction.Behaviors>
+                                    </CheckBox>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </GroupBox>
+
+                    <StackPanel Orientation="Vertical" Margin="16">
+                        <StackPanel Orientation="Horizontal" ToolTip="Sets how many pages the initial search will try to load. Impacts load time!">
+                            <materialDesign:PackIcon Kind="Information"  VerticalAlignment="Bottom"/>
+                            <TextBlock Text="Pages:" Margin="8,0,0,0" VerticalAlignment="Bottom"/>
+                            <TextBox Text="{Binding PagesToLoadBySearch, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="32,0,0,0" materialDesign:HintAssist.Hint="1" materialDesign:ValidationAssist.Suppress="True">
+                                <i:Interaction.Behaviors>
+                                    <behaviors:NumericTextBoxBehavior MaxValue="100" EmptyValue="1"/>
+                                </i:Interaction.Behaviors>
+                            </TextBox>
                         </StackPanel>
-                        
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,24,16,16">
-                            <RadioButton GroupName="categories" Content="All" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.All}}" Margin="0,0,16,0"/>
-                            <RadioButton GroupName="categories" Content="Movies" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Movies}}" Margin="0,0,16,0"/>
-                            <RadioButton GroupName="categories" Content="TV" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.TV}}" Margin="0,0,16,0"/>
-                            <RadioButton GroupName="categories" Content="Games" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Games}}" Margin="0,0,16,0"/>
-                            <RadioButton GroupName="categories" Content="Music" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Music}}" Margin="0,0,16,0"/>
-                            <RadioButton GroupName="categories" Content="Applications" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Applications}}"  Margin="0,0,16,0"/>
-                            <RadioButton GroupName="categories" Content="XXX" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.XXX}}" />
-                        </StackPanel>
-                    </Grid>
+                    </StackPanel>
                     
-                </GroupBox>
-
-                <GroupBox Grid.Row="1" Margin="16" Header="Torrents">
-                    <Grid Margin="8">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBox Grid.Row="0" Text="{Binding TorrentFilter, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                                 HorizontalAlignment="Left"
-                                 Margin="0,8,8,8"
-                                 Width="300"
-                                 materialDesign:HintAssist.Hint="Filter titles..."/>
-
-
-
-                        <DataGrid x:Name="TorrentGrid" Grid.Row="1" 
-                                  ItemsSource="{Binding TorrentEntries}" 
-                                  SelectedItem="{Binding SelectedTorrent}" 
-                                  IsReadOnly="True" 
-                                  AutoGenerateColumns="False" 
-                                  SelectionMode="Single">
-                            <DataGrid.Columns>
-                                <DataGridTemplateColumn Header="Title" CanUserSort="True" SortMemberPath="Title">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock>
-                                                <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenTorrentInfoCommand}" 
-                                                           CommandParameter="{Binding}" >
-                                                    <TextBlock Text="{Binding Title}" FontWeight="Bold" />
-                                                </Hyperlink>        
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True"/>
-                                <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True"/>
-                                <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date, Converter={StaticResource TimeFormatConverter}}" CanUserSort="True"/>
-                                <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="True"/>
-                                <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}" CanUserSort="True"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-
-                        <Button Grid.Row="2" Command="{Binding LoadMoreCommand}" Content="Load more" Margin="0,16,0,0" Width="120" HorizontalAlignment="Center"
-                                ToolTip="Loads more data from next torrent page"/>
-                    </Grid>
-                    
-                </GroupBox>
-
-                <StackPanel Grid.Row="2"  Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}">
-                    <TextBlock Margin="8" Text="{Binding StatusBarMessage}" Foreground="White"/>
                 </StackPanel>
-               
-            </Grid>
+            </materialDesign:DrawerHost.RightDrawerContent>
+            
+            <Grid>
+                <Grid.Resources>
+                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                    <converters:MessageTypeToBackgroundConverter x:Key="MessageTypeToBackgroundConverter"/>
+                    <converters:TimeFormatConverter x:Key="TimeFormatConverter"/>
+                    <converters:TorrentCategoryToBooleanConverter x:Key="TorrentCategoryToBooleanConverter"/>
+                </Grid.Resources>
 
-            <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel Background="LightGray" Opacity="0.5"/>
-                <!-- prevents user clicks-->
-                <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Visibility="Visible" Margin="16,16,16,16"/>
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Grid.Row="0" Margin="16" >
+                        <GroupBox.Header>
+                            <DockPanel >
+                                <TextBlock Text="Search Criteria" Foreground="White" VerticalAlignment="Center"/>
+                                
+                                <Button Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}"
+                                        CommandParameter="{x:Static Dock.Right}"
+                                        Background="Transparent" BorderThickness="0"
+                                        HorizontalAlignment="Right">
+                                    <materialDesign:PackIcon Kind="Menu" Width="30" Height="30"/>
+                                </Button>
+                            </DockPanel>
+                        </GroupBox.Header>
+                        <Grid FocusManager.FocusedElement="{Binding ElementName=SearchBox}" Margin="16,16,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <TextBox x:Name="SearchBox" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                        Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}"                                    
+                                        TextWrapping="NoWrap"
+                                        Width="300"
+                                        materialDesign:HintAssist.Hint="Search for torrents.." 
+                                        ToolTip="Pressing enter will activate search"/>
+
+                                <Button Command="{Binding SearchCommand}" Height="39" Width="60">
+                                    <materialDesign:PackIcon Kind="Search" Width="27" Height="35"/>
+                                </Button>
+
+                                <ComboBox ItemsSource="{Binding AvailableSortOrders}" SelectedItem="{Binding SelectedSearchSortOrder}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
+
+                            </StackPanel>
+                        
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,24,16,16">
+                                <RadioButton GroupName="categories" Content="All" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.All}}" Margin="0,0,16,0"/>
+                                <RadioButton GroupName="categories" Content="Movies" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Movies}}" Margin="0,0,16,0"/>
+                                <RadioButton GroupName="categories" Content="TV" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.TV}}" Margin="0,0,16,0"/>
+                                <RadioButton GroupName="categories" Content="Games" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Games}}" Margin="0,0,16,0"/>
+                                <RadioButton GroupName="categories" Content="Music" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Music}}" Margin="0,0,16,0"/>
+                                <RadioButton GroupName="categories" Content="Applications" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Applications}}"  Margin="0,0,16,0"/>
+                                <RadioButton GroupName="categories" Content="XXX" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.XXX}}" />
+                            </StackPanel>
+                        </Grid>
+                    
+                    </GroupBox>
+
+                    <GroupBox Grid.Row="1" Margin="16" Header="Torrents">
+                        <Grid Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBox Grid.Row="0" Text="{Binding TorrentFilter, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                     HorizontalAlignment="Left"
+                                     Margin="0,8,8,8"
+                                     Width="300"
+                                     materialDesign:HintAssist.Hint="Filter titles..."/>
+
+
+
+                            <DataGrid x:Name="TorrentGrid" Grid.Row="1" 
+                                      ItemsSource="{Binding TorrentEntries}" 
+                                      SelectedItem="{Binding SelectedTorrent}" 
+                                      IsReadOnly="True" 
+                                      AutoGenerateColumns="False" 
+                                      SelectionMode="Single">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Title" CanUserSort="True" SortMemberPath="Title">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenTorrentInfoCommand}" 
+                                                               CommandParameter="{Binding}" >
+                                                        <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+                                                    </Hyperlink>        
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True"/>
+                                    <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True"/>
+                                    <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date, Converter={StaticResource TimeFormatConverter}}" CanUserSort="True"/>
+                                    <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="True"/>
+                                    <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}" CanUserSort="True"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Button Grid.Row="2" Command="{Binding LoadMoreCommand}" Content="Load more" Margin="0,16,0,0" Width="120" HorizontalAlignment="Center"
+                                    ToolTip="Loads more data from next torrent page"/>
+                        </Grid>
+                    
+                    </GroupBox>
+
+                    <StackPanel Grid.Row="2"  Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}">
+                        <TextBlock Margin="8" Text="{Binding StatusBarMessage}" Foreground="White"/>
+                    </StackPanel>
+               
+                </Grid>
+
+                <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Background="LightGray" Opacity="0.5"/>
+                    <!-- prevents user clicks-->
+                    <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Visibility="Visible" Margin="16,16,16,16"/>
+                </Grid>
             </Grid>
-        </Grid>
+        </materialDesign:DrawerHost>
     </materialDesign:DialogHost>
 </Window>

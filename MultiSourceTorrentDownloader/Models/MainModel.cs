@@ -25,6 +25,8 @@ namespace MultiSourceTorrentDownloader.Models
         private MessageType _messageType;
 
         public ObservableCollection<DisplaySource> AvailableSources { get; set; }
+        private int _pagesToLoadBySearch;
+
         public ObservableCollection<TorrentEntry> TorrentEntries { get; set; }
 
         private IEnumerable<KeyValuePair<Sorting, string>> _availableSortOrders;

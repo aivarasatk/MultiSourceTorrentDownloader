@@ -8,11 +8,11 @@ using MultiSourceTorrentDownloader.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace MultiSourceTorrentDownloader.ViewModels
 {
@@ -22,7 +22,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private readonly ILeetxSource _leetxSource;
         private TorrentInfoDialogViewModel _torrentInfoDialogViewModel;
 
-        private string _loadMoreString = string.Empty;
+        private string _loadMoreSearchValue = string.Empty;
         private Dictionary<TorrentSource, SourceInformation> _torrentSourceDictionary;
 
         private List<TorrentEntry> _unfilteredTorrentEntries;
@@ -54,6 +54,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void InitializeViewModel()
         {
+            LoadSettings();
             Model.AvailableSortOrders = SearchSortOrders();
             Model.SelectedSearchSortOrder = Model.AvailableSortOrders.First();
             Model.SearchCommand = new Command(async (obj) => await OnSearch(), CanExecuteSearch);
@@ -70,6 +71,41 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.SelectedSearchSortOrderObservable.Subscribe(OnSearchSortOrderChanged);
         }
 
+        private void LoadSettings()
+        {
+            var pagesToLoad = Properties.Settings.Default.PagesToLoadOnSearch;
+            Model.PagesToLoadBySearch = pagesToLoad == 0 ? 1: pagesToLoad;
+
+            LoadSourceSettings();
+        }
+
+        private void LoadSourceSettings()
+        {
+            if (Properties.Settings.Default.SelectedSources == null) return;
+
+            SetSeletectedSourcesFromSettings();
+            SetUnselectedSourcesFromSettings();
+        }
+
+        private void SetUnselectedSourcesFromSettings()
+        {
+            var notSelectedSources = Model.AvailableSources
+                                          .Where(s => !Properties.Settings.Default.SelectedSources.Contains(s.Source));
+            foreach (var source in notSelectedSources)
+                source.Selected = false;
+        }
+
+        private void SetSeletectedSourcesFromSettings()
+        {
+            foreach (var source in Properties.Settings.Default.SelectedSources)
+            {
+                var availableSource = Model.AvailableSources.FirstOrDefault(s => s.Source == source);
+                if (availableSource == null) continue;
+
+                availableSource.Selected = true;
+            }
+        }
+
         private async void OnSearchSortOrderChanged(KeyValuePair<Sorting, string> obj)
         {
             if (_unfilteredTorrentEntries.Count == 0 || SearchValueChanged()) return;
@@ -82,7 +118,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.TorrentFilter = savedFilter;
         }
 
-        private bool SearchValueChanged() => _loadMoreString != Model.SearchValue;
+        private bool SearchValueChanged() => _loadMoreSearchValue != Model.SearchValue;
 
         private void ApplyTorrentFilter(string obj = "")
         {
@@ -191,7 +227,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private async void OnLoadMore(object obj)
         {
             Model.IsLoading = true;
-            Model.SearchValue = _loadMoreString;
+            Model.SearchValue = _loadMoreSearchValue;
             await LoadSourceData();
 
             _unfilteredTorrentEntries.AddRange(Model.TorrentEntries.Where(e => !_unfilteredTorrentEntries.Contains(e)));
@@ -202,14 +238,14 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private bool CanLoadMore(object obj)
         {
-           return !string.IsNullOrEmpty(_loadMoreString) 
+           return !string.IsNullOrEmpty(_loadMoreSearchValue) 
                 && Model.TorrentEntries.Count != 0 
                 && Model.AvailableSources.Any(s => s.Selected && !_torrentSourceDictionary[s.Source].LastPage);
         }
 
         private async Task OnSearch(object obj = null)
         {
-            _loadMoreString = Model.SearchValue;
+            _loadMoreSearchValue = Model.SearchValue;
 
             Model.IsLoading = true;
 
@@ -217,7 +253,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.TorrentFilter = null;
             ResetPagings();
 
-            await LoadSourceData();
+            await LoadSourceData(Model.PagesToLoadBySearch);
             
             _unfilteredTorrentEntries = new List<TorrentEntry>(Model.TorrentEntries);
 
@@ -234,11 +270,14 @@ namespace MultiSourceTorrentDownloader.ViewModels
             }
         }
 
-        private async Task LoadSourceData()
+        private async Task LoadSourceData(int pagesToLoad = 1)
         {
             try
             {
-                var errorList = (await LoadDataFromSelectedSources()).ToList();
+                var errorList = new List<string>();
+                foreach (var counter in Enumerable.Range(0, pagesToLoad))
+                    errorList.AddRange((await LoadDataFromSelectedSources()).ToList());
+
                 ShowDataLoadResultMessage(errorList);
 
                 ReorderTorrentEntries();
@@ -409,6 +448,16 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
             Model.MessageType = messageType;
             Model.StatusBarMessage = message;
+        }
+
+        public void Closing (object sender, CancelEventArgs args)
+        {
+            Properties.Settings.Default.PagesToLoadOnSearch = Model.PagesToLoadBySearch;
+            Properties.Settings.Default.SelectedSources = Model.AvailableSources
+                                                               .Where(src => src.Selected)
+                                                               .Select(s => s.Source)
+                                                               .ToList();
+            Properties.Settings.Default.Save();
         }
     }
 }
