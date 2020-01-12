@@ -5,6 +5,7 @@ using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,86 +37,95 @@ namespace MultiSourceTorrentDownloader.Services
         {
             return await Task.Run(() =>
             {
-                _logger.Information("Leetx parsing");
-                var htmlAgility = new HtmlDocument();
-                htmlAgility.LoadHtml(pageContents);
-
-                var tableRows = htmlAgility.DocumentNode.SelectNodes("//table[@class='table-list table table-responsive table-striped']/tbody/tr");//gets table rows that contain torrent data
-                if (NoTableEntries(tableRows))
-                    return new TorrentQueryResult { IsLastPage = true };
-
-                var result = new List<TorrentEntry>();
-                foreach (var dataRow in tableRows)
+                try
                 {
-                    var dataColumns = dataRow.SelectNodes("td");
-                    if (dataColumns == null || dataColumns.Count != 6)
+                    _logger.Information("Leetx parsing");
+                    var htmlAgility = new HtmlDocument();
+                    htmlAgility.LoadHtml(pageContents);
+
+                    var tableRows = htmlAgility.DocumentNode.SelectNodes("//table[@class='table-list table table-responsive table-striped']/tbody/tr");//gets table rows that contain torrent data
+                    if (NoTableEntries(tableRows))
+                        return new TorrentQueryResult { IsLastPage = true };
+
+                    var result = new List<TorrentEntry>();
+                    foreach (var dataRow in tableRows)
                     {
-                        _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {dataRow.OuterHtml}");
-                        continue;
-                    }
-
-                    var titleNode = dataColumns[LeetxTorrentColumnIndexer.Name]
-                                    .SelectNodes("a")?
-                                    .FirstOrDefault(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("torrent")));
-                    if (titleNode == null)
-                    {
-                        _logger.Warning($"Could not find title node for torrent {Environment.NewLine} {dataColumns[LeetxTorrentColumnIndexer.Name].OuterHtml}");
-                        continue;
-                    }
-
-                    var title = titleNode.InnerText;
-                    if (string.IsNullOrEmpty(title))//empty title entry makes no sense. log and skip
-                    {
-                        _logger.Warning($"Empty title from {Environment.NewLine}{titleNode.OuterHtml}");
-                        continue;
-                    }
-
-                    var torrentUri = titleNode.Attributes.FirstOrDefault(a => a.Name == "href")?.Value;
-                    if (string.IsNullOrEmpty(torrentUri))
-                    {
-                        _logger.Warning($"Empty torrent uri from{Environment.NewLine}{titleNode.OuterHtml}");
-                        continue;
-                    }
-
-                    var magnetLink = string.Empty;
-                    
-                    if (!int.TryParse(dataColumns[LeetxTorrentColumnIndexer.Seeders].InnerText, out var seeders))
-                        _logger.Warning($"Could not parse seeders {Environment.NewLine}{dataColumns[LeetxTorrentColumnIndexer.Seeders].OuterHtml}");
-
-                    if (!int.TryParse(dataColumns[LeetxTorrentColumnIndexer.Leechers].InnerText, out var leechers))
-                        _logger.Warning($"Could not parse leechers {Environment.NewLine}{dataColumns[LeetxTorrentColumnIndexer.Leechers].OuterHtml}");
-
-                    var date = dataColumns[LeetxTorrentColumnIndexer.Date].InnerText;
-                    
-                    var size = dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.Substring(0, dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.IndexOf('<'));
-                    var uploader = dataColumns[LeetxTorrentColumnIndexer.Uploader].SelectSingleNode("a")?.InnerText;
-
-                    var splitSize = size.Split(' ');
-                    result.Add(new TorrentEntry
-                    {
-                        Title = title,
-                        TorrentUri = TrimUriStart(torrentUri),
-                        TorrentMagnet = magnetLink,
-                        Date = ParseDate(date, _formats),
-                        Size = new SizeEntity
+                        var dataColumns = dataRow.SelectNodes("td");
+                        if (dataColumns == null || dataColumns.Count != 6)
                         {
-                            Value = double.Parse(splitSize[0]),
-                            Postfix = splitSize[1]
-                        },
-                        Uploader = uploader,
-                        Seeders = seeders,
-                        Leechers = leechers,
-                        Source = TorrentSource.Leetx
-                    });
-                }
+                            _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {dataRow.OuterHtml}");
+                            continue;
+                        }
 
-                var pagination = htmlAgility.DocumentNode.SelectSingleNode("//div[@class='pagination']");
-                
-                return new TorrentQueryResult
+                        var titleNode = dataColumns[LeetxTorrentColumnIndexer.Name]
+                                        .SelectNodes("a")?
+                                        .FirstOrDefault(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("torrent")));
+                        if (titleNode == null)
+                        {
+                            _logger.Warning($"Could not find title node for torrent {Environment.NewLine} {dataColumns[LeetxTorrentColumnIndexer.Name].OuterHtml}");
+                            continue;
+                        }
+
+                        var title = titleNode.InnerText;
+                        if (string.IsNullOrEmpty(title))//empty title entry makes no sense. log and skip
+                        {
+                            _logger.Warning($"Empty title from {Environment.NewLine}{titleNode.OuterHtml}");
+                            continue;
+                        }
+
+                        var torrentUri = titleNode.Attributes.FirstOrDefault(a => a.Name == "href")?.Value;
+                        if (string.IsNullOrEmpty(torrentUri))
+                        {
+                            _logger.Warning($"Empty torrent uri from{Environment.NewLine}{titleNode.OuterHtml}");
+                            continue;
+                        }
+
+                        var magnetLink = string.Empty;
+
+                        if (!int.TryParse(dataColumns[LeetxTorrentColumnIndexer.Seeders].InnerText, out var seeders))
+                            _logger.Warning($"Could not parse seeders {Environment.NewLine}{dataColumns[LeetxTorrentColumnIndexer.Seeders].OuterHtml}");
+
+                        if (!int.TryParse(dataColumns[LeetxTorrentColumnIndexer.Leechers].InnerText, out var leechers))
+                            _logger.Warning($"Could not parse leechers {Environment.NewLine}{dataColumns[LeetxTorrentColumnIndexer.Leechers].OuterHtml}");
+
+                        var date = dataColumns[LeetxTorrentColumnIndexer.Date].InnerText;
+
+                        var size = dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.Substring(0, dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.IndexOf('<'));
+                        var uploader = dataColumns[LeetxTorrentColumnIndexer.Uploader].SelectSingleNode("a")?.InnerText;
+
+                        var splitSize = size.Split(' ');
+                        result.Add(new TorrentEntry
+                        {
+                            Title = title,
+                            TorrentUri = TrimUriStart(torrentUri),
+                            TorrentMagnet = magnetLink,
+                            Date = ParseDate(date, _formats),
+                            Size = new SizeEntity
+                            {
+                                Value = double.Parse(splitSize[0], CultureInfo.InvariantCulture),
+                                Postfix = splitSize[1]
+                            },
+                            Uploader = uploader,
+                            Seeders = seeders,
+                            Leechers = leechers,
+                            Source = TorrentSource.Leetx
+                        });
+                    }
+
+                    var pagination = htmlAgility.DocumentNode.SelectSingleNode("//div[@class='pagination']");
+
+                    return new TorrentQueryResult
+                    {
+                        TorrentEntries = result,
+                        IsLastPage = pagination == null || !pagination.InnerHtml.Contains("href")
+                    };
+                }
+                catch(Exception ex)
                 {
-                    TorrentEntries = result,
-                    IsLastPage = pagination == null || !pagination.InnerHtml.Contains("href")
-                };
+                    _logger.Warning("1337X parse exception", ex);
+                    throw;
+                }
+                
             });
         }
 
