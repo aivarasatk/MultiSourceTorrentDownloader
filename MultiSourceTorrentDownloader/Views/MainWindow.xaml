@@ -78,12 +78,7 @@
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <CheckBox Content="{Binding SourceName}" IsChecked="{Binding Selected}">
-                                        <i:Interaction.Behaviors>
-                                            <behaviors:RaiseCanExecuteBehavior Command1="{Binding ElementName=SelectableSources, Path=DataContext.SearchCommand}"
-                                                                                           Command2="{Binding ElementName=SelectableSources, Path=DataContext.LoadMoreCommand}"/>
-                                        </i:Interaction.Behaviors>
-                                    </CheckBox>
+                                    <CheckBox Content="{Binding SourceName}" IsChecked="{Binding Selected}"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>

@@ -138,7 +138,6 @@
     <Compile Include="Behaviors\BindHtmlBehavior.cs" />
     <Compile Include="Behaviors\NumericTextBoxBehavior.cs" />
     <Compile Include="Behaviors\PersistanceBehavior.cs" />
-    <Compile Include="Behaviors\RaiseCanExecuteBehavior.cs" />
     <Compile Include="Behaviors\TorrentInfoSizeReductionBehavior.cs" />
     <Compile Include="Common\Command.cs" />
     <Compile Include="Common\ContainerConfig.cs" />
@@ -159,6 +158,7 @@
     <Compile Include="Enums\ThePirateBaySorting.cs" />
     <Compile Include="Enums\TorrentCategory.cs" />
     <Compile Include="Enums\TorrentSource.cs" />
+    <Compile Include="Extensions\ObservableCollectionForEachExtension.cs" />
     <Compile Include="Interfaces\ILeetxParser.cs" />
     <Compile Include="Interfaces\ILeetxSource.cs" />
     <Compile Include="Interfaces\IThePirateBayParser.cs" />

@@ -5,6 +5,7 @@ using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Models;
 using MultiSourceTorrentDownloader.Views;
+using MultiSourceTorrentDownloader.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -40,7 +41,6 @@ namespace MultiSourceTorrentDownloader.ViewModels
             _unfilteredTorrentEntries = new List<TorrentEntry>();
 
             Model = new MainModel();
-            Model.AvailableSources = new ObservableCollection<DisplaySource>();
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _leetxSource = leetxSource ?? throw new ArgumentNullException(nameof(leetxSource));
@@ -55,6 +55,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private void InitializeViewModel()
         {
             LoadSettings();
+
             Model.AvailableSortOrders = SearchSortOrders();
             Model.SelectedSearchSortOrder = Model.AvailableSortOrders.First();
             Model.SearchCommand = new Command(async (obj) => await OnSearch(), CanExecuteSearch);
@@ -69,6 +70,15 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             Model.TorrentFilterObservable.Subscribe(ApplyTorrentFilter);
             Model.SelectedSearchSortOrderObservable.Subscribe(OnSearchSortOrderChanged);
+            Model.AvailableSources.ForEach(CheckCanExecuteSearchCommands);
+        }
+
+        private void CheckCanExecuteSearchCommands(DisplaySource item)
+        {
+            item.SelectedObservable.Subscribe(obj => {
+                Model.LoadMoreCommand.RaiseCanExecuteChanged();
+                Model.SearchCommand.RaiseCanExecuteChanged();
+            });
         }
 
         private void LoadSettings()
