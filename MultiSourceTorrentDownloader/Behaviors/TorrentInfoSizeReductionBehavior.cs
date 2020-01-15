@@ -12,6 +12,7 @@ namespace MultiSourceTorrentDownloader.Behaviors
     public class TorrentInfoSizeReductionBehavior : Behavior<UserControl>
     {
         private bool _sizeChangeInProgress = true;
+        private const int MaxDialogHeight = 890;
         protected override void OnAttached()
         {
             AssociatedObject.SizeChanged += SizeChanged;
@@ -21,9 +22,11 @@ namespace MultiSourceTorrentDownloader.Behaviors
         {
             _sizeChangeInProgress = !_sizeChangeInProgress;
             if (_sizeChangeInProgress) return;
-            
-            AssociatedObject.Width = AssociatedObject.Width * 0.9;
-            AssociatedObject.Height = AssociatedObject.Height * 0.8;
+
+            AssociatedObject.Width = AssociatedObject.ActualWidth * 0.85;
+
+            var newHeight = AssociatedObject.ActualHeight * 0.9;
+            AssociatedObject.Height = newHeight > MaxDialogHeight ? MaxDialogHeight : newHeight;
         }
 
         protected override void OnDetaching()

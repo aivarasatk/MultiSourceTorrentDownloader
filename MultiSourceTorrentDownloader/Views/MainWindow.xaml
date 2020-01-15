@@ -43,7 +43,7 @@
     </Window.InputBindings>
 
     <!-- TORRENT INFO CONTROL -->
-    <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True"> <!-- to show in-window popups-->
+    <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True" DialogMargin="0"> <!-- to show in-window popups-->
         
         <materialDesign:DrawerHost>
             

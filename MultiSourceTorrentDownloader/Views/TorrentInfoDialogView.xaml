@@ -11,7 +11,7 @@
              xmlns:wpf1="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
-             TextElement.FontSize="15"
+             TextElement.FontSize="14"
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Width="{Binding ActualWidth, ElementName=MainWindowElement}"
@@ -42,13 +42,12 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-
             <Button Grid.Row="0" Command="{x:Static wpf:DialogHost.CloseDialogCommand}"  Style="{DynamicResource MaterialDesignFlatButton}"
                     HorizontalAlignment="Right" Margin="8">
                 <wpf:PackIcon Kind="WindowClose" Foreground="Black" Width="30" Height="30"></wpf:PackIcon>
             </Button>
 
-            <Grid Grid.Row="1" Margin="32">
+            <Grid Grid.Row="1" Margin="32,8,32,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -89,23 +88,24 @@
                         <TextBlock Text="{Binding Date}" />
                     </StackPanel>
                 </StackPanel>
-                
+
             </Grid>
 
             <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"/>
-            
+
             <wpf1:ChromiumWebBrowser Grid.Row="3" IsBrowserInitializedChanged="ChromiumWebBrowser_IsBrowserInitializedChanged" Margin="32,0,0,0">
                 <i:Interaction.Behaviors>
                     <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
                 </i:Interaction.Behaviors>
             </wpf1:ChromiumWebBrowser>
-            
-            <StackPanel Grid.Row="4" Margin="32" HorizontalAlignment="Left">
-                <Button Content="Download Magnet" Command="{Binding DownloadTorrentCommand}" Background="ForestGreen" FontSize="15" Margin="8"/>
+
+
+
+            <StackPanel Grid.Row="4" Margin="32,16,0,16" HorizontalAlignment="Left">
+                <Button Content="Download Magnet" Command="{Binding DownloadTorrentCommand}" Background="ForestGreen" FontSize="15"/>
             </StackPanel>
 
         </Grid>
-        
         <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Background="LightGray" Opacity="0.5"/>
             <!-- prevents user clicks-->
