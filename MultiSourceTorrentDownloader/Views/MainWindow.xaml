@@ -12,7 +12,7 @@
         xmlns:enums="clr-namespace:MultiSourceTorrentDownloader.Enums"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
-        TextElement.FontSize="15"
+        TextElement.FontSize="14"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -47,19 +47,18 @@
         
         <materialDesign:DrawerHost>
             
-            <materialDesign:DrawerHost.RightDrawerContent>
+            <materialDesign:DrawerHost.LeftDrawerContent>
                 <StackPanel Orientation="Vertical" Margin="8">
-                    <StackPanel Orientation="Horizontal">
-                        <Button Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
-                            CommandParameter="{x:Static Dock.Right}"
-                            Margin="4"
-                            HorizontalAlignment="Left"
-                            Style="{DynamicResource MaterialDesignFlatButton}" Height="35">
-                            <materialDesign:PackIcon Kind="ArrowLeft" Width="30" Height="30"/>
-                        </Button>
-
+                    <DockPanel Margin="16,0,0,0">
                         <TextBlock Text="Settings" VerticalAlignment="Center" FontSize="18"/>
-                    </StackPanel>
+                        <Button Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
+                            CommandParameter="{x:Static Dock.Left}"
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource MaterialDesignFlatButton}" Height="35">
+                            <materialDesign:PackIcon Kind="ArrowRight" Width="30" Height="30"/>
+                        </Button>
+                    </DockPanel>
 
                     <GroupBox Margin="16,32,16,16">
                         <GroupBox.Header>
@@ -97,7 +96,7 @@
                     </StackPanel>
                     
                 </StackPanel>
-            </materialDesign:DrawerHost.RightDrawerContent>
+            </materialDesign:DrawerHost.LeftDrawerContent>
             
             <Grid>
                 <Grid.Resources>
@@ -115,18 +114,16 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <GroupBox Grid.Row="0" Margin="16" >
+                    <GroupBox Grid.Row="0" Margin="16">
                         <GroupBox.Header>
-                            <DockPanel >
-                                <TextBlock Text="Search Criteria" Foreground="White" VerticalAlignment="Center"/>
-                                
+                            <StackPanel Orientation="Horizontal">
                                 <Button Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}"
-                                        CommandParameter="{x:Static Dock.Right}"
-                                        Background="Transparent" BorderThickness="0"
-                                        HorizontalAlignment="Right">
-                                    <materialDesign:PackIcon Kind="Menu" Width="30" Height="30"/>
+                                        CommandParameter="{x:Static Dock.Left}"
+                                        Background="Transparent" BorderThickness="0">
+                                    <materialDesign:PackIcon Kind="Menu" Width="25" Height="25"/>
                                 </Button>
-                            </DockPanel>
+                                <TextBlock Text="Search Criteria" Foreground="White" VerticalAlignment="Center"/>
+                            </StackPanel>
                         </GroupBox.Header>
                         <Grid FocusManager.FocusedElement="{Binding ElementName=SearchBox}" Margin="16,16,0,0">
                             <Grid.RowDefinitions>
@@ -150,7 +147,7 @@
 
                             </StackPanel>
                         
-                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,24,16,16">
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,16,16,16">
                                 <RadioButton GroupName="categories" Content="All" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.All}}" Margin="0,0,16,0"/>
                                 <RadioButton GroupName="categories" Content="Movies" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.Movies}}" Margin="0,0,16,0"/>
                                 <RadioButton GroupName="categories" Content="TV" IsChecked="{Binding SelectedTorrentCategory, Converter={StaticResource TorrentCategoryToBooleanConverter}, ConverterParameter={x:Static enums:TorrentCategory.TV}}" Margin="0,0,16,0"/>
@@ -163,7 +160,7 @@
                     
                     </GroupBox>
 
-                    <GroupBox Grid.Row="1" Margin="16" Header="Torrents">
+                    <GroupBox Grid.Row="1" Margin="16,0,16,16" Header="Torrents">
                         <Grid Margin="8">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>

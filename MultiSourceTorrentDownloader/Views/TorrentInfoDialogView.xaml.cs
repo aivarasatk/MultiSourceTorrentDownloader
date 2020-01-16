@@ -10,8 +10,10 @@ namespace MultiSourceTorrentDownloader.Views
     /// </summary>
     public partial class TorrentInfoDialogView : UserControl
     {
+        private static UserControl _userControl;
         public TorrentInfoDialogView()
         {
+            _userControl = this;
             Loaded += TorrentInfoDialogView_Loaded;
             InitializeComponent();
         }
@@ -36,6 +38,15 @@ namespace MultiSourceTorrentDownloader.Views
                 {
                     MessageBox.Show("Model for torrent info is incorrect! Loss in information may occur");
                 }
+            }
+        }
+
+        public static void ParentWindowSizeChangedHandler(object sender, SizeChangedEventArgs e)
+        {
+            if(_userControl != null)
+            {
+                _userControl.Width = e.NewSize.Width;
+                _userControl.Height = e.NewSize.Height;
             }
         }
     }

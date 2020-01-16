@@ -20,9 +20,10 @@ namespace MultiSourceTorrentDownloader.Views
             var kernel = new StandardKernel();
             kernel.Load(Assembly.GetExecutingAssembly());
             var viewModel = kernel.Get<MainViewModel>();
-
-            Closing += viewModel.Closing;
             DataContext = viewModel.Model;
+
+            SizeChanged += TorrentInfoDialogView.ParentWindowSizeChangedHandler;
+            Closing += viewModel.Closing;
         }
     }
 }
