@@ -1,5 +1,6 @@
 ﻿using CefSharp.Wpf;
 using MultiSourceTorrentDownloader.Models;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -26,19 +27,36 @@ namespace MultiSourceTorrentDownloader.Views
             }
         }
 
-        private void ChromiumWebBrowser_IsBrowserInitializedChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void IsBrowserInitializedChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (sender is ChromiumWebBrowser browser && browser.IsBrowserInitialized)
             {
+                TrySetLoadingIndicator(false);
+            }
+        }
+
+        private void LoadingStateChanged(object sender, CefSharp.LoadingStateChangedEventArgs e)
+        {
+            if(e.IsLoading)
+                TrySetLoadingIndicator(true);
+            else
+                TrySetLoadingIndicator(false);
+        }
+
+        private void TrySetLoadingIndicator(bool value)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
                 if (DataContext is TorrentInfoDialogModel context)
                 {
-                    context.IsLoading = false;
+                    context.IsLoading = value;
                 }
                 else
                 {
                     MessageBox.Show("Model for torrent info is incorrect! Loss in information may occur");
                 }
-            }
+            });
+            
         }
 
         public static void ParentWindowSizeChangedHandler(object sender, SizeChangedEventArgs e)

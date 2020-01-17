@@ -93,13 +93,11 @@
 
             <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"/>
 
-            <wpf1:ChromiumWebBrowser Grid.Row="3" IsBrowserInitializedChanged="ChromiumWebBrowser_IsBrowserInitializedChanged" Margin="32,0,0,0">
+            <wpf1:ChromiumWebBrowser Grid.Row="3" IsBrowserInitializedChanged="IsBrowserInitializedChanged" LoadingStateChanged="LoadingStateChanged" Margin="32,0,0,0">
                 <i:Interaction.Behaviors>
                     <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
                 </i:Interaction.Behaviors>
             </wpf1:ChromiumWebBrowser>
-
-
 
             <StackPanel Grid.Row="4" Margin="32,16,0,16" HorizontalAlignment="Left">
                 <Button Content="Download Magnet" Command="{Binding DownloadTorrentCommand}" Background="ForestGreen" FontSize="15"/>
@@ -107,9 +105,9 @@
 
         </Grid>
         <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <StackPanel Background="LightGray" Opacity="0.5"/>
-            <!-- prevents user clicks-->
-            <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Visibility="Visible" Margin="16,16,16,16"/>
+            <StackPanel Background="LightGray" Width="80" Height="80">
+                <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Visibility="Visible" Margin="0,20,0,0"/>
+            </StackPanel>
         </Grid>
     </Grid>
 
