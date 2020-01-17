@@ -1,4 +1,6 @@
-﻿using MultiSourceTorrentDownloader.ViewModels;
+﻿using CefSharp;
+using CefSharp.Wpf;
+using MultiSourceTorrentDownloader.ViewModels;
 using Ninject;
 using System.Reflection;
 using System.Windows;
@@ -16,6 +18,7 @@ namespace MultiSourceTorrentDownloader.Views
         {
             InitializeComponent();
             RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;//yields smoother window movement
+            Cef.Initialize(new CefSettings());
 
             var kernel = new StandardKernel();
             kernel.Load(Assembly.GetExecutingAssembly());

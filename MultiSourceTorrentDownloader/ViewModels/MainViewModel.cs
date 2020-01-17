@@ -8,7 +8,6 @@ using MultiSourceTorrentDownloader.Views;
 using MultiSourceTorrentDownloader.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
@@ -182,7 +181,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             catch (Exception ex)
             {
                 _logger.Warning($"Failed to get magnet or details from selected torrent uri: {Model.SelectedTorrent.TorrentUri}", ex);
-                ShowStatusBarMessage(MessageType.Error, $"Could not details from torrent link: {ex.Message}");
+                ShowStatusBarMessage(MessageType.Error, $"Could not load details from torrent link: {ex.Message}");
             }
             Model.IsLoading = false;
         }
