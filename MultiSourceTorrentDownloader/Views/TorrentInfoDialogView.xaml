@@ -105,9 +105,7 @@
 
         </Grid>
         <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <StackPanel Background="LightGray" Width="80" Height="80">
-                <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Visibility="Visible" Margin="0,20,0,0"/>
-            </StackPanel>
+            <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Margin="0,20,0,0"/>
         </Grid>
     </Grid>
 

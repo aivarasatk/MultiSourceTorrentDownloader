@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Diagnostics;
 
 namespace MultiSourceTorrentDownloader.ViewModels
 {
@@ -60,6 +61,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.SearchCommand = new Command(async (obj) => await OnSearch(), CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
             Model.OpenTorrentInfoCommand = new Command(OnOpenTorrentInfoCommand);
+            Model.DownloadMagnetCommand = new Command(OnDownloadMagnetCommand);
 
             Model.MessageType = MessageType.Empty;
 
@@ -184,6 +186,28 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 ShowStatusBarMessage(MessageType.Error, $"Could not load details from torrent link: {ex.Message}");
             }
             Model.IsLoading = false;
+        }
+
+        private async void OnDownloadMagnetCommand(object obj)
+        {
+            Model.IsLoading = true;
+
+            try
+            {
+                if (string.IsNullOrEmpty(Model.SelectedTorrent.TorrentMagnet))
+                    Model.SelectedTorrent.TorrentMagnet = await GetMagnetLinkFromTorrentEntry(Model.SelectedTorrent);
+
+                Process.Start(Model.SelectedTorrent.TorrentMagnet);
+                ShowStatusBarMessage(MessageType.Information, "Opening on local torrent downloading app");
+            }
+            catch(Exception ex)
+            {
+                ShowStatusBarMessage(MessageType.Error, $"Could not open magnet: {ex.Message}");
+            }
+            finally
+            {
+                Model.IsLoading = false;
+            }
         }
 
         private async Task ShowDetailsDialog()

@@ -35,6 +35,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="VerticalAlignmentStyle" TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -132,15 +135,12 @@
                             </Grid.RowDefinitions>
 
                             <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <TextBox x:Name="SearchBox" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                                        Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}"                                    
-                                        TextWrapping="NoWrap"
-                                        Width="300"
-                                        materialDesign:HintAssist.Hint="Search for torrents.." 
+                                <TextBox x:Name="SearchBox" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}"                                    
+                                        TextWrapping="NoWrap" Width="300" materialDesign:HintAssist.Hint="Search for torrents.." 
                                         ToolTip="Pressing enter will activate search"/>
 
-                                <Button Command="{Binding SearchCommand}" Height="39" Width="60">
-                                    <materialDesign:PackIcon Kind="Search" Width="27" Height="35"/>
+                                <Button Command="{Binding SearchCommand}" >
+                                    <materialDesign:PackIcon Kind="Search" />
                                 </Button>
 
                                 <ComboBox ItemsSource="{Binding AvailableSortOrders}" SelectedItem="{Binding SelectedSearchSortOrder}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
@@ -169,13 +169,9 @@
                             </Grid.RowDefinitions>
 
                             <TextBox Grid.Row="0" Text="{Binding TorrentFilter, UpdateSourceTrigger=PropertyChanged}"
-                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
                                      HorizontalAlignment="Left"
-                                     Margin="0,8,8,8"
                                      Width="300"
                                      materialDesign:HintAssist.Hint="Filter titles..."/>
-
-
 
                             <DataGrid x:Name="TorrentGrid" Grid.Row="1" 
                                       ItemsSource="{Binding TorrentEntries}" 
@@ -184,23 +180,47 @@
                                       AutoGenerateColumns="False" 
                                       SelectionMode="Single">
                                 <DataGrid.Columns>
+                                    
                                     <DataGridTemplateColumn Header="Title" CanUserSort="True" SortMemberPath="Title">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock>
-                                                    <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenTorrentInfoCommand}" 
-                                                               CommandParameter="{Binding}" >
-                                                        <TextBlock Text="{Binding Title}" FontWeight="Bold" />
-                                                    </Hyperlink>        
-                                                </TextBlock>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBlock Margin="8,0,0,0" Grid.Column="0" VerticalAlignment="Center">
+                                                        <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenTorrentInfoCommand}" >
+                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14"/>
+                                                        </Hyperlink>        
+                                                    </TextBlock>
+
+                                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="32,0,0,0">
+                                                        <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.DownloadMagnetCommand}" 
+                                                                   TextDecorations="{x:Null}">
+                                                            <Border CornerRadius="4" BorderThickness="1" BorderBrush="Green">
+                                                                <StackPanel Background="Green" Width="30" Height="30">                                                               
+                                                                    <materialDesign:PackIcon Grid.Column="1" Kind="Magnet" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5"
+                                                                                             Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0">
+                                                                        <materialDesign:PackIcon.RenderTransform>
+                                                                            <RotateTransform Angle="180"/>
+                                                                        </materialDesign:PackIcon.RenderTransform>
+                                                                    </materialDesign:PackIcon>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </Hyperlink>
+                                                    </TextBlock>
+                                                </Grid>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True"/>
-                                    <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True"/>
-                                    <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date, Converter={StaticResource TimeFormatConverter}}" CanUserSort="True"/>
-                                    <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="True"/>
-                                    <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}" CanUserSort="True"/>
+                                    
+                                    <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
+                                    <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
+                                    <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date, Converter={StaticResource TimeFormatConverter}}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
+                                    <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
+                                    <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
 
