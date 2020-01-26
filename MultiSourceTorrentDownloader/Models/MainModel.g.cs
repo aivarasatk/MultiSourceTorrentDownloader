@@ -2,6 +2,7 @@
 using MultiSourceTorrentDownloader.Enums;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive.Subjects;
 
@@ -120,6 +121,12 @@ namespace MultiSourceTorrentDownloader.Models
         {
             get => _pagesToLoadBySearch;
             set => this.MutateVerbose(ref _pagesToLoadBySearch, value, RaisePropertyChanged());
+        }
+
+        public ObservableCollection<int> SelectablePages
+        {
+            get => _selectablePages;
+            set => this.MutateVerbose(ref _selectablePages, value, RaisePropertyChanged());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

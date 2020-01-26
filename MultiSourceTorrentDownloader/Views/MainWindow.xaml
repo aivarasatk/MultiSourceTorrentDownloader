@@ -90,11 +90,7 @@
                         <StackPanel Orientation="Horizontal" ToolTip="Sets how many pages the initial search will try to load. Impacts load time!">
                             <materialDesign:PackIcon Kind="Information"  VerticalAlignment="Bottom"/>
                             <TextBlock Text="Pages:" Margin="8,0,0,0" VerticalAlignment="Bottom"/>
-                            <TextBox Text="{Binding PagesToLoadBySearch, UpdateSourceTrigger=PropertyChanged}" Width="50" Margin="32,0,0,0" materialDesign:HintAssist.Hint="1" materialDesign:ValidationAssist.Suppress="True">
-                                <i:Interaction.Behaviors>
-                                    <behaviors:NumericTextBoxBehavior MaxValue="100" EmptyValue="1"/>
-                                </i:Interaction.Behaviors>
-                            </TextBox>
+                            <ComboBox ItemsSource="{Binding SelectablePages}" SelectedItem="{Binding PagesToLoadBySearch}" Margin="32,0,0,0"/>
                         </StackPanel>
                     </StackPanel>
                     

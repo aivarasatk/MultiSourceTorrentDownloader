@@ -15,6 +15,7 @@ namespace MultiSourceTorrentDownloader.Models
             TorrentEntries = new ObservableCollection<TorrentEntry>();
             AvailableSortOrders = new List<KeyValuePair<Sorting, string>>();
             AvailableSources = new ObservableCollection<DisplaySource>();
+            SelectablePages = new ObservableCollection<int>();
         }
 
         private bool _isLoading;
@@ -26,6 +27,7 @@ namespace MultiSourceTorrentDownloader.Models
 
         public ObservableCollection<DisplaySource> AvailableSources { get; set; }
         private int _pagesToLoadBySearch;
+        private ObservableCollection<int> _selectablePages;
 
         public ObservableCollection<TorrentEntry> TorrentEntries { get; set; }
 

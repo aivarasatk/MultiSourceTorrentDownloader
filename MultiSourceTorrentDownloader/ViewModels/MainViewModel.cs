@@ -14,6 +14,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace MultiSourceTorrentDownloader.ViewModels
 {
@@ -57,6 +58,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             LoadSettings();
 
             Model.AvailableSortOrders = SearchSortOrders();
+            Model.SelectablePages = new ObservableCollection<int>(Enumerable.Range(1,10));
             Model.SelectedSearchSortOrder = Model.AvailableSortOrders.First();
             Model.SearchCommand = new Command(async (obj) => await OnSearch(), CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
