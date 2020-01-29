@@ -7,6 +7,8 @@ namespace MultiSourceTorrentDownloader.Behaviors
 {
     public class BindHtmlBehavior : Behavior<ChromiumWebBrowser>
     {
+        private const string _dynamicImageStyle = "<head><style>img { padding: 0; display: block; margin: 0 auto; max-height: 100%; max-width: 100%; }</style></head>";
+
         public static readonly DependencyProperty HtmlProperty =
                 DependencyProperty.Register("Html", typeof(string), typeof(BindHtmlBehavior));
 
@@ -25,7 +27,8 @@ namespace MultiSourceTorrentDownloader.Behaviors
         {
             if (AssociatedObject.IsBrowserInitialized)
             {
-                AssociatedObject.LoadHtml(Html ?? string.Empty);
+                var fitToScreenHtml = $"{_dynamicImageStyle}{Html ?? string.Empty}";
+                AssociatedObject.LoadHtml(fitToScreenHtml);
             }
         }
 
