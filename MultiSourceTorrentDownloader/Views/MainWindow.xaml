@@ -103,6 +103,7 @@
                     <converters:MessageTypeToBackgroundConverter x:Key="MessageTypeToBackgroundConverter"/>
                     <converters:TimeFormatConverter x:Key="TimeFormatConverter"/>
                     <converters:TorrentCategoryToBooleanConverter x:Key="TorrentCategoryToBooleanConverter"/>
+                    <converters:BooleanToBackgroundColorConverter x:Key="BooleanToBackgroundColorConverter"/>
                 </Grid.Resources>
 
                 <Grid>
@@ -195,8 +196,9 @@
                                                     <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="32,0,0,0">
                                                         <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.DownloadMagnetCommand}" 
                                                                    TextDecorations="{x:Null}">
-                                                            <Border CornerRadius="4" BorderThickness="1" BorderBrush="Green">
-                                                                <StackPanel Background="Green" Width="30" Height="30">                                                               
+                                                            <Border CornerRadius="4" BorderThickness="1" BorderBrush="{Binding MagnetDownloaded, Converter={StaticResource BooleanToBackgroundColorConverter}}" 
+                                                                    Background="{Binding MagnetDownloaded, Converter={StaticResource BooleanToBackgroundColorConverter}}">
+                                                                <StackPanel Width="30" Height="30">                                                               
                                                                     <materialDesign:PackIcon Grid.Column="1" Kind="Magnet" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5"
                                                                                              Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0">
                                                                         <materialDesign:PackIcon.RenderTransform>

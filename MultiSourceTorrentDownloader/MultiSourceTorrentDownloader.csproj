@@ -142,6 +142,7 @@
     <Compile Include="Common\ContainerConfig.cs" />
     <Compile Include="Constants\SizePostfix.cs" />
     <Compile Include="Constants\ThePirateBayTorrentIndexer.cs" />
+    <Compile Include="Converters\BooleanToBackgroundColorConverter.cs" />
     <Compile Include="Converters\TorrentCategoryToBooleanConverter.cs" />
     <Compile Include="Converters\MessageTypeToBackgroundConverter.cs" />
     <Compile Include="Converters\TimeFormatConverter.cs" />

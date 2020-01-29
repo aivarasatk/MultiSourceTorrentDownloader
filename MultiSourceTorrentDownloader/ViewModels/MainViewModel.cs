@@ -200,6 +200,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
                     Model.SelectedTorrent.TorrentMagnet = await GetMagnetLinkFromTorrentEntry(Model.SelectedTorrent);
 
                 Process.Start(Model.SelectedTorrent.TorrentMagnet);
+                Model.SelectedTorrent.MagnetDownloaded = true;
                 ShowStatusBarMessage(MessageType.Information, "Opening on local torrent downloading app");
             }
             catch(Exception ex)
