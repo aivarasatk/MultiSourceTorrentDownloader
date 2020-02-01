@@ -15,6 +15,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
     {
         private readonly ILogService _logger;
         public TorrentInfoDialogModel Model { get; set; }
+        public bool MagnetDownloaded { get; set; }
 
         public TorrentInfoDialogViewModel(ILogService logger)
         {
@@ -36,6 +37,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             {
                 Model.IsLoading = true;
                 Process.Start(Model.TorrentMagnet);
+                MagnetDownloaded = true;
             }
             catch (Exception ex)
             {

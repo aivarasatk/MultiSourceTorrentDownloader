@@ -17,7 +17,6 @@ namespace MultiSourceTorrentDownloader.Models
         private string _torrentMagnet;
         private string _description;
 
-
         public Command DownloadTorrentCommand { get; set; }
     }
 }
