@@ -51,12 +51,11 @@ namespace MultiSourceTorrentDownloader.ViewModels
             AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, sourceName: "1337X");
 
             InitializeViewModel();
+            LoadSettings();
         }
 
         private void InitializeViewModel()
         {
-            LoadSettings();
-
             Model.AvailableSortOrders = SearchSortOrders();
             Model.SelectablePages = new ObservableCollection<int>(Enumerable.Range(1,10));
             Model.SelectedSearchSortOrder = Model.AvailableSortOrders.First();
@@ -90,6 +89,13 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.PagesToLoadBySearch = pagesToLoad == 0 ? 1: pagesToLoad;
 
             LoadSourceSettings();
+
+            if (Properties.Settings.Default.SaveSearchSortOrder)
+            {
+                Model.SelectedSearchSortOrder = Model.AvailableSortOrders
+                                                     .First(o => o.Key == Properties.Settings.Default.SearchSortOrder);
+                Model.SaveSearchSortOrder = true;
+            }
         }
 
         private void LoadSourceSettings()
@@ -500,6 +506,11 @@ namespace MultiSourceTorrentDownloader.ViewModels
                                                                .Where(src => src.Selected)
                                                                .Select(s => s.Source)
                                                                .ToList();
+
+            Properties.Settings.Default.SaveSearchSortOrder = Model.SaveSearchSortOrder;
+            if (Model.SaveSearchSortOrder)
+                Properties.Settings.Default.SearchSortOrder = Model.SelectedSearchSortOrder.Key;
+
             Properties.Settings.Default.Save();
         }
     }

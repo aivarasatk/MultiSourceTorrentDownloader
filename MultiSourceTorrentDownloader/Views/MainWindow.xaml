@@ -50,8 +50,8 @@
 
         <materialDesign:DrawerHost>
             <materialDesign:DrawerHost.LeftDrawerContent>
-                <StackPanel Orientation="Vertical" Margin="8">
-                    <DockPanel Margin="16,0,0,0">
+                <StackPanel Orientation="Vertical" Margin="24">
+                    <DockPanel>
                         <TextBlock Text="Settings" VerticalAlignment="Center" FontSize="18"/>
                         <Button Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
                             CommandParameter="{x:Static Dock.Left}"
@@ -62,7 +62,7 @@
                         </Button>
                     </DockPanel>
 
-                    <GroupBox Margin="16,32,16,16">
+                    <GroupBox Margin="0,16,0,0">
                         <GroupBox.Header>
                             <StackPanel Orientation="Horizontal" ToolTip="Sets which websites to use for torrent search">
                                 <materialDesign:PackIcon Kind="Information" Foreground="White"/>
@@ -85,14 +85,16 @@
                         </ListBox>
                     </GroupBox>
 
-                    <StackPanel Orientation="Vertical" Margin="16">
+                    <StackPanel Orientation="Vertical" Margin="0,24,0,0">
                         <StackPanel Orientation="Horizontal" ToolTip="Sets how many pages the initial search will try to load. Impacts load time!">
                             <materialDesign:PackIcon Kind="Information"  VerticalAlignment="Bottom"/>
                             <TextBlock Text="Pages:" Margin="8,0,0,0" VerticalAlignment="Bottom"/>
                             <ComboBox ItemsSource="{Binding SelectablePages}" SelectedItem="{Binding PagesToLoadBySearch}" Margin="32,0,0,0"/>
                         </StackPanel>
                     </StackPanel>
-                    
+
+                    <CheckBox Margin="0,24,0,0" Content="Save search order" IsChecked="{Binding SaveSearchSortOrder}"/>
+
                 </StackPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
             

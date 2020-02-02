@@ -33,6 +33,8 @@ namespace MultiSourceTorrentDownloader.Models
 
         private IEnumerable<KeyValuePair<Sorting, string>> _availableSortOrders;
         private KeyValuePair<Sorting, string> _selectedSearchSortOrder;
+        private bool _saveSearchSortOrder;
+
         private TorrentEntry _selectedTorrent;
         private TorrentCategory _selectedTorrentCategory;
 

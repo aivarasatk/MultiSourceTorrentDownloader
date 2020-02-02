@@ -2,12 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MultiSourceTorrentDownloader.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="SortOptionEnum" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="SortOptionName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="WindowWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
@@ -27,7 +21,13 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="SelectedSources" Type="System.Collections.Generic.List&lt;MultiSourceTorrentDownloader.Enums.TorrentSource&gt;" Scope="User">
-      <Value Profile="(Default)"/>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SaveSearchSortOrder" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SearchSortOrder" Type="MultiSourceTorrentDownloader.Enums.Sorting" Scope="User">
+      <Value Profile="(Default)">SeedersDesc</Value>
     </Setting>
   </Settings>
 </SettingsFile>

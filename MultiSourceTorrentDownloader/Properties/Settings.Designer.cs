@@ -26,30 +26,6 @@ namespace MultiSourceTorrentDownloader.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int SortOptionEnum {
-            get {
-                return ((int)(this["SortOptionEnum"]));
-            }
-            set {
-                this["SortOptionEnum"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SortOptionName {
-            get {
-                return ((string)(this["SortOptionName"]));
-            }
-            set {
-                this["SortOptionName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public double WindowWidth {
             get {
                 return ((double)(this["WindowWidth"]));
@@ -127,6 +103,30 @@ namespace MultiSourceTorrentDownloader.Properties {
             }
             set {
                 this["SelectedSources"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SaveSearchSortOrder {
+            get {
+                return ((bool)(this["SaveSearchSortOrder"]));
+            }
+            set {
+                this["SaveSearchSortOrder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("SeedersDesc")]
+        public global::MultiSourceTorrentDownloader.Enums.Sorting SearchSortOrder {
+            get {
+                return ((global::MultiSourceTorrentDownloader.Enums.Sorting)(this["SearchSortOrder"]));
+            }
+            set {
+                this["SearchSortOrder"] = value;
             }
         }
     }

@@ -105,6 +105,12 @@ namespace MultiSourceTorrentDownloader.Models
             }
         }
 
+        public bool SaveSearchSortOrder
+        {
+            get => _saveSearchSortOrder;
+            set => this.MutateVerbose(ref _saveSearchSortOrder, value, RaisePropertyChanged());
+        }
+
         public TorrentEntry SelectedTorrent
         {
             get => _selectedTorrent;
