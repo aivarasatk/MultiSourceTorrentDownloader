@@ -135,10 +135,13 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void ApplyTorrentFilter(string obj = "")
         {
-            if (Model.TorrentFilter == null) return;
+            string filter = Model.TorrentFilter;
+
+            if (Model.TorrentFilter == null) 
+                filter = string.Empty;
 
             var entries = _unfilteredTorrentEntries
-                               .Where(entry => entry.Title.ToLower().Contains(Model.TorrentFilter.ToLower()))
+                               .Where(entry => entry.Title.ToLower().Contains(filter.ToLower()))
                                .ToList();
 
             Model.TorrentEntries.Clear();
@@ -289,8 +292,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             Model.IsLoading = true;
 
-            Model.TorrentEntries.Clear();
-            Model.TorrentFilter = null;
+            Model.TorrentFilter = string.Empty;
+            Model.TorrentEntries.Clear();//clearing is done after filter clear, since filter = empty adds values
             ResetPagings();
 
             await LoadSourceData(Model.PagesToLoadBySearch);

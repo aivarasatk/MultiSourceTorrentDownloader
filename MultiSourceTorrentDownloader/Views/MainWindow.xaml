@@ -130,16 +130,16 @@
                             </Grid.RowDefinitions>
 
                             <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <TextBox x:Name="SearchBox" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}"                                    
-                                        TextWrapping="NoWrap" Width="300" materialDesign:HintAssist.Hint="Search for torrents.." 
-                                        ToolTip="Pressing enter will activate search"/>
+                                <TextBox x:Name="SearchBox" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" Width="300" 
+                                        materialDesign:HintAssist.Hint="Search for torrents.." 
+                                        ToolTip="Pressing enter will activate search"
+                                        materialDesign:TextFieldAssist.HasClearButton="True"/>
 
-                                <Button Command="{Binding SearchCommand}" >
+                                <Button Command="{Binding SearchCommand}" Height="28" VerticalAlignment="Bottom" Margin="8,0,0,0">
                                     <materialDesign:PackIcon Kind="Search" />
                                 </Button>
 
                                 <ComboBox ItemsSource="{Binding AvailableSortOrders}" SelectedItem="{Binding SelectedSearchSortOrder}" DisplayMemberPath="Value" HorizontalAlignment="Left" Margin="48,0,0,0"/>
-
                             </StackPanel>
                         
                             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,16,16,16">
@@ -166,7 +166,8 @@
                             <TextBox Grid.Row="0" Text="{Binding TorrentFilter, UpdateSourceTrigger=PropertyChanged}"
                                      HorizontalAlignment="Left"
                                      Width="300"
-                                     materialDesign:HintAssist.Hint="Filter titles..."/>
+                                     materialDesign:HintAssist.Hint="Filter titles..."
+                                     materialDesign:TextFieldAssist.HasClearButton="True"/>
 
                             <DataGrid x:Name="TorrentGrid" Grid.Row="1" 
                                       ItemsSource="{Binding TorrentEntries}" 
@@ -175,7 +176,7 @@
                                       AutoGenerateColumns="False" 
                                       SelectionMode="Single">
                                 <DataGrid.RowStyle>
-                                    <Style TargetType="DataGridRow">
+                                    <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
                                         <Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="Tag" Value="Visible"/>
