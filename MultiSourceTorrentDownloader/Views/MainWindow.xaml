@@ -22,8 +22,7 @@
         ResizeMode="CanResizeWithGrip"
         MinWidth="715"
         MinHeight="440"
-        d:DataContext="{d:DesignInstance d:Type=model:MainModel}"
-        x:Name="MainWindowElement">
+        d:DataContext="{d:DesignInstance d:Type=model:MainModel}">
     
     <!-- Sets and saves window SizeToContent and Width/Height-->
     <i:Interaction.Behaviors>
@@ -47,9 +46,8 @@
 
     <!-- TORRENT INFO CONTROL -->
     <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True" DialogMargin="0"> <!-- to show in-window popups-->
-        
+
         <materialDesign:DrawerHost>
-            
             <materialDesign:DrawerHost.LeftDrawerContent>
                 <StackPanel Orientation="Vertical" Margin="8">
                     <DockPanel Margin="16,0,0,0">
@@ -176,8 +174,19 @@
                                       IsReadOnly="True" 
                                       AutoGenerateColumns="False" 
                                       SelectionMode="Single">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Tag" Value="Visible"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter Property="Tag" Value="Hidden"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    
                                     <DataGridTemplateColumn Header="Title" CanUserSort="True" SortMemberPath="Title">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -189,11 +198,11 @@
 
                                                     <TextBlock Margin="8,0,0,0" Grid.Column="0" VerticalAlignment="Center">
                                                         <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenTorrentInfoCommand}" >
-                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14"/>
+                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14" />
                                                         </Hyperlink>        
                                                     </TextBlock>
 
-                                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="32,0,0,0">
+                                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="32,0,0,0" Visibility="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=DataGridRow}}" >
                                                         <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.DownloadMagnetCommand}" 
                                                                    TextDecorations="{x:Null}">
                                                             <Border CornerRadius="4" BorderThickness="1" BorderBrush="{Binding MagnetDownloaded, Converter={StaticResource BooleanToBackgroundColorConverter}}" 

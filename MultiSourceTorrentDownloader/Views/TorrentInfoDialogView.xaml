@@ -9,13 +9,14 @@
              xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:wpf1="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+             xmlns:converters="clr-namespace:MultiSourceTorrentDownloader.Converters"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="14"
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
-             Width="{Binding ElementName=MainWindowElement, Path=ActualWidth}"
-             Height="{Binding ElementName=MainWindowElement, Path=ActualHeight}"
+             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=ActualWidth}"
+             Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=ActualHeight}"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
              mc:Ignorable="d"
@@ -33,6 +34,7 @@
     <Grid>
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:BooleanToBackgroundColorConverter x:Key="BooleanToBackgroundColorConverter"/>
         </Grid.Resources>
         <Grid>
             <Grid.RowDefinitions>
@@ -100,7 +102,8 @@
             </wpf1:ChromiumWebBrowser>
 
             <StackPanel Grid.Row="4" Margin="32,16,0,16" HorizontalAlignment="Left">
-                <Button Content="Download Magnet" Command="{Binding DownloadTorrentCommand}" Background="ForestGreen" FontSize="15"/>
+                <Button Content="Download Magnet" Command="{Binding DownloadTorrentCommand}" Background="{Binding MagnetDownloaded, Converter={StaticResource BooleanToBackgroundColorConverter}}" 
+                        FontSize="15" BorderBrush="{x:Null}"/>
             </StackPanel>
 
         </Grid>

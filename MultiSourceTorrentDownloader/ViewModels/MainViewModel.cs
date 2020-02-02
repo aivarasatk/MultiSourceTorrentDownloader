@@ -223,7 +223,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             _torrentInfoDialogViewModel.Model.Title = Model.SelectedTorrent.Title;
             _torrentInfoDialogViewModel.Model.TorrentMagnet = Model.SelectedTorrent.TorrentMagnet;
             _torrentInfoDialogViewModel.Model.Uploader = Model.SelectedTorrent.Uploader;
-            _torrentInfoDialogViewModel.MagnetDownloaded = false;
+            _torrentInfoDialogViewModel.Model.MagnetDownloaded = Model.SelectedTorrent.MagnetDownloaded;
 
             var view = new TorrentInfoDialogView
             {
@@ -231,7 +231,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             };
             await DialogHost.Show(view, "RootDialog");
 
-            if (_torrentInfoDialogViewModel.MagnetDownloaded)
+            if (_torrentInfoDialogViewModel.Model.MagnetDownloaded)
                 Model.SelectedTorrent.MagnetDownloaded = true;
         }
 

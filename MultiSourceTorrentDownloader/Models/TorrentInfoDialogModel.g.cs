@@ -64,6 +64,12 @@ namespace MultiSourceTorrentDownloader.Models
             set => this.MutateVerbose(ref _description, value, RaisePropertyChanged());
         }
 
+        public bool MagnetDownloaded
+        {
+            get => _magnetDownloaded;
+            set => this.MutateVerbose(ref _magnetDownloaded, value, RaisePropertyChanged());
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private Action<PropertyChangedEventArgs> RaisePropertyChanged()
