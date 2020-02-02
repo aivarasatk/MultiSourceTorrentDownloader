@@ -34,8 +34,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="VerticalAlignmentStyle" TargetType="TextBlock">
+            <Style x:Key="CenterAlignmentStyle" TargetType="TextBlock">
                 <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
             </Style>
         </ResourceDictionary>
     </Window.Resources>
@@ -224,11 +225,11 @@
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                     
-                                    <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
-                                    <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
-                                    <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date, Converter={StaticResource TimeFormatConverter}}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
-                                    <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
-                                    <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}" CanUserSort="True" ElementStyle="{StaticResource VerticalAlignmentStyle}"/>
+                                    <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True" ElementStyle="{StaticResource CenterAlignmentStyle}"/>
+                                    <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True" ElementStyle="{StaticResource CenterAlignmentStyle}"/>
+                                    <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date, Converter={StaticResource TimeFormatConverter}}" CanUserSort="True" ElementStyle="{StaticResource CenterAlignmentStyle}"/>
+                                    <DataGridTextColumn Header="Size" Foreground="Black" Binding="{Binding Size}" CanUserSort="True" ElementStyle="{StaticResource CenterAlignmentStyle}"/>
+                                    <DataGridTextColumn Header="Uploader" Foreground="Black" Binding="{Binding Uploader}" CanUserSort="True" ElementStyle="{StaticResource CenterAlignmentStyle}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
 
