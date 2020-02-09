@@ -15,9 +15,11 @@ namespace MultiSourceTorrentDownloader.Models
         private int _seeders;
         private int _leechers;
         private string _torrentMagnet;
+        private string _torrentLink;
         private string _description;
         private bool _magnetDownloaded;
 
         public Command DownloadTorrentCommand { get; set; }
+        public Command CopyTorrentLinkCommand { get; set; }
     }
 }

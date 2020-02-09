@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -19,6 +20,11 @@ namespace MultiSourceTorrentDownloader.Services
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsStringAsync();
+        }
+
+        protected string TorrentUrl(string torrentUri)
+        {
+            return Path.Combine(_baseUrl, torrentUri);
         }
     }
 }

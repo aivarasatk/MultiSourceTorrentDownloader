@@ -63,6 +63,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
             Model.OpenTorrentInfoCommand = new Command(OnOpenTorrentInfoCommand);
             Model.DownloadMagnetCommand = new Command(OnDownloadMagnetCommand);
+            Model.CopyTorrentLinkCommand = new Command(OnCopyTorrentLinkCommand);
 
             Model.MessageType = MessageType.Empty;
 
@@ -73,6 +74,12 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.TorrentFilterObservable.Subscribe(ApplyTorrentFilter);
             Model.SelectedSearchSortOrderObservable.Subscribe(OnSearchSortOrderChanged);
             Model.AvailableSources.ForEach(CheckCanExecuteSearchCommands);
+        }
+
+        private void OnCopyTorrentLinkCommand(object obj)
+        {
+            Clipboard.SetText(FormedTorrentLink(Model.SelectedTorrent.Source, Model.SelectedTorrent.TorrentUri));
+            ShowStatusBarMessage(MessageType.Information, "Copied torrent link to clipboard");
         }
 
         private void CheckCanExecuteSearchCommands(DisplaySource item)
@@ -231,6 +238,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             _torrentInfoDialogViewModel.Model.Leechers = Model.SelectedTorrent.Leechers;
             _torrentInfoDialogViewModel.Model.Title = Model.SelectedTorrent.Title;
             _torrentInfoDialogViewModel.Model.TorrentMagnet = Model.SelectedTorrent.TorrentMagnet;
+            _torrentInfoDialogViewModel.Model.TorrentLink = FormedTorrentLink(Model.SelectedTorrent.Source, Model.SelectedTorrent.TorrentUri);
             _torrentInfoDialogViewModel.Model.Uploader = Model.SelectedTorrent.Uploader;
             _torrentInfoDialogViewModel.Model.MagnetDownloaded = Model.SelectedTorrent.MagnetDownloaded;
 
@@ -242,6 +250,11 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             if (_torrentInfoDialogViewModel.Model.MagnetDownloaded)
                 Model.SelectedTorrent.MagnetDownloaded = true;
+        }
+
+        private string FormedTorrentLink(TorrentSource source, string torrentUri)
+        {
+            return _torrentSourceDictionary[source].DataSource.FullTorrentUrl(torrentUri);
         }
 
         private async Task<string> GetMagnetLinkFromTorrentEntry(TorrentEntry selectedTorrent)

@@ -63,5 +63,7 @@ namespace MultiSourceTorrentDownloader.Services
 
             return await _parser.ParsePageForTorrentEntriesAsync(contents);
         }
+
+        public string FullTorrentUrl(string uri) => TorrentUrl(uri);
     }
 }

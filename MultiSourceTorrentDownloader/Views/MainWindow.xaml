@@ -102,6 +102,7 @@
                 <Grid.Resources>
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
                     <converters:MessageTypeToBackgroundConverter x:Key="MessageTypeToBackgroundConverter"/>
+                    <converters:MessageTypeToStatusBarVisibilityConverter x:Key="MessageTypeToStatusBarVisibilityConverter"/>
                     <converters:TimeFormatConverter x:Key="TimeFormatConverter"/>
                     <converters:TorrentCategoryToBooleanConverter x:Key="TorrentCategoryToBooleanConverter"/>
                     <converters:BooleanToBackgroundColorConverter x:Key="BooleanToBackgroundColorConverter"/>
@@ -158,20 +159,23 @@
                     
                     </GroupBox>
 
-                    <GroupBox Grid.Row="1" Margin="16,0,16,16" Header="Torrents">
+                    <GroupBox Grid.Row="1" Margin="16,0,16,16">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Torrents" Foreground="White" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding TorrentFilter, UpdateSourceTrigger=PropertyChanged}" Width="300" Margin="16,0,0,0"
+                                         Foreground="White" materialDesign:TextFieldAssist.UnderlineBrush="White"
+                                         materialDesign:HintAssist.Foreground="White"
+                                         materialDesign:HintAssist.Hint="Filter titles..."
+                                         materialDesign:TextFieldAssist.HasClearButton="True"/>
+                            </StackPanel>
+                        </GroupBox.Header>
                         <Grid Margin="8">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
-
-                            <TextBox Grid.Row="0" Text="{Binding TorrentFilter, UpdateSourceTrigger=PropertyChanged}"
-                                     HorizontalAlignment="Left"
-                                     Width="300"
-                                     materialDesign:HintAssist.Hint="Filter titles..."
-                                     materialDesign:TextFieldAssist.HasClearButton="True"/>
-
                             <DataGrid x:Name="TorrentGrid" Grid.Row="1" 
                                       ItemsSource="{Binding TorrentEntries}" 
                                       SelectedItem="{Binding SelectedTorrent}" 
@@ -191,7 +195,7 @@
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTemplateColumn Header="Title" CanUserSort="True" SortMemberPath="Title">
+                                    <DataGridTemplateColumn Header="Title" CanUserSort="True" SortMemberPath="Title" Width="550">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Grid>
@@ -202,26 +206,42 @@
 
                                                     <TextBlock Margin="8,0,0,0" Grid.Column="0" VerticalAlignment="Center">
                                                         <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenTorrentInfoCommand}" >
-                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14" />
+                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14" TextTrimming="CharacterEllipsis"/>
                                                         </Hyperlink>        
                                                     </TextBlock>
 
-                                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="32,0,0,0" Visibility="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=DataGridRow}}" >
-                                                        <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.DownloadMagnetCommand}" 
-                                                                   TextDecorations="{x:Null}">
-                                                            <Border CornerRadius="4" BorderThickness="1" BorderBrush="{Binding MagnetDownloaded, Converter={StaticResource BooleanToBackgroundColorConverter}}" 
-                                                                    Background="{Binding MagnetDownloaded, Converter={StaticResource BooleanToBackgroundColorConverter}}">
-                                                                <StackPanel Width="30" Height="30">                                                               
-                                                                    <materialDesign:PackIcon Grid.Column="1" Kind="Magnet" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5"
-                                                                                             Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0">
-                                                                        <materialDesign:PackIcon.RenderTransform>
-                                                                            <RotateTransform Angle="180"/>
-                                                                        </materialDesign:PackIcon.RenderTransform>
-                                                                    </materialDesign:PackIcon>
-                                                                </StackPanel>
-                                                            </Border>
-                                                        </Hyperlink>
-                                                    </TextBlock>
+                                                    <StackPanel Orientation="Horizontal" Grid.Column="1" Visibility="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=DataGridRow}}">
+                                                        <TextBlock  VerticalAlignment="Center" Margin="32,0,0,0" ToolTip="Magnet download">
+                                                            <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.DownloadMagnetCommand}" 
+                                                                       TextDecorations="{x:Null}">
+                                                                <Border CornerRadius="4" BorderThickness="1" BorderBrush="{Binding MagnetDownloaded, Converter={StaticResource BooleanToBackgroundColorConverter}}" 
+                                                                        Background="{Binding MagnetDownloaded, Converter={StaticResource BooleanToBackgroundColorConverter}}">
+                                                                    <StackPanel Width="30" Height="30">                                                               
+                                                                        <materialDesign:PackIcon Grid.Column="1" Kind="Magnet" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5"
+                                                                                                 Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0">
+                                                                            <materialDesign:PackIcon.RenderTransform>
+                                                                                <RotateTransform Angle="180"/>
+                                                                            </materialDesign:PackIcon.RenderTransform>
+                                                                        </materialDesign:PackIcon>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </Hyperlink>
+                                                        </TextBlock>
+
+                                                        <TextBlock Grid.Column="1" Margin="8,0,0,0" ToolTip="Copy link">
+                                                            <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.CopyTorrentLinkCommand}" 
+                                                                       TextDecorations="{x:Null}">
+                                                                <Border CornerRadius="4" BorderThickness="1" Background="DarkBlue">
+                                                                    <StackPanel Width="30" Height="30">                                                               
+                                                                        <materialDesign:PackIcon Grid.Column="1" Kind="ContentCopy" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5"
+                                                                                                 Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0">
+                                                                        </materialDesign:PackIcon>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </Hyperlink>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                    
                                                 </Grid>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
@@ -241,7 +261,8 @@
                     
                     </GroupBox>
 
-                    <StackPanel Grid.Row="2"  Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}">
+                    <StackPanel Grid.Row="2"  Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}"
+                                Visibility="{Binding MessageType, Converter={StaticResource MessageTypeToStatusBarVisibilityConverter}}">
                         <TextBlock Margin="8" Text="{Binding StatusBarMessage}" Foreground="White"/>
                     </StackPanel>
                

@@ -58,6 +58,11 @@ namespace MultiSourceTorrentDownloader.Models
             set => this.MutateVerbose(ref _torrentMagnet, value, RaisePropertyChanged());
         }
 
+        public string TorrentLink
+        {
+            get => _torrentLink;
+            set => this.MutateVerbose(ref _torrentLink, value, RaisePropertyChanged());
+        }
         public string Description
         {
             get => _description;

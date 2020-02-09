@@ -42,5 +42,6 @@ namespace MultiSourceTorrentDownloader.Models
         public Command SearchCommand { get; set; }
         public Command OpenTorrentInfoCommand { get; set; }
         public Command DownloadMagnetCommand { get; set; }
+        public Command CopyTorrentLinkCommand { get; set; }
     }
 }

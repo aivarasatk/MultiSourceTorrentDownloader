@@ -28,6 +28,12 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private void InitializeModel()
         {
             Model.DownloadTorrentCommand = new Command(OnDownloadTorrentCommand);
+            Model.CopyTorrentLinkCommand = new Command(OnCopyTorrentLinkCommand);
+        }
+
+        private void OnCopyTorrentLinkCommand(object obj)
+        {
+            Clipboard.SetText(Model.TorrentLink);
         }
 
         private void OnDownloadTorrentCommand(object obj)

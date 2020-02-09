@@ -10,5 +10,7 @@ namespace MultiSourceTorrentDownloader.Interfaces
         Task<TorrentQueryResult> GetTorrentsByCategoryAsync(string searchFor, int page, Sorting sorting, TorrentCategory category);
         Task<string> GetTorrentMagnetAsync(string detailsUri);
         Task<string> GetTorrentDescriptionAsync(string detailsUri);
+
+        string FullTorrentUrl(string uri);
     }
 }
