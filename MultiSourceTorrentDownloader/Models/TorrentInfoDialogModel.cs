@@ -4,7 +4,7 @@ using System;
 
 namespace MultiSourceTorrentDownloader.Models
 {
-    public partial class TorrentInfoDialogModel
+    public partial class TorrentInfoDialogModel : ModelBase
     {
         private bool _isLoading;
 

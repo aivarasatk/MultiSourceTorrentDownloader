@@ -11,6 +11,7 @@
              xmlns:wpf1="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
              xmlns:converters="clr-namespace:MultiSourceTorrentDownloader.Converters"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:views="clr-namespace:MultiSourceTorrentDownloader.Views"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="14"
@@ -43,6 +44,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Button Grid.Row="0" Command="{x:Static wpf:DialogHost.CloseDialogCommand}"  Style="{DynamicResource MaterialDesignFlatButton}"
                     HorizontalAlignment="Right" Margin="8">
@@ -128,6 +130,8 @@
                     <behaviors:BindHtmlBehavior Html="{Binding Description}"/>
                 </i:Interaction.Behaviors>
             </wpf1:ChromiumWebBrowser>
+
+            <views:StatusBar Grid.Row="4" />
         </Grid>
         <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
             <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="2" Width="40" Height="40" Margin="0,20,0,0"/>

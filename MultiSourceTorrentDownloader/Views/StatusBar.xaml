@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="MultiSourceTorrentDownloader.Views.StatusBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:MultiSourceTorrentDownloader.Converters"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:MessageTypeToBackgroundConverter x:Key="MessageTypeToBackgroundConverter"/>
+        <converters:MessageTypeToStatusBarVisibilityConverter x:Key="MessageTypeToStatusBarVisibilityConverter"/>
+    </UserControl.Resources>
+    
+        <StackPanel Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}"
+                                        Visibility="{Binding MessageType, Converter={StaticResource MessageTypeToStatusBarVisibilityConverter}}">
+            <TextBlock Margin="8" Text="{Binding StatusBarMessage}" Foreground="White"/>
+        </StackPanel>
+    
+</UserControl>

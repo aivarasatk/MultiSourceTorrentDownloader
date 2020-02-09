@@ -8,7 +8,7 @@ using System.Reactive.Subjects;
 
 namespace MultiSourceTorrentDownloader.Models
 {
-    public partial class MainModel : INotifyPropertyChanged, IDataErrorInfo
+    public partial class MainModel
     {
         public bool IsLoading
         {
@@ -48,34 +48,7 @@ namespace MultiSourceTorrentDownloader.Models
                     _torrentFilterSubject = value;
             }
         }
-
-        public string StatusBarMessage
-        {
-            get => _statusBarMessage;
-            set
-            {
-                this.MutateVerbose(ref _statusBarMessage, value, RaisePropertyChanged());
-                _statusBarMessageSubject.OnNext(value);
-            }
-        }
-
-        private ISubject<string> _statusBarMessageSubject = new Subject<string>();
-
-        public ISubject<string> StatusBarMessageObservable
-        {
-            get => _statusBarMessageSubject;
-            set
-            {
-                if (value != _statusBarMessageSubject)
-                    _statusBarMessageSubject = value;
-            }
-        }
-
-        public MessageType MessageType
-        {
-            get => _messageType;
-            set => this.MutateVerbose(ref _messageType, value, RaisePropertyChanged());
-        }
+        
 
         public IEnumerable<KeyValuePair<Sorting, string>> AvailableSortOrders
         {
@@ -134,14 +107,5 @@ namespace MultiSourceTorrentDownloader.Models
             get => _selectablePages;
             set => this.MutateVerbose(ref _selectablePages, value, RaisePropertyChanged());
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private Action<PropertyChangedEventArgs> RaisePropertyChanged()
-        {
-            return args => PropertyChanged?.Invoke(this, args);
-        }
-        public string Error => throw new NotImplementedException();
-
-        public string this[string columnName] => throw new NotImplementedException();
     }
 }

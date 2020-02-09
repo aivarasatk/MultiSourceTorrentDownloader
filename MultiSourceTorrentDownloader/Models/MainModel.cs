@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace MultiSourceTorrentDownloader.Models
 {
-    public partial class MainModel
+    public partial class MainModel : ModelBase
     {
         public MainModel()
         {

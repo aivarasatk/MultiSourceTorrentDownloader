@@ -10,6 +10,7 @@
         xmlns:behaviors="clr-namespace:MultiSourceTorrentDownloader.Behaviors"
         xmlns:converters="clr-namespace:MultiSourceTorrentDownloader.Converters"
         xmlns:enums="clr-namespace:MultiSourceTorrentDownloader.Enums"
+        xmlns:views="clr-namespace:MultiSourceTorrentDownloader.Views"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
@@ -101,8 +102,6 @@
             <Grid>
                 <Grid.Resources>
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-                    <converters:MessageTypeToBackgroundConverter x:Key="MessageTypeToBackgroundConverter"/>
-                    <converters:MessageTypeToStatusBarVisibilityConverter x:Key="MessageTypeToStatusBarVisibilityConverter"/>
                     <converters:TimeFormatConverter x:Key="TimeFormatConverter"/>
                     <converters:TorrentCategoryToBooleanConverter x:Key="TorrentCategoryToBooleanConverter"/>
                     <converters:BooleanToBackgroundColorConverter x:Key="BooleanToBackgroundColorConverter"/>
@@ -241,12 +240,12 @@
                                                             </Hyperlink>
                                                         </TextBlock>
                                                     </StackPanel>
-                                                    
+
                                                 </Grid>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    
+
                                     <DataGridTextColumn Header="Seeders" Foreground="Green" Binding="{Binding Seeders}" CanUserSort="True" ElementStyle="{StaticResource CenterAlignmentStyle}"/>
                                     <DataGridTextColumn Header="Leechers" Foreground="Red" Binding="{Binding Leechers}" CanUserSort="True" ElementStyle="{StaticResource CenterAlignmentStyle}"/>
                                     <DataGridTextColumn Header="Time" Foreground="Black" Binding="{Binding Date, Converter={StaticResource TimeFormatConverter}}" CanUserSort="True" ElementStyle="{StaticResource CenterAlignmentStyle}"/>
@@ -258,14 +257,11 @@
                             <Button Grid.Row="2" Command="{Binding LoadMoreCommand}" Content="Load more" Margin="0,16,0,0" Width="120" HorizontalAlignment="Center"
                                     ToolTip="Loads more data from next torrent page"/>
                         </Grid>
-                    
-                    </GroupBox>
 
-                    <StackPanel Grid.Row="2"  Background="{Binding MessageType, Converter={StaticResource MessageTypeToBackgroundConverter}}"
-                                Visibility="{Binding MessageType, Converter={StaticResource MessageTypeToStatusBarVisibilityConverter}}">
-                        <TextBlock Margin="8" Text="{Binding StatusBarMessage}" Foreground="White"/>
-                    </StackPanel>
-               
+                    </GroupBox>
+                    
+                    <views:StatusBar Grid.Row="2" />
+
                 </Grid>
 
                 <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">

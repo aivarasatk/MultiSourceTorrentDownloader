@@ -18,7 +18,7 @@ using System.Collections.ObjectModel;
 
 namespace MultiSourceTorrentDownloader.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel :  ViewModelBase<MainModel>
     {
         private readonly ILogService _logger;
         private readonly ILeetxSource _leetxSource;
@@ -29,19 +29,12 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private List<TorrentEntry> _unfilteredTorrentEntries;
 
-        private IDisposable _statusBarSubscription;
-
-        public MainModel Model { get; private set; }
-
-
         public MainViewModel(IThePirateBaySource thePirateBaySource, ILogService logger, ILeetxSource leetxSource,
-            TorrentInfoDialogViewModel torrentInfoDialogViewModel)
+            TorrentInfoDialogViewModel torrentInfoDialogViewModel) : base(new MainModel())
         {
             _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
 
             _unfilteredTorrentEntries = new List<TorrentEntry>();
-
-            Model = new MainModel();
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _leetxSource = leetxSource ?? throw new ArgumentNullException(nameof(leetxSource));
@@ -66,10 +59,6 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.CopyTorrentLinkCommand = new Command(OnCopyTorrentLinkCommand);
 
             Model.MessageType = MessageType.Empty;
-
-            Model.StatusBarMessageObservable
-                 .Where(x => !string.IsNullOrEmpty(x))
-                 .Subscribe(OnStatusBarMessageChanged);
 
             Model.TorrentFilterObservable.Subscribe(ApplyTorrentFilter);
             Model.SelectedSearchSortOrderObservable.Subscribe(OnSearchSortOrderChanged);
@@ -163,19 +152,6 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             if(_unfilteredTorrentEntries.Any())
                 ShowStatusBarMessage(MessageType.Information, $"Filter yields {entries.Count}/{_unfilteredTorrentEntries.Count} torrents");
-        }
-
-        private void OnStatusBarMessageChanged(string obj)
-        {
-            _statusBarSubscription?.Dispose();
-            _statusBarSubscription = Observable
-                .Timer(TimeSpan.FromSeconds(10))
-                .Subscribe(x =>
-                {
-                    Model.StatusBarMessage = string.Empty;
-                    Model.MessageType = MessageType.Empty;
-                });
-
         }
 
         private async void OnOpenTorrentInfoCommand(object obj)
@@ -504,12 +480,6 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 new KeyValuePair<Sorting, string>(Sorting.LeechersAsc, "Leechers Asc."),
                 new KeyValuePair<Sorting, string>(Sorting.LeecherssDesc, "Leechers Desc."),
             };
-        }
-
-        private void ShowStatusBarMessage(MessageType messageType, string message)
-        {
-            Model.MessageType = messageType;
-            Model.StatusBarMessage = message;
         }
 
         public void Closing (object sender, CancelEventArgs args)

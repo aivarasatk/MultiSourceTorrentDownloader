@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Models
 {
-    public partial class TorrentInfoDialogModel : INotifyPropertyChanged
+    public partial class TorrentInfoDialogModel
     {
         public bool IsLoading
         {
@@ -73,13 +73,6 @@ namespace MultiSourceTorrentDownloader.Models
         {
             get => _magnetDownloaded;
             set => this.MutateVerbose(ref _magnetDownloaded, value, RaisePropertyChanged());
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private Action<PropertyChangedEventArgs> RaisePropertyChanged()
-        {
-            return args => PropertyChanged?.Invoke(this, args);
         }
     }
 }
