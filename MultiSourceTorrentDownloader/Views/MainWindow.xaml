@@ -158,17 +158,7 @@
                     
                     </GroupBox>
 
-                    <GroupBox Grid.Row="1" Margin="16,0,16,16">
-                        <GroupBox.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Torrents" Foreground="White" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding TorrentFilter, UpdateSourceTrigger=PropertyChanged}" Width="300" Margin="16,0,0,0"
-                                         Foreground="White" materialDesign:TextFieldAssist.UnderlineBrush="White"
-                                         materialDesign:HintAssist.Foreground="White"
-                                         materialDesign:HintAssist.Hint="Filter titles..."
-                                         materialDesign:TextFieldAssist.HasClearButton="True"/>
-                            </StackPanel>
-                        </GroupBox.Header>
+                    <GroupBox Grid.Row="1" Margin="16,0,16,16" Header="Torrents">
                         <Grid Margin="8">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
@@ -194,7 +184,17 @@
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTemplateColumn Header="Title" CanUserSort="True" SortMemberPath="Title" Width="550">
+                                    <DataGridTemplateColumn CanUserSort="True" SortMemberPath="Title" Width="550">
+                                        <DataGridTemplateColumn.Header>
+                                            <DockPanel>
+                                                <TextBlock Text="Title" VerticalAlignment="Center"/>
+                                                <TextBox Text="{Binding Path=DataContext.TorrentFilter,  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                                                         Width="250" Margin="16,0,0,0"
+                                                         materialDesign:HintAssist.Hint="Search..."
+                                                         materialDesign:TextFieldAssist.HasClearButton="True"/> 
+                                            </DockPanel>
+                                        </DataGridTemplateColumn.Header>
+                                        
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Grid>
