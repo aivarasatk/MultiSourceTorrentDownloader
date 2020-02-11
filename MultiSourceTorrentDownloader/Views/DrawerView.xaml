@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="MultiSourceTorrentDownloader.Views.DrawerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MultiSourceTorrentDownloader.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d">
+
+    <StackPanel Orientation="Vertical" Margin="24">
+        <DockPanel>
+            <TextBlock Text="Settings" VerticalAlignment="Center" FontSize="18"/>
+            <Button Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
+                            CommandParameter="{x:Static Dock.Left}"
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource MaterialDesignFlatButton}" Height="35">
+                <materialDesign:PackIcon Kind="ArrowRight" Width="30" Height="30"/>
+            </Button>
+        </DockPanel>
+
+        <GroupBox Margin="0,16,0,0">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" ToolTip="Sets which websites to use for torrent search">
+                    <materialDesign:PackIcon Kind="Information" Foreground="White"/>
+                    <TextBlock Text="Sources" Margin="8,0,0,0" Foreground="White"/>
+                </StackPanel>
+            </GroupBox.Header>
+
+            <ListBox x:Name="SelectableSources" ItemsSource="{Binding AvailableSources}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox Content="{Binding SourceName}" IsChecked="{Binding Selected}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </GroupBox>
+
+        <StackPanel Orientation="Vertical" Margin="0,24,0,0">
+            <StackPanel Orientation="Horizontal" ToolTip="Sets how many pages the initial search will try to load. Impacts load time!">
+                <materialDesign:PackIcon Kind="Information"  VerticalAlignment="Bottom"/>
+                <TextBlock Text="Pages:" Margin="8,0,0,0" VerticalAlignment="Bottom"/>
+                <ComboBox ItemsSource="{Binding SelectablePages}" SelectedItem="{Binding PagesToLoadBySearch}" Margin="32,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <CheckBox Margin="0,24,0,0" Content="Save search order" IsChecked="{Binding SaveSearchSortOrder}"/>
+
+    </StackPanel>
+</UserControl>
