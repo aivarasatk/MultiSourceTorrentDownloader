@@ -62,6 +62,12 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             Model.TorrentFilterObservable.Subscribe(ApplyTorrentFilter);
             Model.SelectedSearchSortOrderObservable.Subscribe(OnSearchSortOrderChanged);
+            Model.SearchValueObservable.Subscribe(_ =>
+            {
+                Model.SearchCommand.RaiseCanExecuteChanged();
+                Model.LoadMoreCommand.RaiseCanExecuteChanged();
+            });
+
             Model.AvailableSources.ForEach(CheckCanExecuteSearchCommands);
         }
 

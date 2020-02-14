@@ -22,8 +22,19 @@ namespace MultiSourceTorrentDownloader.Models
             set
             {
                 this.MutateVerbose(ref _searchValue, value, RaisePropertyChanged());
-                SearchCommand?.RaiseCanExecuteChanged();
-                LoadMoreCommand?.RaiseCanExecuteChanged();
+                _searchValueSubject.OnNext(value);
+            }
+        }
+
+        private ISubject<string> _searchValueSubject = new Subject<string>();
+
+        public ISubject<string> SearchValueObservable
+        {
+            get => _searchValueSubject;
+            set
+            {
+                if (value != _searchValueSubject)
+                    _searchValueSubject = value;
             }
         }
 
