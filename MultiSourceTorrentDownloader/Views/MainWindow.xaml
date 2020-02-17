@@ -19,7 +19,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="App"
+        Title="MSTD"
         ResizeMode="CanResizeWithGrip"
         MinWidth="715"
         MinHeight="440"

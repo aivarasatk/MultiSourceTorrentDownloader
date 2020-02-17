@@ -22,9 +22,6 @@ namespace MultiSourceTorrentDownloader.Models
         private string _searchValue;
         private string _torrentFilter;
 
-        private string _statusBarMessage;
-        private MessageType _messageType;
-
         public ObservableCollection<DisplaySource> AvailableSources { get; set; }
         private int _pagesToLoadBySearch;
         private ObservableCollection<int> _selectablePages;

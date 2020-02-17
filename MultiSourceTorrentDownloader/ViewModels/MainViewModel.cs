@@ -283,7 +283,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private bool CanLoadMore(object obj)
         {
            return !string.IsNullOrEmpty(_loadMoreSearchValue) 
-                && Model.TorrentEntries.Count != 0 
+                && (_unfilteredTorrentEntries.Count != 0 || Model.TorrentEntries.Count != 0)
                 && Model.AvailableSources.Any(s => s.Selected && !_torrentSourceDictionary[s.Source].LastPage);
         }
 
