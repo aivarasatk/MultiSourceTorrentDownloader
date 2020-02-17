@@ -23,14 +23,14 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private readonly ILogService _logger;
         private readonly ILeetxSource _leetxSource;
         private TorrentInfoDialogViewModel _torrentInfoDialogViewModel;
-
+        
         private string _loadMoreSearchValue = string.Empty;
         private Dictionary<TorrentSource, SourceInformation> _torrentSourceDictionary;
 
         private List<TorrentEntry> _unfilteredTorrentEntries;
 
         public MainViewModel(IThePirateBaySource thePirateBaySource, ILogService logger, ILeetxSource leetxSource,
-            TorrentInfoDialogViewModel torrentInfoDialogViewModel) : base(new MainModel())
+            IAutoCompleteProvider autoCompleteProvider, TorrentInfoDialogViewModel torrentInfoDialogViewModel) : base(new MainModel())
         {
             _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
 
@@ -39,6 +39,12 @@ namespace MultiSourceTorrentDownloader.ViewModels
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _leetxSource = leetxSource ?? throw new ArgumentNullException(nameof(leetxSource));
             _torrentInfoDialogViewModel = torrentInfoDialogViewModel ?? throw new ArgumentNullException(nameof(torrentInfoDialogViewModel));
+
+            Model.RecentSearchProvider = autoCompleteProvider ?? throw new ArgumentNullException(nameof(autoCompleteProvider));
+            Model.RecentSearchProvider.Values = new List<string>
+            {
+                "One", "Two", "Olymp"
+            };
 
             AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, sourceName: "The Pirate Bay");
             AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, sourceName: "1337X");

@@ -19,6 +19,8 @@ namespace MultiSourceTorrentDownloader.Common
 
             Bind<IThePirateBaySource>().To<ThePirateBaySource>().InTransientScope();
             Bind<IThePirateBayParser>().To<ThePirateBayParser>().InTransientScope();
+
+            Bind<IAutoCompleteProvider>().To<AutoCompleteProvider>().InTransientScope();
         }
     }
 }

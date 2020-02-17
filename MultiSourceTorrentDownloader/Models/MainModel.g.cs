@@ -1,5 +1,6 @@
 ﻿using MultiSourceTorrentDownloader.Data;
 using MultiSourceTorrentDownloader.Enums;
+using MultiSourceTorrentDownloader.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,6 +37,12 @@ namespace MultiSourceTorrentDownloader.Models
                 if (value != _searchValueSubject)
                     _searchValueSubject = value;
             }
+        }
+
+        public IAutoCompleteProvider RecentSearchProvider
+        {
+            get => _recentSearchProvider;
+            set => this.MutateVerbose(ref _recentSearchProvider, value, RaisePropertyChanged());
         }
 
         public string TorrentFilter

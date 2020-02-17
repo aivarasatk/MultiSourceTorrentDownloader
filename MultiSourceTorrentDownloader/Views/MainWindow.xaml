@@ -11,6 +11,7 @@
         xmlns:converters="clr-namespace:MultiSourceTorrentDownloader.Converters"
         xmlns:enums="clr-namespace:MultiSourceTorrentDownloader.Enums"
         xmlns:views="clr-namespace:MultiSourceTorrentDownloader.Views"
+        xmlns:autoComplete="http://wpfcontrols.com/"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
@@ -19,7 +20,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="App"
+        Title="MSTD"
         ResizeMode="CanResizeWithGrip"
         MinWidth="715"
         MinHeight="440"
@@ -92,6 +93,9 @@
                                         materialDesign:HintAssist.Hint="Search for torrents.." 
                                         ToolTip="Pressing enter will activate search"
                                         materialDesign:TextFieldAssist.HasClearButton="True"/>
+                                <!--<autoComplete:AutoCompleteTextBox x:Name="SearchBox" Width="300"
+                                                              Style="{StaticResource MaterialAutoCompleteTextBox}" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                              Provider="{Binding RecentSearchProvider}"/>-->
 
                                 <Button Command="{Binding SearchCommand}" Height="28" VerticalAlignment="Bottom" Margin="8,0,0,0">
                                     <materialDesign:PackIcon Kind="Search" />

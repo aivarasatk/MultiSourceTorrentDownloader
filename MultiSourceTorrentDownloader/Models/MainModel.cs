@@ -2,6 +2,7 @@
 using MultiSourceTorrentDownloader.Common;
 using MultiSourceTorrentDownloader.Data;
 using MultiSourceTorrentDownloader.Enums;
+using MultiSourceTorrentDownloader.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,11 +20,11 @@ namespace MultiSourceTorrentDownloader.Models
         }
 
         private bool _isLoading;
-        private string _searchValue;
-        private string _torrentFilter;
 
-        private string _statusBarMessage;
-        private MessageType _messageType;
+        private string _searchValue;
+        private IAutoCompleteProvider _recentSearchProvider;
+
+        private string _torrentFilter;
 
         public ObservableCollection<DisplaySource> AvailableSources { get; set; }
         private int _pagesToLoadBySearch;
