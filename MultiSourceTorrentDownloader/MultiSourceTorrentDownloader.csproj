@@ -82,6 +82,9 @@
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
     </Reference>
@@ -149,6 +152,7 @@
     <Compile Include="Converters\TimeFormatConverter.cs" />
     <Compile Include="Data\LeetxSorting.cs" />
     <Compile Include="Data\DisplaySource.cs" />
+    <Compile Include="Data\Settings.cs" />
     <Compile Include="Data\SizeEntity.cs" />
     <Compile Include="Data\SourceInformation.cs" />
     <Compile Include="Data\SourceToProcess.cs" />
@@ -166,6 +170,7 @@
     <Compile Include="Interfaces\ITorrentParser.cs" />
     <Compile Include="Interfaces\ITorrentDataSource.cs" />
     <Compile Include="Constants\LeetxTorrentIndexer.cs" />
+    <Compile Include="Interfaces\IUserConfiguration.cs" />
     <Compile Include="Mapping\TorrentCategoryMapper.cs" />
     <Compile Include="Mapping\SortingMapper.cs" />
     <Compile Include="Models\ModelBase.cs" />
@@ -178,6 +183,7 @@
     <Compile Include="Services\SourceBase.cs" />
     <Compile Include="Services\ThePirateBayParser.cs" />
     <Compile Include="Services\ThePirateBaySource.cs" />
+    <Compile Include="Services\UserConfiguration.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\TorrentInfoDialogViewModel.cs" />
@@ -205,26 +211,8 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

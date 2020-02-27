@@ -16,7 +16,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
     {
         private readonly ILogService _logger;
 
-        public TorrentInfoDialogViewModel(ILogService logger) : base(new TorrentInfoDialogModel())
+        public TorrentInfoDialogViewModel(ILogService logger)
         {
             _logger = logger;
 

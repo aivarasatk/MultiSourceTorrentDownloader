@@ -1,6 +1,10 @@
-﻿using System;
+﻿using MultiSourceTorrentDownloader.Data;
+using MultiSourceTorrentDownloader.Interfaces;
+using Ninject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,8 +12,9 @@ using System.Windows.Interactivity;
 
 namespace MultiSourceTorrentDownloader.Behaviors
 {
-    public class PersistanceBehavior : Behavior<Window>
+    public class PersistanceBehavior : Behavior<System.Windows.Window>
     {
+        private IUserConfiguration _config;
         protected override void OnAttached()
         {
             AssociatedObject.Loaded += WindowLoaded;
@@ -25,45 +30,42 @@ namespace MultiSourceTorrentDownloader.Behaviors
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
-            if (WindowSizeSettingsExist())
+            var settings = GetUserSettings();
+
+            if(settings.Window == null)
             {
-                AssociatedObject.SizeToContent = SizeToContent.Manual;
-                AssociatedObject.Width = Properties.Settings.Default.WindowWidth;
-                AssociatedObject.Height = Properties.Settings.Default.WindowHeight;
-            }
-            else
                 AssociatedObject.SizeToContent = SizeToContent.WidthAndHeight;
-
-            if (WindowPositionSettingsExist())
-            {
-                AssociatedObject.WindowStartupLocation = Properties.Settings.Default.WindowStartupLocation;
-                AssociatedObject.Left = Properties.Settings.Default.WindowPositionLeft;
-                AssociatedObject.Top = Properties.Settings.Default.WindowPositionTop;
+                return;
             }
+
+            AssociatedObject.SizeToContent = SizeToContent.Manual;
+            AssociatedObject.WindowStartupLocation = WindowStartupLocation.Manual;
+
+            AssociatedObject.Width = settings.Window.Width;
+            AssociatedObject.Height = settings.Window.Height;
+            AssociatedObject.Left = settings.Window.PositionLeft;
+            AssociatedObject.Top = settings.Window.PositionTop;
         }
 
-        private bool WindowSizeSettingsExist()
+        private Settings GetUserSettings()
         {
-            return Properties.Settings.Default.WindowWidth != 0 
-                && Properties.Settings.Default.WindowHeight != 0;
-        }
-
-        private bool WindowPositionSettingsExist()
-        {
-            return Properties.Settings.Default.WindowPositionTop != 0 
-                && Properties.Settings.Default.WindowPositionLeft != 0;
+            var kernel = new StandardKernel();
+            kernel.Load(Assembly.GetExecutingAssembly());
+            _config = kernel.Get<IUserConfiguration>();
+            return _config.GetConfiguration();
         }
 
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Properties.Settings.Default.WindowWidth = AssociatedObject.ActualWidth;
-            Properties.Settings.Default.WindowHeight = AssociatedObject.ActualHeight;
+            var window = new Data.Window
+            {
+                Width = AssociatedObject.ActualWidth,
+                Height = AssociatedObject.ActualHeight,
+                PositionLeft = AssociatedObject.Left,
+                PositionTop = AssociatedObject.Top
+            };
 
-            Properties.Settings.Default.WindowStartupLocation = WindowStartupLocation.Manual;
-            Properties.Settings.Default.WindowPositionLeft = AssociatedObject.Left;
-            Properties.Settings.Default.WindowPositionTop = AssociatedObject.Top;
-
-            Properties.Settings.Default.Save();
+            _config.SaveWindowSettings(window);
         }
     }
 }

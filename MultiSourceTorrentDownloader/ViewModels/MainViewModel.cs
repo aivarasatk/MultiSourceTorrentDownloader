@@ -22,15 +22,17 @@ namespace MultiSourceTorrentDownloader.ViewModels
     {
         private readonly ILogService _logger;
         private readonly ILeetxSource _leetxSource;
-        private TorrentInfoDialogViewModel _torrentInfoDialogViewModel;
+        private readonly IUserConfiguration _userConfiguration;
 
+        private TorrentInfoDialogViewModel _torrentInfoDialogViewModel;
+        
         private string _loadMoreSearchValue = string.Empty;
         private Dictionary<TorrentSource, SourceInformation> _torrentSourceDictionary;
 
         private List<TorrentEntry> _unfilteredTorrentEntries;
 
         public MainViewModel(IThePirateBaySource thePirateBaySource, ILogService logger, ILeetxSource leetxSource,
-            TorrentInfoDialogViewModel torrentInfoDialogViewModel) : base(new MainModel())
+            TorrentInfoDialogViewModel torrentInfoDialogViewModel, IUserConfiguration userConfiguration)
         {
             _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
 
@@ -39,6 +41,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _leetxSource = leetxSource ?? throw new ArgumentNullException(nameof(leetxSource));
             _torrentInfoDialogViewModel = torrentInfoDialogViewModel ?? throw new ArgumentNullException(nameof(torrentInfoDialogViewModel));
+            _userConfiguration = userConfiguration ?? throw new ArgumentNullException(nameof(userConfiguration));
 
             AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, sourceName: "The Pirate Bay");
             AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, sourceName: "1337X");
@@ -87,38 +90,39 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void LoadSettings()
         {
-            var pagesToLoad = Properties.Settings.Default.PagesToLoadOnSearch;
+            var searchSettings = _userConfiguration.GetConfiguration().Search ?? new Search();
+            var pagesToLoad = searchSettings.PagesToLoadOnSeach;
             Model.PagesToLoadBySearch = pagesToLoad == 0 ? 1: pagesToLoad;
 
-            LoadSourceSettings();
+            LoadSourceSettings(searchSettings);
 
-            if (Properties.Settings.Default.SaveSearchSortOrder)
+            if (searchSettings.SaveSearchOrder)
             {
                 Model.SelectedSearchSortOrder = Model.AvailableSortOrders
-                                                     .First(o => o.Key == Properties.Settings.Default.SearchSortOrder);
+                                                     .First(o => o.Key == searchSettings.SearchSortOrder);
                 Model.SaveSearchSortOrder = true;
             }
         }
 
-        private void LoadSourceSettings()
+        private void LoadSourceSettings(Search searchSettings)
         {
-            if (Properties.Settings.Default.SelectedSources == null) return;
+            if (searchSettings.SelectedSources == null) return;
 
-            SetSeletectedSourcesFromSettings();
-            SetUnselectedSourcesFromSettings();
+            SetSeletectedSourcesFromSettings(searchSettings);
+            SetUnselectedSourcesFromSettings(searchSettings);
         }
 
-        private void SetUnselectedSourcesFromSettings()
+        private void SetUnselectedSourcesFromSettings(Search searchSettings)
         {
             var notSelectedSources = Model.AvailableSources
-                                          .Where(s => !Properties.Settings.Default.SelectedSources.Contains(s.Source));
+                                          .Where(s => !searchSettings.SelectedSources.Contains(s.Source));
             foreach (var source in notSelectedSources)
                 source.Selected = false;
         }
 
-        private void SetSeletectedSourcesFromSettings()
+        private void SetSeletectedSourcesFromSettings(Search searchSettings)
         {
-            foreach (var source in Properties.Settings.Default.SelectedSources)
+            foreach (var source in searchSettings.SelectedSources)
             {
                 var availableSource = Model.AvailableSources.FirstOrDefault(s => s.Source == source);
                 if (availableSource == null) continue;
@@ -490,17 +494,16 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         public void Closing (object sender, CancelEventArgs args)
         {
-            Properties.Settings.Default.PagesToLoadOnSearch = Model.PagesToLoadBySearch;
-            Properties.Settings.Default.SelectedSources = Model.AvailableSources
-                                                               .Where(src => src.Selected)
-                                                               .Select(s => s.Source)
-                                                               .ToList();
+            var searchSettings = new Search
+            {
+                PagesToLoadOnSeach = Model.PagesToLoadBySearch,
+                SelectedSources = Model.AvailableSources.Where(src => src.Selected).Select(s => s.Source),
+                SaveSearchOrder = Model.SaveSearchSortOrder,
+                SearchSortOrder = Model.SelectedSearchSortOrder.Key
 
-            Properties.Settings.Default.SaveSearchSortOrder = Model.SaveSearchSortOrder;
-            if (Model.SaveSearchSortOrder)
-                Properties.Settings.Default.SearchSortOrder = Model.SelectedSearchSortOrder.Key;
+            };
 
-            Properties.Settings.Default.Save();
+            _userConfiguration.SaveSearchSettings(searchSettings);
         }
     }
 }

@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.ViewModels
 {
-    public class ViewModelBase<T> where T: ModelBase
+    public class ViewModelBase<T> where T : ModelBase, new()
     {
         public T Model { get; private set; }
 
         private TimeSpan _statusBarFadeTime;
         private IDisposable _statusBarSubscription;
 
-        public ViewModelBase(T model)
+        public ViewModelBase()
         {
-            Model = model;
+            Model = new T();
             Initialize();
         }
 
