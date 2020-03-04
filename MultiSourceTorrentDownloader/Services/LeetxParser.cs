@@ -15,6 +15,7 @@ namespace MultiSourceTorrentDownloader.Services
     {
         private readonly ILogService _logger;
 
+        private const int DataColumnsCount = 6;
         private readonly string[] _formats = new string[]
         {
             "htt MMM. d\\t\\h", //11am Nov. 8th
@@ -51,18 +52,18 @@ namespace MultiSourceTorrentDownloader.Services
                     foreach (var dataRow in tableRows)
                     {
                         var dataColumns = dataRow.SelectNodes("td");
-                        if (dataColumns == null || dataColumns.Count != 6)
+                        if (dataColumns == null || dataColumns.Count != DataColumnsCount)
                         {
                             _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {dataRow.OuterHtml}");
                             continue;
                         }
 
-                        var titleNode = dataColumns[LeetxTorrentColumnIndexer.Name]
+                        var titleNode = dataColumns[LeetxTorrentIndexer.Name]
                                         .SelectNodes("a")?
                                         .FirstOrDefault(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("torrent")));
                         if (titleNode == null)
                         {
-                            _logger.Warning($"Could not find title node for torrent {Environment.NewLine} {dataColumns[LeetxTorrentColumnIndexer.Name].OuterHtml}");
+                            _logger.Warning($"Could not find title node for torrent {Environment.NewLine} {dataColumns[LeetxTorrentIndexer.Name].OuterHtml}");
                             continue;
                         }
 
@@ -82,16 +83,16 @@ namespace MultiSourceTorrentDownloader.Services
 
                         var magnetLink = string.Empty;
 
-                        if (!int.TryParse(dataColumns[LeetxTorrentColumnIndexer.Seeders].InnerText, out var seeders))
-                            _logger.Warning($"Could not parse seeders {Environment.NewLine}{dataColumns[LeetxTorrentColumnIndexer.Seeders].OuterHtml}");
+                        if (!int.TryParse(dataColumns[LeetxTorrentIndexer.Seeders].InnerText, out var seeders))
+                            _logger.Warning($"Could not parse seeders {Environment.NewLine}{dataColumns[LeetxTorrentIndexer.Seeders].OuterHtml}");
 
-                        if (!int.TryParse(dataColumns[LeetxTorrentColumnIndexer.Leechers].InnerText, out var leechers))
-                            _logger.Warning($"Could not parse leechers {Environment.NewLine}{dataColumns[LeetxTorrentColumnIndexer.Leechers].OuterHtml}");
+                        if (!int.TryParse(dataColumns[LeetxTorrentIndexer.Leechers].InnerText, out var leechers))
+                            _logger.Warning($"Could not parse leechers {Environment.NewLine}{dataColumns[LeetxTorrentIndexer.Leechers].OuterHtml}");
 
-                        var date = dataColumns[LeetxTorrentColumnIndexer.Date].InnerText;
+                        var date = dataColumns[LeetxTorrentIndexer.Date].InnerText;
 
-                        var size = dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.Substring(0, dataColumns[LeetxTorrentColumnIndexer.Size].InnerHtml.IndexOf('<'));
-                        var uploader = dataColumns[LeetxTorrentColumnIndexer.Uploader].SelectSingleNode("a")?.InnerText;
+                        var size = dataColumns[LeetxTorrentIndexer.Size].InnerHtml.Substring(0, dataColumns[LeetxTorrentIndexer.Size].InnerHtml.IndexOf('<'));
+                        var uploader = dataColumns[LeetxTorrentIndexer.Uploader].SelectSingleNode("a")?.InnerText;
 
                         var splitSize = size.Split(' ');
                         result.Add(new TorrentEntry

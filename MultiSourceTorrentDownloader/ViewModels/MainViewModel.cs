@@ -21,7 +21,6 @@ namespace MultiSourceTorrentDownloader.ViewModels
     public class MainViewModel :  ViewModelBase<MainModel>
     {
         private readonly ILogService _logger;
-        private readonly ILeetxSource _leetxSource;
         private readonly IUserConfiguration _userConfiguration;
 
         private TorrentInfoDialogViewModel _torrentInfoDialogViewModel;
@@ -32,6 +31,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private List<TorrentEntry> _unfilteredTorrentEntries;
 
         public MainViewModel(IThePirateBaySource thePirateBaySource, ILogService logger, ILeetxSource leetxSource,
+            IRargbSource rargbSource, 
             TorrentInfoDialogViewModel torrentInfoDialogViewModel, IUserConfiguration userConfiguration)
         {
             _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
@@ -39,12 +39,13 @@ namespace MultiSourceTorrentDownloader.ViewModels
             _unfilteredTorrentEntries = new List<TorrentEntry>();
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _leetxSource = leetxSource ?? throw new ArgumentNullException(nameof(leetxSource));
+
             _torrentInfoDialogViewModel = torrentInfoDialogViewModel ?? throw new ArgumentNullException(nameof(torrentInfoDialogViewModel));
             _userConfiguration = userConfiguration ?? throw new ArgumentNullException(nameof(userConfiguration));
 
             AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, sourceName: "The Pirate Bay");
             AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, sourceName: "1337X");
+            AddTorrentSource(TorrentSource.Rargb, rargbSource, startPage: 1, sourceName: "RARGB");
 
             InitializeViewModel();
             LoadSettings();
@@ -245,13 +246,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private async Task<string> GetMagnetLinkFromTorrentEntry(TorrentEntry selectedTorrent)
         {
-            switch (selectedTorrent.Source)
-            {
-                case TorrentSource.Leetx:
-                    return await _leetxSource.GetTorrentMagnetAsync(selectedTorrent.TorrentUri);
-                default:
-                    throw new Exception("Source not defined for getting magnet link");
-            }        
+            var source = _torrentSourceDictionary.First(d => d.Key == selectedTorrent.Source).Value;
+            return await source.DataSource.GetTorrentMagnetAsync(selectedTorrent.TorrentUri);
         }
 
         private void AddTorrentSource(TorrentSource source, ITorrentDataSource dataSource, int startPage, string sourceName)

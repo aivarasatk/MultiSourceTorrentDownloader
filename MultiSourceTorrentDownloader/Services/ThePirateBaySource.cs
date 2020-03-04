@@ -46,11 +46,7 @@ namespace MultiSourceTorrentDownloader.Services
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
         {
-            var fullUrl = Path.Combine(_baseUrl, detailsUri);
-
-            var contents = await UrlGetResponseString(fullUrl);
-
-            return await _parser.ParsePageForDescriptionHtmlAsync(contents);
+            return await BaseGetTorrentDescriptionAsync(detailsUri, _parser);
         }
 
         public async Task<TorrentQueryResult> GetTorrentsByCategoryAsync(string searchFor, int page, Sorting sorting, TorrentCategory category)

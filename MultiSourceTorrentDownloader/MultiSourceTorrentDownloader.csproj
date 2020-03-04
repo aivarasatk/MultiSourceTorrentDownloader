@@ -47,7 +47,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
@@ -58,7 +58,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
@@ -149,6 +149,7 @@
     <Compile Include="Converters\TimeFormatConverter.cs" />
     <Compile Include="Data\LeetxSorting.cs" />
     <Compile Include="Data\DisplaySource.cs" />
+    <Compile Include="Data\RargbSorting.cs" />
     <Compile Include="Data\Settings.cs" />
     <Compile Include="Data\SizeEntity.cs" />
     <Compile Include="Data\SourceInformation.cs" />
@@ -168,11 +169,16 @@
     <Compile Include="Interfaces\ITorrentDataSource.cs" />
     <Compile Include="Constants\LeetxTorrentIndexer.cs" />
     <Compile Include="Interfaces\IUserConfiguration.cs" />
+    <Compile Include="Interfaces\IRargbParser.cs" />
+    <Compile Include="Interfaces\IRargbSource.cs" />
     <Compile Include="Mapping\TorrentCategoryMapper.cs" />
     <Compile Include="Mapping\SortingMapper.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\TorrentInfoDialogModel.g.cs" />
     <Compile Include="Models\TorrentInfoDialogModel.cs" />
+    <Compile Include="Services\RargbParser.cs" />
+    <Compile Include="Services\RargbSource.cs" />
+    <Compile Include="Constants\RargbTorrentIndexer.cs" />
     <Compile Include="Services\LeetxParser.cs" />
     <Compile Include="Services\LeetxSource.cs" />
     <Compile Include="Services\LogService.cs" />

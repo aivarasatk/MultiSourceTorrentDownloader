@@ -32,30 +32,19 @@ namespace MultiSourceTorrentDownloader.Services
         public async Task<TorrentQueryResult> GetTorrentsAsync(string searchFor, int page, Sorting sorting)
         {
             var mapperSorting = SortingMapper.SortingToLeetxSorting(sorting);
-
             var fullUrl = Path.Combine(_searchEndpoint, searchFor, mapperSorting.SortedBy, mapperSorting.Order, page.ToString()) + Path.DirectorySeparatorChar;
-
             var contents = await UrlGetResponseString(fullUrl);
-
             return await _parser.ParsePageForTorrentEntriesAsync(contents);
         }
 
         public async Task<string> GetTorrentMagnetAsync(string detailsUri)
         {
-            var fullUrl = Path.Combine(_baseUrl, detailsUri);
-
-            var contents = await UrlGetResponseString(fullUrl);
-
-            return await _parser.ParsePageForMagnetAsync(contents);
+            return await BaseGetTorrentMagnetAsync(detailsUri, _parser);
         }
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
         {
-            var fullUrl = Path.Combine(_baseUrl, detailsUri);
-
-            var contents = await UrlGetResponseString(fullUrl);
-
-            return await _parser.ParsePageForDescriptionHtmlAsync(contents);
+            return await BaseGetTorrentDescriptionAsync(detailsUri, _parser);
         }
 
         public async Task<TorrentQueryResult> GetTorrentsByCategoryAsync(string searchFor, int page, Sorting sorting, TorrentCategory category)
@@ -64,9 +53,7 @@ namespace MultiSourceTorrentDownloader.Services
             var mappedCategory = TorrentCategoryMapper.ToLeetxCategory(category);
 
             var fullUrl = Path.Combine(_categorySearchEndpoint, searchFor, mappedCategory, mapperSorting.SortedBy, mapperSorting.Order, page.ToString()) + Path.DirectorySeparatorChar;
-
             var contents = await UrlGetResponseString(fullUrl);
-
             return await _parser.ParsePageForTorrentEntriesAsync(contents);
         }
 

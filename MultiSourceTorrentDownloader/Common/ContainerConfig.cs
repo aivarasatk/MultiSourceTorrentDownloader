@@ -20,6 +20,9 @@ namespace MultiSourceTorrentDownloader.Common
             Bind<IThePirateBaySource>().To<ThePirateBaySource>().InTransientScope();
             Bind<IThePirateBayParser>().To<ThePirateBayParser>().InTransientScope();
 
+            Bind<IRargbSource>().To<RargbSource>().InTransientScope();
+            Bind<IRargbParser>().To<RargbParser>().InTransientScope();
+
             Bind<IUserConfiguration>().To<UserConfiguration>().InSingletonScope();
         }
     }

@@ -12,54 +12,50 @@ namespace MultiSourceTorrentDownloader.Mapping
     {
         public static int SortingToThePirateBaySorting(Sorting sorting)
         {
-            switch (sorting)
+            return sorting switch
             {
-                case Sorting.LeechersAsc:
-                    return (int)ThePirateBaySorting.LeechersAsc;
-                case Sorting.LeecherssDesc:
-                    return (int)ThePirateBaySorting.LeecherssDesc;
-                case Sorting.SeedersAsc:
-                    return (int)ThePirateBaySorting.SeedersAsc;
-                case Sorting.SeedersDesc:
-                    return (int)ThePirateBaySorting.SeedersDesc;
-                case Sorting.SizeAsc:
-                    return (int)ThePirateBaySorting.SizeAsc;
-                case Sorting.SizeDesc:
-                    return (int)ThePirateBaySorting.SizeDesc;
-                case Sorting.TimeAsc:
-                    return (int)ThePirateBaySorting.UploadedAsc;
-                case Sorting.TimeDesc:
-                    return (int)ThePirateBaySorting.UploadedDesc;
-
-                default:
-                    throw new ArgumentException($"Unrecognized sorting option");
-            }
+                Sorting.LeechersAsc => (int)ThePirateBaySorting.LeechersAsc,
+                Sorting.LeecherssDesc => (int)ThePirateBaySorting.LeecherssDesc,
+                Sorting.SeedersAsc => (int)ThePirateBaySorting.SeedersAsc,
+                Sorting.SeedersDesc => (int)ThePirateBaySorting.SeedersDesc,
+                Sorting.SizeAsc => (int)ThePirateBaySorting.SizeAsc,
+                Sorting.SizeDesc => (int)ThePirateBaySorting.SizeDesc,
+                Sorting.TimeAsc => (int)ThePirateBaySorting.UploadedAsc,
+                Sorting.TimeDesc => (int)ThePirateBaySorting.UploadedDesc,
+                _ => throw new ArgumentException($"Unrecognized sorting option"),
+            };
         }
 
         public static LeetxSorting SortingToLeetxSorting(Sorting sorting)
         {
-            switch (sorting)
+            return sorting switch
             {
-                case Sorting.LeechersAsc:
-                    return new LeetxSorting { Order = "asc", SortedBy = "leechers" };
-                case Sorting.LeecherssDesc:
-                    return new LeetxSorting { Order = "desc", SortedBy = "leechers" };
-                case Sorting.SeedersAsc:
-                    return new LeetxSorting { Order = "asc", SortedBy = "seeders" };
-                case Sorting.SeedersDesc:
-                    return new LeetxSorting { Order = "desc", SortedBy = "seeders" };
-                case Sorting.SizeAsc:
-                    return new LeetxSorting { Order = "asc", SortedBy = "size" };
-                case Sorting.SizeDesc:
-                    return new LeetxSorting { Order = "desc", SortedBy = "size" };
-                case Sorting.TimeAsc:
-                    return new LeetxSorting { Order = "asc", SortedBy = "time" };
-                case Sorting.TimeDesc:
-                    return new LeetxSorting { Order = "desc", SortedBy = "time" };
+                Sorting.LeechersAsc => new LeetxSorting { Order = "asc", SortedBy = "leechers" },
+                Sorting.LeecherssDesc => new LeetxSorting { Order = "desc", SortedBy = "leechers" },
+                Sorting.SeedersAsc => new LeetxSorting { Order = "asc", SortedBy = "seeders" },
+                Sorting.SeedersDesc => new LeetxSorting { Order = "desc", SortedBy = "seeders" },
+                Sorting.SizeAsc => new LeetxSorting { Order = "asc", SortedBy = "size" },
+                Sorting.SizeDesc => new LeetxSorting { Order = "desc", SortedBy = "size" },
+                Sorting.TimeAsc => new LeetxSorting { Order = "asc", SortedBy = "time" },
+                Sorting.TimeDesc => new LeetxSorting { Order = "desc", SortedBy = "time" },
+                _ => throw new ArgumentException($"Unrecognized sorting option")
+            };
+        }
 
-                default:
-                    throw new ArgumentException($"Unrecognized sorting option");
-            }
+        public static RargbSorting SortingToRargbSorting(Sorting sorting)
+        {
+            return sorting switch
+            {
+                Sorting.LeechersAsc => new RargbSorting { By = "asc", Order = "leechers" },
+                Sorting.LeecherssDesc => new RargbSorting { By = "desc", Order = "leechers" },
+                Sorting.SeedersAsc => new RargbSorting { By = "asc", Order = "seeders" },
+                Sorting.SeedersDesc => new RargbSorting { By = "desc", Order = "seeders" },
+                Sorting.SizeAsc => new RargbSorting { By = "asc", Order = "size" },
+                Sorting.SizeDesc => new RargbSorting { By = "desc", Order = "size" },
+                Sorting.TimeAsc => new RargbSorting { By = "asc", Order = "data" },
+                Sorting.TimeDesc => new RargbSorting { By = "desc", Order = "data" },
+                _ => throw new ArgumentException($"Unrecognized sorting option")
+            };
         }
     }
 }

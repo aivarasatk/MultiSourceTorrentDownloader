@@ -11,44 +11,40 @@ namespace MultiSourceTorrentDownloader.Mapping
     {
         public static string ToThePirateBayCategory(TorrentCategory category)
         {
-            switch (category)
+            return category switch
             {
-                case TorrentCategory.Applications:
-                    return "300";
-                case TorrentCategory.Games:
-                    return "400";
-                case TorrentCategory.Movies:
-                    return "201,202,207";
-                case TorrentCategory.Music:
-                    return "101";
-                case TorrentCategory.TV:
-                    return "205,208";
-                case TorrentCategory.XXX:
-                    return "500";
-
-                default: throw new ArgumentException($"Unexpected torrent category: {category}");
-            }
+                TorrentCategory.Applications => "300",
+                TorrentCategory.Games => "400",
+                TorrentCategory.Movies => "201,202,207",
+                TorrentCategory.Music => "101",
+                TorrentCategory.TV => "205,208",
+                TorrentCategory.XXX => "500",
+                _ => throw new ArgumentException($"Unexpected torrent category: {category}")
+            };
         }
 
         public static string ToLeetxCategory(TorrentCategory category)
         {
-            switch (category)
-            {
-                case TorrentCategory.Applications:
-                    return "Apps";
-                case TorrentCategory.Games:
-                    return "Games";
-                case TorrentCategory.Movies:
-                    return "Movies";
-                case TorrentCategory.Music:
-                    return "Music";
-                case TorrentCategory.TV:
-                    return "TV";
-                case TorrentCategory.XXX:
-                    return "XXX";
+            return DirectMapping(category);
+        }
 
-                default: throw new ArgumentException($"Unexpected torrent category: {category}");
-            }
+        public  static string ToRargbCategory(TorrentCategory category)
+        {
+            return DirectMapping(category).ToLower();
+        }
+
+        private static string DirectMapping(TorrentCategory category)
+        {
+            return category switch
+            {
+                TorrentCategory.Applications => "Apps",
+                TorrentCategory.Games => "Games",
+                TorrentCategory.Movies => "Movies",
+                TorrentCategory.Music => "Music",
+                TorrentCategory.TV => "TV",
+                TorrentCategory.XXX => "XXX",
+                _ => throw new ArgumentException($"Unexpected torrent category: {category}")
+            };
         }
     }
 }

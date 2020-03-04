@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiSourceTorrentDownloader.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,20 @@ namespace MultiSourceTorrentDownloader.Services
         protected string TorrentUrl(string torrentUri)
         {
             return Path.Combine(_baseUrl, torrentUri);
+        }
+
+        protected async Task<string> BaseGetTorrentDescriptionAsync(string detailsUri, ITorrentParser parser)
+        {
+            var fullUrl = Path.Combine(_baseUrl, detailsUri);
+            var contents = await UrlGetResponseString(fullUrl);
+            return await parser.ParsePageForDescriptionHtmlAsync(contents);
+        }
+
+        protected async Task<string> BaseGetTorrentMagnetAsync(string detailsUri, ITorrentParser parser)
+        {
+            var fullUrl = Path.Combine(_baseUrl, detailsUri);
+            var contents = await UrlGetResponseString(fullUrl);
+            return await parser.ParsePageForMagnetAsync(contents);
         }
     }
 }

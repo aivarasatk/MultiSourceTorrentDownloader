@@ -1,7 +1,7 @@
 ﻿
 namespace Constants.MultiSourceTorrentDownloader
 {
-    public static class LeetxTorrentColumnIndexer
+    public static class LeetxTorrentIndexer
     {
         public const int Name = 0;
         public const int Seeders = 1;
