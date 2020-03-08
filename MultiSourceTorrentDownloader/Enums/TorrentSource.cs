@@ -5,6 +5,7 @@ namespace MultiSourceTorrentDownloader.Enums
     {
         ThePirateBay,
         Leetx,
-        Rargb
+        Rargb,
+        Kickass
     }
 }

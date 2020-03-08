@@ -31,7 +31,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private List<TorrentEntry> _unfilteredTorrentEntries;
 
         public MainViewModel(IThePirateBaySource thePirateBaySource, ILogService logger, ILeetxSource leetxSource,
-            IRargbSource rargbSource, 
+            IRargbSource rargbSource, IKickassSource kickassSource,
             TorrentInfoDialogViewModel torrentInfoDialogViewModel, IUserConfiguration userConfiguration)
         {
             _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
@@ -46,6 +46,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, sourceName: "The Pirate Bay");
             AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, sourceName: "1337X");
             AddTorrentSource(TorrentSource.Rargb, rargbSource, startPage: 1, sourceName: "RARGB");
+            AddTorrentSource(TorrentSource.Kickass, kickassSource, startPage: 1, sourceName: "Kickass Torrents");
 
             InitializeViewModel();
             LoadSettings();

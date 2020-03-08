@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Services
 {
-    public class RargbParser : ParserBase, IRargbParser
+    public class KickassParser : ParserBase, IKickassParser
     {
         private readonly ILogService _logger;
 
-        public RargbParser(ILogService logger)
+        public KickassParser(ILogService logger)
         {
-            DataColumnCount = 8;
+            DataColumnCount = 6;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -27,10 +27,10 @@ namespace MultiSourceTorrentDownloader.Services
             {
                 var htmlDocument = LoadedHtmlDocument(pageContents);
 
-                var descriptionNode = htmlDocument.DocumentNode.SelectSingleNode("//td[@id='description']");
+                var descriptionNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='textcontent']");
                 if (descriptionNode == null)
                 {
-                    _logger.Warning("Could not find description node for RARGB");
+                    _logger.Warning("Could not find description node for Kickass");
                     return string.Empty;
                 }
 
@@ -40,20 +40,20 @@ namespace MultiSourceTorrentDownloader.Services
 
         public async Task<string> ParsePageForMagnetAsync(string pageContents)
         {
-            _logger.Information("RARGB magnet parsing parsing");
+            _logger.Information("Kickass magnet parsing parsing");
             return await BaseParseMagnet(pageContents);
         }
 
         public async Task<TorrentQueryResult> ParsePageForTorrentEntriesAsync(string pageContents)
         {
-            return await Task.Run(() => 
+            return await Task.Run(() =>
             {
                 try
                 {
-                    _logger.Information("RARGB parsing");
+                    _logger.Information("Kickass parsing");
                     var htmlAgility = LoadedHtmlDocument(pageContents);
 
-                    var tableRows = htmlAgility.DocumentNode.SelectNodes("//tr[@class='lista2']");//gets table rows that contain torrent data
+                    var tableRows = htmlAgility.DocumentNode.SelectNodes("//tr[@class='odd'] | //tr[@class='even']");//gets table rows that contain torrent data
                     if (NoTableEntries(tableRows))
                         return new TorrentQueryResult { IsLastPage = true };
 
@@ -61,21 +61,21 @@ namespace MultiSourceTorrentDownloader.Services
                     foreach (var row in tableRows)
                     {
                         var columns = row.SelectNodes("td");
-                        if(columns == null || columns.Count != DataColumnCount)
+                        if (columns == null || columns.Count != DataColumnCount)
                         {
                             _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {row.OuterHtml}");
                             continue;
                         }
 
-                        var titleNode = columns[RargbTorrentIndexer.Name]
-                                        .SelectSingleNode("a");
+                        var titleNode = columns[KickassTorrentIndexer.Name]
+                                        .SelectSingleNode("div/div/a[@class='cellMainLink']");
                         if (titleNode == null)
                         {
-                            _logger.Warning($"Could not find title node for torrent {Environment.NewLine} {columns[RargbTorrentIndexer.Name].OuterHtml}");
+                            _logger.Warning($"Could not find title node for torrent {Environment.NewLine} {columns[KickassTorrentIndexer.Name].OuterHtml}");
                             continue;
                         }
 
-                        var title = titleNode.InnerText;
+                        var title = titleNode.InnerText.Trim();
                         if (string.IsNullOrEmpty(title))//empty title entry makes no sense. log and skip
                         {
                             _logger.Warning($"Empty title from {Environment.NewLine}{titleNode.OuterHtml}");
@@ -91,16 +91,16 @@ namespace MultiSourceTorrentDownloader.Services
 
                         var magnetLink = string.Empty;
 
-                        if (!int.TryParse(columns[RargbTorrentIndexer.Seeders].InnerText, out var seeders))
-                            _logger.Warning($"Could not parse seeders {Environment.NewLine}{columns[RargbTorrentIndexer.Seeders].OuterHtml}");
+                        if (!int.TryParse(columns[KickassTorrentIndexer.Seeders].InnerText, out var seeders))
+                            _logger.Warning($"Could not parse seeders {Environment.NewLine}{columns[KickassTorrentIndexer.Seeders].OuterHtml}");
 
-                        if (!int.TryParse(columns[RargbTorrentIndexer.Leechers].InnerText, out var leechers))
-                            _logger.Warning($"Could not parse leechers {Environment.NewLine}{columns[RargbTorrentIndexer.Leechers].OuterHtml}");
+                        if (!int.TryParse(columns[KickassTorrentIndexer.Leechers].InnerText, out var leechers))
+                            _logger.Warning($"Could not parse leechers {Environment.NewLine}{columns[KickassTorrentIndexer.Leechers].OuterHtml}");
 
-                        var date = columns[RargbTorrentIndexer.Date].InnerText;
+                        var date = columns[KickassTorrentIndexer.Date].InnerText.Trim();
 
-                        var size = columns[RargbTorrentIndexer.Size].InnerText;
-                        var uploader = columns[RargbTorrentIndexer.Uploader].InnerText;
+                        var size = columns[KickassTorrentIndexer.Size].InnerText.Trim();
+                        var uploader = columns[KickassTorrentIndexer.Uploader].InnerText.Trim();
 
                         var splitSize = size.Split(' ');
                         result.Add(new TorrentEntry
@@ -108,7 +108,7 @@ namespace MultiSourceTorrentDownloader.Services
                             Title = title,
                             TorrentUri = TrimUriStart(torrentUri),
                             TorrentMagnet = magnetLink,
-                            Date = DateTime.Parse(date),
+                            Date = ParseDate(date),
                             Size = new SizeEntity
                             {
                                 Value = double.Parse(splitSize[0], CultureInfo.InvariantCulture),
@@ -117,11 +117,11 @@ namespace MultiSourceTorrentDownloader.Services
                             Uploader = uploader,
                             Seeders = seeders,
                             Leechers = leechers,
-                            Source = TorrentSource.Rargb
+                            Source = TorrentSource.Kickass
                         });
                     }
 
-                    var pagination = htmlAgility.DocumentNode.SelectSingleNode("//div[@id='pager_links']");
+                    var pagination = htmlAgility.DocumentNode.SelectSingleNode("//div[@class='pages botmarg5px floatright']");
 
                     return new TorrentQueryResult
                     {
@@ -130,17 +130,37 @@ namespace MultiSourceTorrentDownloader.Services
                     };
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    _logger.Warning("RARGB parse exception", ex);
+                    _logger.Warning("Kickass parse exception", ex);
                     throw;
                 }
             });
         }
 
+        private DateTime ParseDate(string date)
+        {
+            var digitEndIndex = 0;
+            foreach(var c in date)
+            {
+                if (char.IsLetter(c))
+                    break;
+                digitEndIndex++;
+            }
+
+            int.TryParse(date.Substring(0, digitEndIndex), out var numberToSubtract);
+            var parsedDate = DateTime.UtcNow;
+
+            if (date.Contains("min.")) parsedDate = parsedDate.AddMinutes(-numberToSubtract);
+            if (date.Contains("hour")) parsedDate = parsedDate.AddHours(-numberToSubtract);
+            if (date.Contains("day")) parsedDate = parsedDate.AddDays(-numberToSubtract);
+            if (date.Contains("month")) parsedDate = parsedDate.AddMonths(-numberToSubtract);
+            if (date.Contains("year")) parsedDate = parsedDate.AddYears(-numberToSubtract);
+
+            return parsedDate;
+        }
         private bool IsLastPage(HtmlNode pagination) => pagination == null || pagination.SelectNodes("a").All(n => n.InnerText != ">>");
 
         private bool NoTableEntries(HtmlNodeCollection tableRows) => tableRows == null;
-
     }
 }

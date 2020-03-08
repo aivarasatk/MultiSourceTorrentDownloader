@@ -42,6 +42,22 @@ namespace MultiSourceTorrentDownloader.Mapping
             };
         }
 
+        public static KickassSorting SortingToKickassSorting(Sorting sorting)
+        {
+            return sorting switch
+            {
+                Sorting.LeechersAsc => new KickassSorting { Sort = "asc", SortBy = "leechers" },
+                Sorting.LeecherssDesc => new KickassSorting { Sort = "desc", SortBy = "leechers" },
+                Sorting.SeedersAsc => new KickassSorting { Sort = "asc", SortBy = "seeders" },
+                Sorting.SeedersDesc => new KickassSorting { Sort = "desc", SortBy = "seeders" },
+                Sorting.SizeAsc => new KickassSorting { Sort = "asc", SortBy = "size" },
+                Sorting.SizeDesc => new KickassSorting { Sort = "desc", SortBy = "size" },
+                Sorting.TimeAsc => new KickassSorting { Sort = "asc", SortBy = "time" },
+                Sorting.TimeDesc => new KickassSorting { Sort = "desc", SortBy = "time" },
+                _ => throw new ArgumentException($"Unrecognized sorting option")
+            };
+        }
+
         public static RargbSorting SortingToRargbSorting(Sorting sorting)
         {
             return sorting switch

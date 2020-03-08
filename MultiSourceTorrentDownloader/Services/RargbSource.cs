@@ -28,7 +28,7 @@ namespace MultiSourceTorrentDownloader.Services
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["RargbSearchEndpoint"]);
         }
 
-        public string FullTorrentUrl(string uri) => Path.Combine(_baseUrl, uri);
+        public string FullTorrentUrl(string uri) => TorrentUrl(uri);
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
         {

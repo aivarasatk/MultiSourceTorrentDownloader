@@ -46,5 +46,10 @@ namespace MultiSourceTorrentDownloader.Mapping
                 _ => throw new ArgumentException($"Unexpected torrent category: {category}")
             };
         }
+
+        internal static string ToKickassCategory(TorrentCategory category)
+        {
+            return DirectMapping(category).ToLower();
+        }
     }
 }

@@ -11,11 +11,7 @@ Unzip the file and launch the MultiSourceTorrentDownloader.exe or create a short
 <b>Some users have reported that torrents are not launching on their local torrent download app a fix for that is to execute the app as admin</b>
 
 ## Future
-This is an ongoing project.
-
-- More popular sources
-- More features
-- Customizability
+This is an ongoing project. Progress board can be viewed on [Trello](https://trello.com/b/O3gltd5G/multi-source-torrent-downloader)
 
 ### Screenshots
 ![launched](demo/launched.png)

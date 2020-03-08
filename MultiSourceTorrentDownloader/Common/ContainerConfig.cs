@@ -23,6 +23,9 @@ namespace MultiSourceTorrentDownloader.Common
             Bind<IRargbSource>().To<RargbSource>().InTransientScope();
             Bind<IRargbParser>().To<RargbParser>().InTransientScope();
 
+            Bind<IKickassSource>().To<KickassSource>().InTransientScope();
+            Bind<IKickassParser>().To<KickassParser>().InTransientScope();
+
             Bind<IUserConfiguration>().To<UserConfiguration>().InSingletonScope();
         }
     }

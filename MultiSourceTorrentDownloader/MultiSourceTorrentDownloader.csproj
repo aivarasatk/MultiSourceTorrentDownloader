@@ -85,6 +85,9 @@
     <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=106.0.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.10.1\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
@@ -108,6 +111,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -147,6 +151,7 @@
     <Compile Include="Converters\TorrentCategoryToBooleanConverter.cs" />
     <Compile Include="Converters\MessageTypeToBackgroundConverter.cs" />
     <Compile Include="Converters\TimeFormatConverter.cs" />
+    <Compile Include="Data\KickassSorting.cs" />
     <Compile Include="Data\LeetxSorting.cs" />
     <Compile Include="Data\DisplaySource.cs" />
     <Compile Include="Data\RargbSorting.cs" />
@@ -162,6 +167,8 @@
     <Compile Include="Enums\TorrentCategory.cs" />
     <Compile Include="Enums\TorrentSource.cs" />
     <Compile Include="Extensions\ObservableCollectionForEachExtension.cs" />
+    <Compile Include="Interfaces\IKickassParser.cs" />
+    <Compile Include="Interfaces\IKickassSource.cs" />
     <Compile Include="Interfaces\ILeetxParser.cs" />
     <Compile Include="Interfaces\ILeetxSource.cs" />
     <Compile Include="Interfaces\IThePirateBayParser.cs" />
@@ -171,6 +178,9 @@
     <Compile Include="Interfaces\IUserConfiguration.cs" />
     <Compile Include="Interfaces\IRargbParser.cs" />
     <Compile Include="Interfaces\IRargbSource.cs" />
+    <Compile Include="Services\KickassParser.cs" />
+    <Compile Include="Services\KickassSource.cs" />
+    <Compile Include="Constants\KickassTorrentIndexer.cs" />
     <Compile Include="Mapping\TorrentCategoryMapper.cs" />
     <Compile Include="Mapping\SortingMapper.cs" />
     <Compile Include="Models\ModelBase.cs" />
@@ -187,7 +197,6 @@
     <Compile Include="Services\ThePirateBayParser.cs" />
     <Compile Include="Services\ThePirateBaySource.cs" />
     <Compile Include="Services\UserConfiguration.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\TorrentInfoDialogViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />

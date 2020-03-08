@@ -27,6 +27,7 @@ namespace MultiSourceTorrentDownloader.Services
 
         public ThePirateBayParser(ILogService logger)
         {
+            DataColumnCount = 3;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _dateStringToReplace = "Uploaded";
@@ -51,7 +52,7 @@ namespace MultiSourceTorrentDownloader.Services
                     foreach (var dataRow in tableRows)
                     {
                         var dataColumns = dataRow.SelectNodes("td[position()>1]");//skips first column because it does not contain useful info
-                        if (dataColumns == null || dataColumns.Count != 3)
+                        if (dataColumns == null || dataColumns.Count != DataColumnCount)
                         {
                             _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {dataColumns[ThePirateBayTorrentIndexer.TitleNode].OuterHtml}");
                             continue;
@@ -185,7 +186,7 @@ namespace MultiSourceTorrentDownloader.Services
            
         }
 
-        protected override string ParseSizePostfix(string postfix)
+        private string ParseSizePostfix(string postfix)
         {
             if (postfix == "B") return SizePostfix.KiloBytes;
             if (postfix == "KiB") return SizePostfix.KiloBytes;

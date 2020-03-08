@@ -15,7 +15,6 @@ namespace MultiSourceTorrentDownloader.Services
     {
         private readonly ILogService _logger;
 
-        private const int DataColumnsCount = 6;
         private readonly string[] _formats = new string[]
         {
             "htt MMM. d\\t\\h", //11am Nov. 8th
@@ -31,6 +30,7 @@ namespace MultiSourceTorrentDownloader.Services
 
         public LeetxParser(ILogService logger)
         {
+            DataColumnCount = 6;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -52,7 +52,7 @@ namespace MultiSourceTorrentDownloader.Services
                     foreach (var dataRow in tableRows)
                     {
                         var dataColumns = dataRow.SelectNodes("td");
-                        if (dataColumns == null || dataColumns.Count != DataColumnsCount)
+                        if (dataColumns == null || dataColumns.Count != DataColumnCount)
                         {
                             _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {dataRow.OuterHtml}");
                             continue;
@@ -134,21 +134,8 @@ namespace MultiSourceTorrentDownloader.Services
 
         public async Task<string> ParsePageForMagnetAsync(string pageContents)
         {
-            return await Task.Run(() =>
-            {
-                _logger.Information("Leetx magnet parsing parsing");
-                var htmlAgility = new HtmlDocument();
-                htmlAgility.LoadHtml(pageContents);
-
-                var magnetNode = htmlAgility.DocumentNode
-                                            .SelectNodes("//a")
-                                            .FirstOrDefault(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("magnet")));
-
-                if (magnetNode == null)
-                    throw new Exception($"Magnet node is not found");
-
-                return magnetNode.Attributes.First(m => m.Name == "href").Value;
-            });
+            _logger.Information("Leetx magnet parsing parsing");
+            return await BaseParseMagnet(pageContents);
         }
 
         public async Task<string> ParsePageForDescriptionHtmlAsync(string pageContents)
@@ -166,11 +153,6 @@ namespace MultiSourceTorrentDownloader.Services
                 //hack around images. downloaded img src is pointing to empty .svg. need to redirect to data-original
                 return descriptionNode.InnerHtml.Replace("src", "nothing").Replace("data-original", "src");
             });
-        }
-
-        protected override string ParseSizePostfix(string postfix)
-        {
-            throw new NotImplementedException();
         }
     }
 }
