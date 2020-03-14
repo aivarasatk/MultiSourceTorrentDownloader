@@ -29,7 +29,7 @@
     <i:Interaction.Behaviors>
         <behaviors:PersistanceBehavior />
     </i:Interaction.Behaviors>
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -41,10 +41,6 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-
-    <Window.InputBindings>
-        <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
-    </Window.InputBindings>
 
     <!-- TORRENT INFO CONTROL -->
     <materialDesign:DialogHost Identifier="RootDialog" CloseOnClickAway="True" DialogMargin="0"> <!-- to show in-window popups-->
@@ -91,7 +87,11 @@
                                 <TextBox x:Name="SearchBox" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" Width="300" 
                                         materialDesign:HintAssist.Hint="Search for torrents.." 
                                         ToolTip="Pressing enter will activate search"
-                                        materialDesign:TextFieldAssist.HasClearButton="True"/>
+                                        materialDesign:TextFieldAssist.HasClearButton="True">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
+                                    </TextBox.InputBindings>
+                                </TextBox>
 
                                 <Button Command="{Binding SearchCommand}" Height="28" VerticalAlignment="Bottom" Margin="8,0,0,0">
                                     <materialDesign:PackIcon Kind="Search" />
@@ -160,7 +160,7 @@
 
                                                     <TextBlock Margin="8,0,0,0" Grid.Column="0" VerticalAlignment="Center">
                                                         <Hyperlink Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenTorrentInfoCommand}" >
-                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14" TextTrimming="CharacterEllipsis"/>
+                                                            <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" FontWeight="Bold" FontSize="14" TextTrimming="CharacterEllipsis"/>
                                                         </Hyperlink>        
                                                     </TextBlock>
 

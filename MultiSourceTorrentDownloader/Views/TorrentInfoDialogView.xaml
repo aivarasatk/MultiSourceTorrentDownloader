@@ -63,7 +63,8 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Title}" FontWeight="Bold"/>
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Title}" ToolTip="{Binding Title}" FontWeight="Bold" 
+                           TextTrimming="CharacterEllipsis" MaxWidth="600" HorizontalAlignment="Left"/>
 
                 <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,8,0,0">
                     <StackPanel Orientation="Horizontal">
