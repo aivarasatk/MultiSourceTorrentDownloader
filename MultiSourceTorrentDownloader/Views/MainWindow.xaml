@@ -220,7 +220,6 @@
                 </Grid>
 
                 <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel Background="LightGray" Opacity="0.5"/>
                     <materialDesign:Card UniformCornerRadius="14" Padding="4" Width="50" Height="50">
                         <ProgressBar Height="30" Width="30" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" />
                     </materialDesign:Card>

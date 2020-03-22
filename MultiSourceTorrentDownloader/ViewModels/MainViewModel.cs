@@ -72,6 +72,11 @@ namespace MultiSourceTorrentDownloader.ViewModels
                 Model.SearchCommand.RaiseCanExecuteChanged();
                 Model.LoadMoreCommand.RaiseCanExecuteChanged();
             });
+            Model.IsLoadingObservable.Subscribe(_ =>
+            {
+                Model.SearchCommand.RaiseCanExecuteChanged();
+                Model.LoadMoreCommand.RaiseCanExecuteChanged();
+            });
 
             Model.AvailableSources.ForEach(CheckCanExecuteSearchCommands);
         }
@@ -285,7 +290,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
         {
            return !string.IsNullOrEmpty(_loadMoreSearchValue) 
                 && (_unfilteredTorrentEntries.Count != 0 || Model.TorrentEntries.Count != 0)
-                && Model.AvailableSources.Any(s => s.Selected && !_torrentSourceDictionary[s.Source].LastPage);
+                && Model.AvailableSources.Any(s => s.Selected && !_torrentSourceDictionary[s.Source].LastPage)
+                && !Model.IsLoading;
         }
 
         private async Task OnSearch(object obj = null)
@@ -471,7 +477,9 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private bool CanExecuteSearch(object obj = null)
         {
-            return !string.IsNullOrEmpty(Model.SearchValue) && Model.AvailableSources.Any(s => s.Selected);
+            return !string.IsNullOrEmpty(Model.SearchValue) 
+                && Model.AvailableSources.Any(s => s.Selected) 
+                && !Model.IsLoading;
         }
 
         private IEnumerable<KeyValuePair<Sorting, string>> SearchSortOrders()

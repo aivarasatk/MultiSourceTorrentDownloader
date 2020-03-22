@@ -13,7 +13,23 @@ namespace MultiSourceTorrentDownloader.Models
         public bool IsLoading
         {
             get => _isLoading;
-            set => this.MutateVerbose(ref _isLoading, value, RaisePropertyChanged());
+            set 
+            { 
+                this.MutateVerbose(ref _isLoading, value, RaisePropertyChanged());
+                _isLoadingSubject.OnNext(value);
+            }
+        }
+
+        private ISubject<bool> _isLoadingSubject = new Subject<bool>();
+
+        public ISubject<bool> IsLoadingObservable
+        {
+            get => _isLoadingSubject;
+            set
+            {
+                if (value != _isLoadingSubject)
+                    _isLoadingSubject = value;
+            }
         }
 
         public string SearchValue
