@@ -44,7 +44,7 @@ namespace MultiSourceTorrentDownloader.Services
                     _logger.Information("ThePirateBay parsing");
                     var htmlDocument = LoadedHtmlDocument(pageContents);
 
-                    var tableRows = htmlDocument.DocumentNode.SelectNodes("//table[@id='searchResult']/tr");//gets table rows that contain torrent data
+                    var tableRows = htmlDocument.DocumentNode.SelectNodes("//table[@id='searchResult']/tr");//gets table rows that contain torrent data without table header
                     if (NoTableEntries(tableRows))//probably end of results
                         return new TorrentQueryResult { IsLastPage = true };
 
@@ -54,7 +54,7 @@ namespace MultiSourceTorrentDownloader.Services
                         var dataColumns = dataRow.SelectNodes("td[position()>1]");//skips first column because it does not contain useful info
                         if (dataColumns == null || dataColumns.Count != DataColumnCount)
                         {
-                            _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {dataColumns[ThePirateBayTorrentIndexer.TitleNode].OuterHtml}");
+                            _logger.Warning($"Could not find all columns for torrent {Environment.NewLine} {dataRow.OuterHtml}");
                             continue;
                         }
 

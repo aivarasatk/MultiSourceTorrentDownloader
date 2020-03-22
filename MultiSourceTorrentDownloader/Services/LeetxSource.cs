@@ -5,7 +5,6 @@ using MultiSourceTorrentDownloader.Mapping;
 using System;
 using System.Configuration;
 using System.IO;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Services
@@ -22,8 +21,6 @@ namespace MultiSourceTorrentDownloader.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
 
-            _httpClient = new HttpClient();
-            _httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
             _baseUrl = ConfigurationManager.AppSettings["LeetxUrl"];
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["LeetxSearchEndpoint"]);
             _categorySearchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["LeetxCategorySearchEndpoint"]); 
@@ -44,7 +41,7 @@ namespace MultiSourceTorrentDownloader.Services
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
         {
-            return await BaseGetTorrentDescriptionAsync(detailsUri, _parser);
+            return await BaseGetTorrentDescriptionAsync(Path.Combine(_baseUrl, detailsUri), _parser);
         }
 
         public async Task<TorrentQueryResult> GetTorrentsByCategoryAsync(string searchFor, int page, Sorting sorting, TorrentCategory category)

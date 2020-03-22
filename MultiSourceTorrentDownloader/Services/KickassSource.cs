@@ -4,13 +4,8 @@ using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Mapping;
 using RestSharp;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Services
@@ -31,6 +26,7 @@ namespace MultiSourceTorrentDownloader.Services
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["KickassSearchEndpoint"]);
 
             _restClient = new RestClient(_baseUrl);
+            _restClient.Timeout = 10 * 1000;
         }
 
         public string FullTorrentUrl(string uri) => TorrentUrl(uri);

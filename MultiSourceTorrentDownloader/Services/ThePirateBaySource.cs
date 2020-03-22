@@ -3,10 +3,8 @@ using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Mapping;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Services
@@ -21,18 +19,22 @@ namespace MultiSourceTorrentDownloader.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
 
-            _httpClient = new HttpClient
-            {
-                Timeout = TimeSpan.FromMilliseconds(5000)
-            };
             _baseUrl = ConfigurationManager.AppSettings["ThePirateBayUrl"];
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["ThePirateBaySearchEndpoint"]);
+
+            _mirrors = new[]
+            {
+                "https://tpb.party/",
+                "https://thepiratebay0.org/",
+                "https://thepiratebay10.org/",
+                "https://piratebay1.live/"
+            };
         }
 
         public async Task<TorrentQueryResult> GetTorrentsAsync(string searchFor, int page, Sorting sorting)
         {
             var mappedSortOption = SortingMapper.SortingToThePirateBaySorting(sorting);
-            var fullUrl = Path.Combine(_searchEndpoint, searchFor, page.ToString(), mappedSortOption.ToString());
+            var fullUrl = Path.Combine(_searchEndpoint, searchFor, page.ToString(), mappedSortOption.ToString(), "0");
 
             var contents = await UrlGetResponseString(fullUrl);
 
@@ -46,7 +48,8 @@ namespace MultiSourceTorrentDownloader.Services
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
         {
-            return await BaseGetTorrentDescriptionAsync(detailsUri, _parser);
+            var fullUrl = detailsUri.Contains(_baseUrl) ? detailsUri : Path.Combine(_baseUrl, detailsUri);//mirrors have full url while original has it without baseUrl
+            return await BaseGetTorrentDescriptionAsync(fullUrl, _parser);
         }
 
         public async Task<TorrentQueryResult> GetTorrentsByCategoryAsync(string searchFor, int page, Sorting sorting, TorrentCategory category)
@@ -60,6 +63,6 @@ namespace MultiSourceTorrentDownloader.Services
             return await _parser.ParsePageForTorrentEntriesAsync(contents);
         }
 
-        public string FullTorrentUrl(string uri) => TorrentUrl(uri);
+        public string FullTorrentUrl(string uri) => uri.Contains(_baseUrl) ? uri : TorrentUrl(uri);
     }
 }

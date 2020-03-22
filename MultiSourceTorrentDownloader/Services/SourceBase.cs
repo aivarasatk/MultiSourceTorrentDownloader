@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Services
@@ -14,6 +12,14 @@ namespace MultiSourceTorrentDownloader.Services
         protected HttpClient _httpClient;
         protected string _baseUrl;
         protected string _searchEndpoint;
+
+        protected IEnumerable<string> _mirrors;
+
+        public SourceBase()
+        {
+            _httpClient = new HttpClient();
+            _httpClient.Timeout = TimeSpan.FromMilliseconds(10000);
+        }
 
         protected async Task<string> UrlGetResponseString(string url)
         {
@@ -28,9 +34,8 @@ namespace MultiSourceTorrentDownloader.Services
             return Path.Combine(_baseUrl, torrentUri);
         }
 
-        protected async Task<string> BaseGetTorrentDescriptionAsync(string detailsUri, ITorrentParser parser)
+        protected async Task<string> BaseGetTorrentDescriptionAsync(string fullUrl, ITorrentParser parser)
         {
-            var fullUrl = Path.Combine(_baseUrl, detailsUri);
             var contents = await UrlGetResponseString(fullUrl);
             return await parser.ParsePageForDescriptionHtmlAsync(contents);
         }
