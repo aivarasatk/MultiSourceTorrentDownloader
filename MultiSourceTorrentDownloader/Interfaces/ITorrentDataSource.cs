@@ -1,5 +1,6 @@
 ﻿using MultiSourceTorrentDownloader.Data;
 using MultiSourceTorrentDownloader.Enums;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Interfaces
@@ -10,6 +11,8 @@ namespace MultiSourceTorrentDownloader.Interfaces
         Task<TorrentQueryResult> GetTorrentsByCategoryAsync(string searchFor, int page, Sorting sorting, TorrentCategory category);
         Task<string> GetTorrentMagnetAsync(string detailsUri);
         Task<string> GetTorrentDescriptionAsync(string detailsUri);
+
+        IAsyncEnumerable<SourceState> GetSourceStates();
 
         string FullTorrentUrl(string uri);
     }

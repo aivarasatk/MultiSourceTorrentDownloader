@@ -48,7 +48,7 @@
         <materialDesign:DrawerHost>
 
             <materialDesign:DrawerHost.LeftDrawerContent>
-                <views:DrawerView />
+                <views:DrawerView DataContext="{Binding Settings}"/>
             </materialDesign:DrawerHost.LeftDrawerContent>
             <Grid>
                 <Grid.Resources>

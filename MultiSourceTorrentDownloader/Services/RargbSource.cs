@@ -3,6 +3,7 @@ using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Mapping;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Threading;
@@ -21,9 +22,26 @@ namespace MultiSourceTorrentDownloader.Services
 
             _baseUrl = ConfigurationManager.AppSettings["RargbUrl"];
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["RargbSearchEndpoint"]);
+
+            //_mirrors = new[]
+            //{
+            //    "https://rarbgproxied.org/",
+            //    "https://rarbgget.org/",
+            //    "https://rarbgunblock.com/",
+            //    "https://rarbgmirror.com/",
+            //    "https://rarbg2020.org/"
+            //};
         }
 
         public string FullTorrentUrl(string uri) => TorrentUrl(uri);
+
+        public async IAsyncEnumerable<SourceState> GetSourceStates()
+        {
+            await foreach (var source in BaseGetSourceStates(_ => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
+            {
+                yield return source;
+            }
+        }
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
         {

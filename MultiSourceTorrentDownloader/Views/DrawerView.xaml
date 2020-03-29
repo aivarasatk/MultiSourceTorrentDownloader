@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MultiSourceTorrentDownloader.Views"
+             xmlns:model="clr-namespace:MultiSourceTorrentDownloader.Models.SubModels"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance d:Type=model:MainModelSettings}">
 
     <StackPanel Orientation="Vertical" Margin="24">
         <DockPanel>
@@ -36,7 +38,26 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <CheckBox Content="{Binding SourceName}" IsChecked="{Binding Selected}"/>
+                        <CheckBox Content="{Binding SourceName}" IsChecked="{Binding Selected}">
+                            <CheckBox.ToolTip>
+                                <ListBox ItemsSource="{Binding SourceStates}">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding SourceName}"/>
+                                                <TextBlock Text="{Binding IsAlive}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </CheckBox.ToolTip>
+                        </CheckBox>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

@@ -1,5 +1,6 @@
 ﻿using MultiSourceTorrentDownloader.Data;
 using MultiSourceTorrentDownloader.Enums;
+using MultiSourceTorrentDownloader.Models.SubModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -75,13 +76,6 @@ namespace MultiSourceTorrentDownloader.Models
                     _torrentFilterSubject = value;
             }
         }
-        
-
-        public IEnumerable<KeyValuePair<Sorting, string>> AvailableSortOrders
-        {
-            get => _availableSortOrders;
-            set => this.MutateVerbose(ref _availableSortOrders, value, RaisePropertyChanged());
-        }
 
         private ISubject<KeyValuePair<Sorting, string>> _selectedSearchSortOrderSubject = new Subject<KeyValuePair<Sorting, string>>();
 
@@ -105,10 +99,10 @@ namespace MultiSourceTorrentDownloader.Models
             }
         }
 
-        public bool SaveSearchSortOrder
+        public IEnumerable<KeyValuePair<Sorting, string>> AvailableSortOrders
         {
-            get => _saveSearchSortOrder;
-            set => this.MutateVerbose(ref _saveSearchSortOrder, value, RaisePropertyChanged());
+            get => _availableSortOrders;
+            set => this.MutateVerbose(ref _availableSortOrders, value, RaisePropertyChanged());
         }
 
         public TorrentEntry SelectedTorrent
@@ -123,16 +117,10 @@ namespace MultiSourceTorrentDownloader.Models
             set => this.MutateVerbose(ref _selectedTorrentCategory, value, RaisePropertyChanged());
         }
 
-        public int PagesToLoadBySearch
+        public MainModelSettings Settings
         {
-            get => _pagesToLoadBySearch;
-            set => this.MutateVerbose(ref _pagesToLoadBySearch, value, RaisePropertyChanged());
-        }
-
-        public ObservableCollection<int> SelectablePages
-        {
-            get => _selectablePages;
-            set => this.MutateVerbose(ref _selectablePages, value, RaisePropertyChanged());
+            get => _settings;
+            set => this.MutateVerbose(ref _settings, value, RaisePropertyChanged());
         }
     }
 }

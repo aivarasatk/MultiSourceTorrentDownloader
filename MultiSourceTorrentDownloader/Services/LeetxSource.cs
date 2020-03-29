@@ -3,6 +3,7 @@ using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Mapping;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
@@ -55,5 +56,13 @@ namespace MultiSourceTorrentDownloader.Services
         }
 
         public string FullTorrentUrl(string uri) => TorrentUrl(uri);
+
+        public async IAsyncEnumerable<SourceState> GetSourceStates()
+        {
+            await foreach (var source in BaseGetSourceStates(_ => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
+            {
+                yield return source;
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ using MultiSourceTorrentDownloader.Enums;
 using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Mapping;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
@@ -14,15 +15,18 @@ namespace MultiSourceTorrentDownloader.Services
         private readonly ILogService _logger;
         private readonly IThePirateBayParser _parser;
 
+        private readonly string _searchResource;
         public ThePirateBaySource(ILogService logger, IThePirateBayParser parser)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
 
             _baseUrl = ConfigurationManager.AppSettings["ThePirateBayUrl"];
-            _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["ThePirateBaySearchEndpoint"]);
 
-            _mirrors = new[]
+            _searchResource = ConfigurationManager.AppSettings["ThePirateBaySearchEndpoint"];
+            _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
+
+            _mirrors = new[]// TODO: FROM CONFIG
             {
                 "https://tpb.party/",
                 "https://thepiratebay0.org/",
@@ -64,5 +68,18 @@ namespace MultiSourceTorrentDownloader.Services
         }
 
         public string FullTorrentUrl(string uri) => uri.Contains(_baseUrl) ? uri : TorrentUrl(uri);
+
+        public async IAsyncEnumerable<SourceState> GetSourceStates()
+        {
+            await foreach (var source in BaseGetSourceStates(baseUrl =>
+            {
+                _searchEndpoint = Path.Combine(baseUrl, _searchResource);//TODO: more graceful way of changing endpoints
+                return GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc);
+            }))
+            {
+                yield return source;
+            }
+            _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
+        }
     }
 }

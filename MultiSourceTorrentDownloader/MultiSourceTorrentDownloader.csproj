@@ -76,6 +76,9 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=3.0.1.920, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.3.0.1\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
@@ -99,6 +102,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Interactive.Async, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Interactive.Async.4.0.0\lib\net461\System.Interactive.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Async, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Async.4.0.0\lib\net461\System.Linq.Async.dll</HintPath>
+    </Reference>
     <Reference Include="System.Reactive, Version=4.3.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reactive.4.3.2\lib\net46\System.Reactive.dll</HintPath>
     </Reference>
@@ -158,6 +167,7 @@
     <Compile Include="Data\Settings.cs" />
     <Compile Include="Data\SizeEntity.cs" />
     <Compile Include="Data\SourceInformation.cs" />
+    <Compile Include="Data\SourceState.cs" />
     <Compile Include="Data\SourceToProcess.cs" />
     <Compile Include="Data\TorrentEntry.cs" />
     <Compile Include="Data\TorrentPaging.cs" />
@@ -178,6 +188,10 @@
     <Compile Include="Interfaces\IUserConfiguration.cs" />
     <Compile Include="Interfaces\IRargbParser.cs" />
     <Compile Include="Interfaces\IRargbSource.cs" />
+
+    <Compile Include="Models\SubModels\MainModelSettings.cs" />
+    <Compile Include="Models\SubModels\MainModelSettings.g.cs" />
+    
     <Compile Include="Services\KickassParser.cs" />
     <Compile Include="Services\KickassSource.cs" />
     <Compile Include="Constants\KickassTorrentIndexer.cs" />

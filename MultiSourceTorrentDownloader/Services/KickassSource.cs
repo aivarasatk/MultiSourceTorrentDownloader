@@ -4,6 +4,7 @@ using MultiSourceTorrentDownloader.Interfaces;
 using MultiSourceTorrentDownloader.Mapping;
 using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
@@ -26,10 +27,18 @@ namespace MultiSourceTorrentDownloader.Services
             _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["KickassSearchEndpoint"]);
 
             _restClient = new RestClient(_baseUrl);
-            _restClient.Timeout = 10 * 1000;
+            _restClient.Timeout = 7 * 1000;
         }
 
         public string FullTorrentUrl(string uri) => TorrentUrl(uri);
+
+        public async IAsyncEnumerable<SourceState> GetSourceStates()
+        {
+            await foreach (var source in BaseGetSourceStates(_ => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
+            {
+                yield return source;
+            }
+        }
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
         {

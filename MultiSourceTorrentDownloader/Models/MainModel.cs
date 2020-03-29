@@ -2,6 +2,7 @@
 using MultiSourceTorrentDownloader.Common;
 using MultiSourceTorrentDownloader.Data;
 using MultiSourceTorrentDownloader.Enums;
+using MultiSourceTorrentDownloader.Models.SubModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,23 +15,19 @@ namespace MultiSourceTorrentDownloader.Models
         {
             TorrentEntries = new ObservableCollection<TorrentEntry>();
             AvailableSortOrders = new List<KeyValuePair<Sorting, string>>();
-            AvailableSources = new ObservableCollection<DisplaySource>();
-            SelectablePages = new ObservableCollection<int>();
+            Settings = new MainModelSettings();
         }
+
+        private MainModelSettings _settings;
 
         private bool _isLoading;
         private string _searchValue;
-        private string _torrentFilter;
-
-        public ObservableCollection<DisplaySource> AvailableSources { get; set; }
-        private int _pagesToLoadBySearch;
-        private ObservableCollection<int> _selectablePages;
+        private string _torrentFilter;      
 
         public ObservableCollection<TorrentEntry> TorrentEntries { get; set; }
 
-        private IEnumerable<KeyValuePair<Sorting, string>> _availableSortOrders;
         private KeyValuePair<Sorting, string> _selectedSearchSortOrder;
-        private bool _saveSearchSortOrder;
+        private IEnumerable<KeyValuePair<Sorting, string>> _availableSortOrders;
 
         private TorrentEntry _selectedTorrent;
         private TorrentCategory _selectedTorrentCategory;
