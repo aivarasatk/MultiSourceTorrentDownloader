@@ -9,69 +9,84 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance d:Type=model:MainModelSettings}">
 
-    <StackPanel Orientation="Vertical" Margin="24">
-        <DockPanel>
-            <TextBlock Text="Settings" VerticalAlignment="Center" FontSize="18"/>
-            <Button Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Orientation="Vertical" Margin="24">
+            <DockPanel>
+                <TextBlock Text="Settings" VerticalAlignment="Center" FontSize="18"/>
+                <Button Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
                             CommandParameter="{x:Static Dock.Left}"
                             Margin="4"
                             HorizontalAlignment="Right"
                             Style="{DynamicResource MaterialDesignFlatButton}" Height="35">
-                <materialDesign:PackIcon Kind="ArrowRight" Width="30" Height="30"/>
-            </Button>
-        </DockPanel>
+                    <materialDesign:PackIcon Kind="ArrowRight" Width="30" Height="30"/>
+                </Button>
+            </DockPanel>
 
-        <GroupBox Margin="0,16,0,0">
-            <GroupBox.Header>
-                <StackPanel Orientation="Horizontal" ToolTip="Sets which websites to use for torrent search">
-                    <materialDesign:PackIcon Kind="Information" Foreground="White"/>
-                    <TextBlock Text="Sources" Margin="8,0,0,0" Foreground="White"/>
-                </StackPanel>
-            </GroupBox.Header>
+            <GroupBox Margin="0,16,0,0">
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal" ToolTip="Sets which websites to use for torrent search">
+                        <materialDesign:PackIcon Kind="Information" Foreground="White"/>
+                        <TextBlock Text="Sources" Margin="8,0,0,0" Foreground="White"/>
+                    </StackPanel>
+                </GroupBox.Header>
 
-            <ListBox x:Name="SelectableSources" ItemsSource="{Binding AvailableSources}">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
+                <Grid>
+                    <ListBox ItemsSource="{Binding AvailableSources}" Grid.IsSharedSizeScope="True">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" SharedSizeGroup="col0"/>
+                                    </Grid.ColumnDefinitions>
 
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <CheckBox Content="{Binding SourceName}" IsChecked="{Binding Selected}">
-                            <CheckBox.ToolTip>
-                                <ListBox ItemsSource="{Binding SourceStates}">
-                                    <ListBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Vertical"/>
-                                        </ItemsPanelTemplate>
-                                    </ListBox.ItemsPanel>
-
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
+                                    <Expander Grid.Column="0" x:Name="SourceExpander">
+                                        <Expander.Header>
                                             <StackPanel Orientation="Horizontal">
+                                                <CheckBox IsChecked="{Binding Selected}" Margin="0,0,8,0"/>
                                                 <TextBlock Text="{Binding SourceName}"/>
-                                                <TextBlock Text="{Binding IsAlive}"/>
                                             </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </CheckBox.ToolTip>
-                        </CheckBox>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </GroupBox>
+                                        </Expander.Header>
 
-        <StackPanel Orientation="Vertical" Margin="0,24,0,0">
-            <StackPanel Orientation="Horizontal" ToolTip="Sets how many pages the initial search will try to load. Impacts load time!">
-                <materialDesign:PackIcon Kind="Information"  VerticalAlignment="Bottom"/>
-                <TextBlock Text="Pages:" Margin="8,0,0,0" VerticalAlignment="Bottom"/>
-                <ComboBox ItemsSource="{Binding SelectablePages}" SelectedItem="{Binding PagesToLoadBySearch}" Margin="32,0,0,0"/>
+                                        <ListBox ItemsSource="{Binding SourceStates}" Grid.IsSharedSizeScope="True">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="auto" SharedSizeGroup="col0"/>
+                                                            <ColumnDefinition Width="auto" SharedSizeGroup="col1"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <RadioButton Grid.Column="0" IsChecked="{Binding Selected}" Content="{Binding SourceName}" 
+                                                                     GroupName="{Binding DataContext.Source, ElementName=SourceExpander}" Margin="0,0,8,0"/>
+                                                        <TextBlock Grid.Column="1" Text="{Binding IsAlive}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Expander>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <materialDesign:Card Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                         UniformCornerRadius="14" Padding="4" Width="50" Height="50">
+                        <ProgressBar Height="30" Width="30" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" />
+                    </materialDesign:Card>
+                </Grid>
+                
+            </GroupBox>
+
+            <StackPanel Orientation="Vertical" Margin="0,24,0,0">
+                <StackPanel Orientation="Horizontal" ToolTip="Sets how many pages the initial search will try to load. Impacts load time!">
+                    <materialDesign:PackIcon Kind="Information"  VerticalAlignment="Bottom"/>
+                    <TextBlock Text="Pages:" Margin="8,0,0,0" VerticalAlignment="Bottom"/>
+                    <ComboBox ItemsSource="{Binding SelectablePages}" SelectedItem="{Binding PagesToLoadBySearch}" Margin="32,0,0,0"/>
+                </StackPanel>
             </StackPanel>
+
+            <CheckBox Margin="0,24,0,0" Content="Save search order" IsChecked="{Binding SaveSearchSortOrder}"/>
+
         </StackPanel>
-
-        <CheckBox Margin="0,24,0,0" Content="Save search order" IsChecked="{Binding SaveSearchSortOrder}"/>
-
-    </StackPanel>
+    </ScrollViewer>
+    
 </UserControl>

@@ -15,7 +15,8 @@ namespace MultiSourceTorrentDownloader.Services
         private readonly ILogService _logger;
         private readonly ILeetxParser _parser;
 
-        private readonly string _categorySearchEndpoint;
+        private string _categorySearchResource;
+        private string _categorySearchEndpoint;
 
         public LeetxSource(ILogService logger, ILeetxParser parser)
         {
@@ -23,8 +24,22 @@ namespace MultiSourceTorrentDownloader.Services
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
 
             _baseUrl = ConfigurationManager.AppSettings["LeetxUrl"];
-            _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["LeetxSearchEndpoint"]);
-            _categorySearchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["LeetxCategorySearchEndpoint"]); 
+            _searchResource = ConfigurationManager.AppSettings["LeetxSearchEndpoint"];
+            _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
+
+            _categorySearchResource = ConfigurationManager.AppSettings["LeetxCategorySearchEndpoint"];
+            _categorySearchEndpoint = Path.Combine(_baseUrl, _categorySearchResource); 
+        }
+
+        public void UpdateUsedSource(string newBaseUrl)
+        {
+            BaseUpdateUsedSource(newBaseUrl);
+            _categorySearchEndpoint = Path.Combine(_baseUrl, _categorySearchResource);
+        }
+
+        public IEnumerable<string> GetSources()
+        {
+            return BaseGetSources();
         }
 
         public async Task<TorrentQueryResult> GetTorrentsAsync(string searchFor, int page, Sorting sorting)
@@ -59,10 +74,8 @@ namespace MultiSourceTorrentDownloader.Services
 
         public async IAsyncEnumerable<SourceState> GetSourceStates()
         {
-            await foreach (var source in BaseGetSourceStates(_ => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
-            {
+            await foreach (var source in BaseGetSourceStates(() => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
                 yield return source;
-            }
         }
     }
 }

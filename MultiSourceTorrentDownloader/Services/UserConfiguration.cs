@@ -24,10 +24,16 @@ namespace MultiSourceTorrentDownloader.Services
             Directory.CreateDirectory(currAppDir);
 
             _windowSettingsPath = Path.Combine(currAppDir, "windowSettings.json");
-            if (!File.Exists(_windowSettingsPath)) File.Create(_windowSettingsPath);
+            if (!File.Exists(_windowSettingsPath))
+            {
+                using var windowsFile = File.Create(_windowSettingsPath);
+            }
 
             _searchSettingsPath = Path.Combine(currAppDir, "searchSettings.json");
-            if (!File.Exists(_searchSettingsPath)) File.Create(_searchSettingsPath);
+            if (!File.Exists(_searchSettingsPath))
+            {
+                using var searchFile = File.Create(_searchSettingsPath);
+            }
         }
 
         public Settings GetConfiguration()

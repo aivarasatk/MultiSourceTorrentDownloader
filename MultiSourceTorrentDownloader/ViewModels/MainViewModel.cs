@@ -46,39 +46,52 @@ namespace MultiSourceTorrentDownloader.ViewModels
             _torrentInfoDialogViewModel = torrentInfoDialogViewModel ?? throw new ArgumentNullException(nameof(torrentInfoDialogViewModel));
             _userConfiguration = userConfiguration ?? throw new ArgumentNullException(nameof(userConfiguration));
 
-            AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, sourceName: "The Pirate Bay");
-            AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, sourceName: "1337X");
-            AddTorrentSource(TorrentSource.Rargb, rargbSource, startPage: 1, sourceName: "RARGB");
-            AddTorrentSource(TorrentSource.Kickass, kickassSource, startPage: 1, sourceName: "Kickass Torrents");
+            AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, siteName: "The Pirate Bay");
+            AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, siteName: "1337X");
+            AddTorrentSource(TorrentSource.Rargb, rargbSource, startPage: 1, siteName: "RARGB");
+            AddTorrentSource(TorrentSource.Kickass, kickassSource, startPage: 1, siteName: "Kickass Torrents");
 
             InitializeViewModel();
 
-            SetSourceAvailablitiesAsync();
-
             LoadSettings();
+
+            SetSourceAvailablitiesAsync();
         }
 
         private void SetSourceAvailablitiesAsync()
         {
             Task.Run(async () =>
             {
+                Model.Settings.IsLoading = true;
                 foreach (var source in _torrentSourceDictionary)
                 {
-                    var availableSource = Model.Settings.AvailableSources.First(s => s.Source == source.Key);
+                    var availableSites = Model.Settings.AvailableSources.First(s => s.Source == source.Key);
 
-                    await _dispatcher.InvokeAsync(async () =>
+                    await foreach (var sourceState in source.Value.DataSource.GetSourceStates())
                     {
-                        availableSource.IsLoadingSourceStates = true;
-
-                        await foreach (var sourceState in source.Value.DataSource.GetSourceStates())
+                        var matchingSource = availableSites.SourceStates.First(s => s.SourceName == sourceState.SourceName);
+                        await _dispatcher.InvokeAsync(() =>
                         {
-                            availableSource.SourceStates.Add(sourceState);
-                        }
-
-                        availableSource.IsLoadingSourceStates = false;
-                    });
+                            matchingSource.IsAlive = sourceState.IsAlive;
+                        });
+                    }
                 }
+                Model.Settings.IsLoading = false;
+            }).ContinueWith(_ =>
+            {
+                SetDefaultSourceSelection();
             });
+        }
+
+        private void SetDefaultSourceSelection()
+        {
+            foreach (var source in Model.Settings.AvailableSources)
+            {
+                if ((source.Selected && source.SourceStates.All(s => !s.Selected)) || !source.Selected)
+                {
+                    source.SourceStates.First().Selected = true;
+                }
+            }
         }
 
         private void InitializeViewModel()
@@ -86,6 +99,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.AvailableSortOrders = SearchSortOrders();
             Model.Settings.SelectablePages = new ObservableCollection<int>(Enumerable.Range(1,10));
             Model.SelectedSearchSortOrder = Model.AvailableSortOrders.First();
+
             Model.SearchCommand = new Command(async (obj) => await OnSearch(), CanExecuteSearch);
             Model.LoadMoreCommand = new Command(OnLoadMore, CanLoadMore);
             Model.OpenTorrentInfoCommand = new Command(OnOpenTorrentInfoCommand);
@@ -108,6 +122,26 @@ namespace MultiSourceTorrentDownloader.ViewModels
             });
 
             Model.Settings.AvailableSources.ForEach(CheckCanExecuteSearchCommands);
+            Model.Settings.AvailableSources.ForEach(s => s.SourceStates.ForEach(st => st.SelectedObservable.Subscribe(SelectedSourceChanged)));
+        }
+
+        private void SelectedSourceChanged(bool selected)
+        {
+            //on selected two instances are selected for some time,
+            //on getting !selected we know that only the new source is selected
+            if (!selected)
+                UpdateTorrentSources();
+        }
+
+        private void UpdateTorrentSources()
+        {
+            foreach(var site in Model.Settings.AvailableSources)
+            {
+                var selectedSource = site.SourceStates.FirstOrDefault(s => s.Selected);
+                if (selectedSource == null) continue;
+
+                _torrentSourceDictionary[site.Source].DataSource.UpdateUsedSource(selectedSource.SourceName);
+            }
         }
 
         private void OnCopyTorrentLinkCommand(object obj)
@@ -151,19 +185,28 @@ namespace MultiSourceTorrentDownloader.ViewModels
         private void SetUnselectedSourcesFromSettings(Search searchSettings)
         {
             var notSelectedSources = Model.Settings.AvailableSources
-                                          .Where(s => !searchSettings.SelectedSources.Contains(s.Source));
+                .Where(s => !searchSettings.SelectedSources.ContainsKey(s.Source));
+
             foreach (var source in notSelectedSources)
                 source.Selected = false;
         }
 
         private void SetSeletectedSourcesFromSettings(Search searchSettings)
         {
-            foreach (var source in searchSettings.SelectedSources)
+            foreach (var site in searchSettings.SelectedSources)
             {
-                var availableSource = Model.Settings.AvailableSources.FirstOrDefault(s => s.Source == source);
-                if (availableSource == null) continue;
+                var availableSite = Model.Settings.AvailableSources.FirstOrDefault(s => s.Source == site.Key);
+                if (availableSite == null) continue;
 
-                availableSource.Selected = true;
+                availableSite.Selected = true;
+
+                var source = availableSite.SourceStates.FirstOrDefault(s => s.SourceName == site.Value);
+                if (source != null)
+                {
+                    source.Selected = true;
+                    _torrentSourceDictionary[availableSite.Source].DataSource.UpdateUsedSource(site.Value);
+                }
+
             }
         }
 
@@ -285,14 +328,19 @@ namespace MultiSourceTorrentDownloader.ViewModels
             return await source.DataSource.GetTorrentMagnetAsync(selectedTorrent.TorrentUri);
         }
 
-        private void AddTorrentSource(TorrentSource source, ITorrentDataSource dataSource, int startPage, string sourceName)
+        private void AddTorrentSource(TorrentSource source, ITorrentDataSource dataSource, int startPage, string siteName)
         {
-            Model.Settings.AvailableSources.Add(new DisplaySource
+            var availableSite = new DisplaySource
             {
                 Selected = true,
-                SourceName = sourceName,
-                Source = source,
-            });
+                SourceName = siteName,
+                Source = source
+            };
+
+            foreach (var sourceName in dataSource.GetSources())
+                availableSite.SourceStates.Add(new SourceStateUI(sourceName, isAlive: false, selected: false));
+
+            Model.Settings.AvailableSources.Add(availableSite);
 
             _torrentSourceDictionary.Add(source, new SourceInformation
             {
@@ -531,7 +579,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
             var searchSettings = new Search
             {
                 PagesToLoadOnSeach = Model.Settings.PagesToLoadBySearch,
-                SelectedSources = Model.Settings.AvailableSources.Where(src => src.Selected).Select(s => s.Source),
+                SelectedSources = Model.Settings.AvailableSources.Where(src => src.Selected)
+                                                                 .ToDictionary(k => k.Source, e => e.SourceStates.Single(s => s.Selected).SourceName),
                 SaveSearchOrder = Model.Settings.SaveSearchSortOrder,
                 SearchSortOrder = Model.SelectedSearchSortOrder.Key
 

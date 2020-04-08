@@ -10,6 +10,12 @@ namespace MultiSourceTorrentDownloader.Models.SubModels
 {
     public partial class MainModelSettings
     {
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => this.MutateVerbose(ref _isLoading, value, RaisePropertyChanged());
+        }
+
         public bool SaveSearchSortOrder
         {
             get => _saveSearchSortOrder;

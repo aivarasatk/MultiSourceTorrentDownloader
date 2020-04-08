@@ -21,7 +21,9 @@ namespace MultiSourceTorrentDownloader.Services
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
 
             _baseUrl = ConfigurationManager.AppSettings["RargbUrl"];
-            _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["RargbSearchEndpoint"]);
+
+            _searchResource = ConfigurationManager.AppSettings["RargbSearchEndpoint"];
+            _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
 
             //_mirrors = new[]
             //{
@@ -33,14 +35,21 @@ namespace MultiSourceTorrentDownloader.Services
             //};
         }
 
+        public IEnumerable<string> GetSources()
+        {
+            return BaseGetSources();
+        }
+
+        public void UpdateUsedSource(string newBaseUrl)
+        {
+            BaseUpdateUsedSource(newBaseUrl);
+        }
         public string FullTorrentUrl(string uri) => TorrentUrl(uri);
 
         public async IAsyncEnumerable<SourceState> GetSourceStates()
         {
-            await foreach (var source in BaseGetSourceStates(_ => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
-            {
+            await foreach (var source in BaseGetSourceStates(() => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
                 yield return source;
-            }
         }
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)

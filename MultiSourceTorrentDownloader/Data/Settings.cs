@@ -25,7 +25,7 @@ namespace MultiSourceTorrentDownloader.Data
     public class Search
     {
         public int PagesToLoadOnSeach { get; set; }
-        public IEnumerable<TorrentSource> SelectedSources { get; set; }
+        public Dictionary<TorrentSource, string> SelectedSources { get; set; }
         public bool SaveSearchOrder { get; set; }
         public Sorting SearchSortOrder { get; set; }
     }

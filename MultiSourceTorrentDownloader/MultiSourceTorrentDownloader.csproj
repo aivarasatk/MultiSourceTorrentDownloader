@@ -168,6 +168,7 @@
     <Compile Include="Data\SizeEntity.cs" />
     <Compile Include="Data\SourceInformation.cs" />
     <Compile Include="Data\SourceState.cs" />
+    <Compile Include="Data\SourceStateUI.cs" />
     <Compile Include="Data\SourceToProcess.cs" />
     <Compile Include="Data\TorrentEntry.cs" />
     <Compile Include="Data\TorrentPaging.cs" />
@@ -188,10 +189,9 @@
     <Compile Include="Interfaces\IUserConfiguration.cs" />
     <Compile Include="Interfaces\IRargbParser.cs" />
     <Compile Include="Interfaces\IRargbSource.cs" />
-
+    <Compile Include="Models\DataModelBase.cs" />
     <Compile Include="Models\SubModels\MainModelSettings.cs" />
     <Compile Include="Models\SubModels\MainModelSettings.g.cs" />
-    
     <Compile Include="Services\KickassParser.cs" />
     <Compile Include="Services\KickassSource.cs" />
     <Compile Include="Constants\KickassTorrentIndexer.cs" />

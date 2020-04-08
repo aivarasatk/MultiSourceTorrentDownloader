@@ -24,7 +24,9 @@ namespace MultiSourceTorrentDownloader.Services
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
 
             _baseUrl = ConfigurationManager.AppSettings["KickassUrl"];
-            _searchEndpoint = Path.Combine(_baseUrl, ConfigurationManager.AppSettings["KickassSearchEndpoint"]);
+            _searchResource = ConfigurationManager.AppSettings["KickassSearchEndpoint"];
+
+            _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
 
             _restClient = new RestClient(_baseUrl);
             _restClient.Timeout = 7 * 1000;
@@ -32,12 +34,15 @@ namespace MultiSourceTorrentDownloader.Services
 
         public string FullTorrentUrl(string uri) => TorrentUrl(uri);
 
+        public IEnumerable<string> GetSources()
+        {
+            return BaseGetSources();
+        }
+
         public async IAsyncEnumerable<SourceState> GetSourceStates()
         {
-            await foreach (var source in BaseGetSourceStates(_ => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
-            {
+            await foreach (var source in BaseGetSourceStates(() => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
                 yield return source;
-            }
         }
 
         public async Task<string> GetTorrentDescriptionAsync(string detailsUri)
@@ -75,6 +80,11 @@ namespace MultiSourceTorrentDownloader.Services
             var response = await HttpGetAsync(fullUrl);
 
             return await _parser.ParsePageForTorrentEntriesAsync(response.Content);
+        }
+
+        public void UpdateUsedSource(string newBaseUrl)
+        {
+            BaseUpdateUsedSource(newBaseUrl);
         }
 
         private async Task<IRestResponse> HttpGetAsync(string fullUrl)

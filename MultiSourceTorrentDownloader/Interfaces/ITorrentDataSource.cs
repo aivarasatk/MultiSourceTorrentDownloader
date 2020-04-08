@@ -12,7 +12,9 @@ namespace MultiSourceTorrentDownloader.Interfaces
         Task<string> GetTorrentMagnetAsync(string detailsUri);
         Task<string> GetTorrentDescriptionAsync(string detailsUri);
 
+        IEnumerable<string> GetSources();
         IAsyncEnumerable<SourceState> GetSourceStates();
+        void UpdateUsedSource(string newBaseUrl);
 
         string FullTorrentUrl(string uri);
     }

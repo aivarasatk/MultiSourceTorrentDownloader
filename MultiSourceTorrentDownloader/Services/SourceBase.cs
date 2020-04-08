@@ -13,6 +13,7 @@ namespace MultiSourceTorrentDownloader.Services
         protected HttpClient _httpClient;
         protected string _baseUrl;
         protected string _searchEndpoint;
+        protected string _searchResource;
 
         protected IEnumerable<string> _mirrors;
 
@@ -50,30 +51,44 @@ namespace MultiSourceTorrentDownloader.Services
             return await parser.ParsePageForMagnetAsync(contents);
         }
 
+        protected IEnumerable<string> BaseGetSources()
+        {
+            var allSources = new List<string>();
+            allSources.Add(_baseUrl);
+            allSources.AddRange(_mirrors);
+            return allSources;
+        }
+
+        protected void BaseUpdateUsedSource(string newBaseUrl)
+        {
+            _baseUrl = newBaseUrl;
+            _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
+        }
+
         /// <summary>
         /// Checks if each sources are active or not
         /// </summary>
         /// <typeparam name="T">Type of result the func yields</typeparam>
         /// <param name="func">Function that throws an exception if source is dead</param>
         /// <returns></returns>
-        protected async IAsyncEnumerable<SourceState> BaseGetSourceStates<T>(Func<string, Task<T>> func)
+        protected async IAsyncEnumerable<SourceState> BaseGetSourceStates<T>(Func<Task<T>> func)
         {
-            var sources = new List<string>();
-            sources.Add(_baseUrl);
-            sources.AddRange(_mirrors);
+            var sources = BaseGetSources();
 
             foreach (var source in sources)
             {
+                _searchEndpoint = Path.Combine(source, _searchResource);
                 var sourceActivity = await GetSourceActivity(source, func);
                 yield return new SourceState(source, sourceActivity);
             }
+            _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
         }
 
-        private async Task<bool> GetSourceActivity<T>(string source, Func<string, Task<T>> func)
+        private async Task<bool> GetSourceActivity<T>(string source, Func<Task<T>> func)
         {
             try
             {
-                await func.Invoke(source);
+                await func.Invoke();
                 return true;
             }
             catch (Exception)

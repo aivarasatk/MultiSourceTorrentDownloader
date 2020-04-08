@@ -15,7 +15,6 @@ namespace MultiSourceTorrentDownloader.Services
         private readonly ILogService _logger;
         private readonly IThePirateBayParser _parser;
 
-        private readonly string _searchResource;
         public ThePirateBaySource(ILogService logger, IThePirateBayParser parser)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -35,6 +34,15 @@ namespace MultiSourceTorrentDownloader.Services
             };
         }
 
+        public IEnumerable<string> GetSources()
+        {
+            return BaseGetSources();
+        }
+
+        public void UpdateUsedSource(string newBaseUrl)
+        {
+            BaseUpdateUsedSource(newBaseUrl);
+        }
         public async Task<TorrentQueryResult> GetTorrentsAsync(string searchFor, int page, Sorting sorting)
         {
             var mappedSortOption = SortingMapper.SortingToThePirateBaySorting(sorting);
@@ -71,15 +79,8 @@ namespace MultiSourceTorrentDownloader.Services
 
         public async IAsyncEnumerable<SourceState> GetSourceStates()
         {
-            await foreach (var source in BaseGetSourceStates(baseUrl =>
-            {
-                _searchEndpoint = Path.Combine(baseUrl, _searchResource);//TODO: more graceful way of changing endpoints
-                return GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc);
-            }))
-            {
+            await foreach (var source in BaseGetSourceStates(() => GetTorrentsAsync(searchFor: "demo", page: 1, Sorting.SeedersDesc)))
                 yield return source;
-            }
-            _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
         }
     }
 }

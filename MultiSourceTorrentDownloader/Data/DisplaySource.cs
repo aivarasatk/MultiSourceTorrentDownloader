@@ -9,17 +9,10 @@ namespace MultiSourceTorrentDownloader.Data
     {
         public DisplaySource()
         {
-            SourceStates = new ObservableCollection<SourceState>();
+            SourceStates = new ObservableCollection<SourceStateUI>();
         }
 
         private bool _selected;
-        private bool _isLoadingSourceStates;
-
-        public bool IsLoadingSourceStates        
-        {
-            get => _isLoadingSourceStates;
-            set => this.MutateVerbose(ref _isLoadingSourceStates, value, RaisePropertyChanged());
-        }
 
         public bool Selected 
         {
@@ -46,6 +39,6 @@ namespace MultiSourceTorrentDownloader.Data
         public string SourceName { get; set; }
         public TorrentSource Source { get; set; }
 
-        public ObservableCollection<SourceState> SourceStates { get; set; }
+        public ObservableCollection<SourceStateUI> SourceStates { get; set; }
     }
 }

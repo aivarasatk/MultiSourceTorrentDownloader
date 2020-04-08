@@ -17,6 +17,8 @@ namespace MultiSourceTorrentDownloader.Models.SubModels
             SelectablePages = new ObservableCollection<int>();
         }
 
+        private bool _isLoading;
+
         public ObservableCollection<DisplaySource> AvailableSources { get; set; }
         public ObservableCollection<int> SelectablePages { get; set; }
 
