@@ -57,7 +57,10 @@
                                                         </Grid.ColumnDefinitions>
                                                         <RadioButton Grid.Column="0" IsChecked="{Binding Selected}" Content="{Binding SourceName}" 
                                                                      GroupName="{Binding DataContext.Source, ElementName=SourceExpander}" Margin="0,0,8,0"/>
-                                                        <TextBlock Grid.Column="1" Text="{Binding IsAlive}"/>
+                                                        <TextBlock Grid.Column="1">
+                                                            <materialDesign:PackIcon Kind="CloseBox" Foreground="Red" Visibility="{Binding IsAlive, Converter={StaticResource InverseBoolToVisConverter}}"/>
+                                                            <materialDesign:PackIcon Kind="Checkbox" Foreground="Green" Visibility="{Binding IsAlive, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                        </TextBlock>
                                                     </Grid>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
