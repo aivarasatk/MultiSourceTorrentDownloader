@@ -3,6 +3,7 @@ using MultiSourceTorrentDownloader.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -71,7 +72,7 @@ namespace MultiSourceTorrentDownloader.Services
         /// <typeparam name="T">Type of result the func yields</typeparam>
         /// <param name="func">Function that throws an exception if source is dead</param>
         /// <returns></returns>
-        protected async IAsyncEnumerable<SourceState> BaseGetSourceStates<T>(Func<Task<T>> func)
+        protected async IAsyncEnumerable<SourceState> BaseGetSourceStates(Func<Task<TorrentQueryResult>> func)
         {
             var sources = BaseGetSources();
 
@@ -84,17 +85,20 @@ namespace MultiSourceTorrentDownloader.Services
             _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
         }
 
-        private async Task<bool> GetSourceActivity<T>(string source, Func<Task<T>> func)
+        private async Task<bool> GetSourceActivity(string source, Func<Task<TorrentQueryResult>> func)
         {
             try
             {
-                await func.Invoke();
-                return true;
+                var res = await func.Invoke();
+                if(res.TorrentEntries.Any())
+                    return true;
             }
             catch (Exception)
             {
                 return false;
             }
+
+            return false;
         }
     }
 }

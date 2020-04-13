@@ -48,7 +48,6 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, siteName: "The Pirate Bay");
             AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, siteName: "1337X");
-            AddTorrentSource(TorrentSource.Rargb, rargbSource, startPage: 1, siteName: "RARGB");
             AddTorrentSource(TorrentSource.Kickass, kickassSource, startPage: 1, siteName: "Kickass Torrents");
 
             InitializeViewModel();
