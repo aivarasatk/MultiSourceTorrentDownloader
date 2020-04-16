@@ -14,11 +14,15 @@ namespace MultiSourceTorrentDownloader.Services
     {
         private Settings _settingsSingleton;
 
+        private readonly ILogService _logService;
+
         private readonly string _windowSettingsPath;
         private readonly string _searchSettingsPath;
 
-        public UserConfiguration()
+        public UserConfiguration(ILogService logService)
         {
+            _logService = logService ?? throw new ArgumentNullException(nameof(LogService));
+
             var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
             var currAppDir = Path.Combine(localAppData, System.Diagnostics.Process.GetCurrentProcess().ProcessName);
             Directory.CreateDirectory(currAppDir);
@@ -42,10 +46,29 @@ namespace MultiSourceTorrentDownloader.Services
                 return _settingsSingleton;
 
             var fileData = File.ReadAllText(_windowSettingsPath);
-            var windowSettings = JsonConvert.DeserializeObject<Window>(fileData);
+
+            var windowSettings = new Window();
+            try
+            {
+                windowSettings = JsonConvert.DeserializeObject<Window>(fileData);
+            }
+            catch(Exception ex)
+            {
+                _logService.Information("Window settings parse exception", ex);
+                windowSettings = null;
+            }
 
             fileData = File.ReadAllText(_searchSettingsPath);
-            var searchSettings = JsonConvert.DeserializeObject<Search>(fileData);
+            var searchSettings = new Search();
+            try
+            {
+                searchSettings = JsonConvert.DeserializeObject<Search>(fileData);
+            }
+            catch (Exception ex)
+            {
+                _logService.Information("Search settings parse exception", ex);
+                searchSettings = null;
+            }
 
             _settingsSingleton = new Settings
             {
