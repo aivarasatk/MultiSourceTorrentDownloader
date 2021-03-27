@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:model="clr-namespace:MultiSourceTorrentDownloader.Models"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviors="clr-namespace:MultiSourceTorrentDownloader.Behaviors"
         xmlns:converters="clr-namespace:MultiSourceTorrentDownloader.Converters"
         xmlns:enums="clr-namespace:MultiSourceTorrentDownloader.Enums"
-        xmlns:views="clr-namespace:MultiSourceTorrentDownloader.Views"
+        xmlns:views="clr-namespace:MultiSourceTorrentDownloader.Views" 
+        xmlns:editors="clr-namespace:Syncfusion.Windows.Controls.Input;assembly=Syncfusion.SfInput.Wpf"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="14"
@@ -84,14 +84,30 @@
                             </Grid.RowDefinitions>
 
                             <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <TextBox x:Name="SearchBox" Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}" Width="300" 
-                                        materialDesign:HintAssist.Hint="Search for torrents.." 
-                                        ToolTip="Pressing enter will activate search"
-                                        materialDesign:TextFieldAssist.HasClearButton="True">
-                                    <TextBox.InputBindings>
+
+                                <editors:SfTextBoxExt
+                                    x:Name="SearchBox"
+                                    AutoCompleteSource="{Binding AutoCompleteItems}"
+                                    AutoCompleteMode="SuggestAppend"
+                                    TextHighlightMode="MultipleOccurrence"
+                                    ShowSuggestionsOnFocus="True"
+                                    HighlightedTextColor="Red"
+                                    Text="{Binding SearchValue, UpdateSourceTrigger=PropertyChanged}"
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"
+                                    Width="300"
+                                    Height="28"
+                                    Watermark="Search for torrents..."
+                                    ToolTip="Pressing enter will activate search">
+
+                                    <editors:SfTextBoxExt.InputBindings>
                                         <KeyBinding Command="{Binding SearchCommand}" Key="Enter" />
-                                    </TextBox.InputBindings>
-                                </TextBox>
+                                    </editors:SfTextBoxExt.InputBindings>
+
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:CloseAutoCompleteDropDownBehavior/>
+                                    </i:Interaction.Behaviors>
+                                </editors:SfTextBoxExt>
 
                                 <Button Command="{Binding SearchCommand}" Height="28" VerticalAlignment="Bottom" Margin="8,0,0,0">
                                     <materialDesign:PackIcon Kind="Search" />

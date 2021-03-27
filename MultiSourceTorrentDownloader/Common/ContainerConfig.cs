@@ -27,6 +27,7 @@ namespace MultiSourceTorrentDownloader.Common
             Bind<IKickassParser>().To<KickassParser>().InTransientScope();
 
             Bind<IUserConfiguration>().To<UserConfiguration>().InSingletonScope();
+            Bind<IAutoCompleteService>().To<AutoCompleteService>().InSingletonScope();
         }
     }
 }

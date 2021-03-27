@@ -16,9 +16,11 @@ namespace MultiSourceTorrentDownloader.Models
             TorrentEntries = new ObservableCollection<TorrentEntry>();
             AvailableSortOrders = new List<KeyValuePair<Sorting, string>>();
             Settings = new MainModelSettings();
+            AutoCompleteItems = new List<string>();
         }
 
         private MainModelSettings _settings;
+        private IEnumerable<string> _autoCompleteItems;
 
         private bool _isLoading;
         private string _searchValue;

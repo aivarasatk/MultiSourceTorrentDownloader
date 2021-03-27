@@ -122,5 +122,11 @@ namespace MultiSourceTorrentDownloader.Models
             get => _settings;
             set => this.MutateVerbose(ref _settings, value, RaisePropertyChanged());
         }
+
+        public IEnumerable<string> AutoCompleteItems
+        {
+            get => _autoCompleteItems;
+            set => this.MutateVerbose(ref _autoCompleteItems, value, RaisePropertyChanged());
+        }
     }
 }

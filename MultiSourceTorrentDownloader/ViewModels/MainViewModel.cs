@@ -23,7 +23,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
     {
         private readonly ILogService _logger;
         private readonly IUserConfiguration _userConfiguration;
-
+        private readonly IAutoCompleteService _autoCompleteService;
         private TorrentInfoDialogViewModel _torrentInfoDialogViewModel;
         
         private string _loadMoreSearchValue = string.Empty;
@@ -33,9 +33,14 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private readonly Dispatcher _dispatcher = Application.Current.Dispatcher;
 
-        public MainViewModel(IThePirateBaySource thePirateBaySource, ILogService logger, ILeetxSource leetxSource,
-            IRargbSource rargbSource, IKickassSource kickassSource,
-            TorrentInfoDialogViewModel torrentInfoDialogViewModel, IUserConfiguration userConfiguration)
+        public MainViewModel(IThePirateBaySource thePirateBaySource, 
+            ILogService logger, 
+            ILeetxSource leetxSource,
+            IRargbSource rargbSource, 
+            IKickassSource kickassSource,
+            TorrentInfoDialogViewModel torrentInfoDialogViewModel, 
+            IUserConfiguration userConfiguration,
+            IAutoCompleteService autoCompleteService)
         {
             _torrentSourceDictionary = new Dictionary<TorrentSource, SourceInformation>();
 
@@ -45,6 +50,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             _torrentInfoDialogViewModel = torrentInfoDialogViewModel ?? throw new ArgumentNullException(nameof(torrentInfoDialogViewModel));
             _userConfiguration = userConfiguration ?? throw new ArgumentNullException(nameof(userConfiguration));
+            _autoCompleteService = autoCompleteService;
 
             AddTorrentSource(TorrentSource.ThePirateBay, thePirateBaySource, startPage: 0, siteName: "The Pirate Bay");
             AddTorrentSource(TorrentSource.Leetx, leetxSource, startPage: 1, siteName: "1337X");
@@ -159,7 +165,13 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
         private void LoadSettings()
         {
-            var searchSettings = _userConfiguration.GetConfiguration().Search ?? new Search();
+            var config = _userConfiguration.GetConfiguration();
+
+            Model.AutoCompleteItems = config.AutoComplete.Values;
+            _autoCompleteService.Init(config.AutoComplete.Values);
+
+            var searchSettings = config.Search ?? new Search();
+
             var pagesToLoad = searchSettings.PagesToLoadOnSeach;
             Model.Settings.PagesToLoadBySearch = pagesToLoad == 0 ? 1: pagesToLoad;
 
@@ -377,12 +389,14 @@ namespace MultiSourceTorrentDownloader.ViewModels
             Model.IsLoading = true;
 
             Model.TorrentFilter = string.Empty;
-            Model.TorrentEntries.Clear();//clearing is done after filter clear, since filter = empty adds values
+            Model.TorrentEntries.Clear(); // clearing is done after filter clear, since filter = empty adds values
             ResetPagings();
 
             await LoadSourceData(Model.Settings.PagesToLoadBySearch);
             
             _unfilteredTorrentEntries = new List<TorrentEntry>(Model.TorrentEntries);
+
+            _autoCompleteService.TryAddAutoCompleteEntry(Model.SearchValue);
 
             Model.IsLoading = false;
         }
@@ -585,7 +599,8 @@ namespace MultiSourceTorrentDownloader.ViewModels
 
             };
 
-            _userConfiguration.SaveSearchSettings(searchSettings);
+            _userConfiguration.SaveSettings(searchSettings);
+            _userConfiguration.SaveSettings(new AutoComplete() { Values = _autoCompleteService.AutoCompletes });
         }
     }
 }
