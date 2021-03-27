@@ -10,7 +10,6 @@ namespace MultiSourceTorrentDownloader.Interfaces
     public interface IUserConfiguration
     {
         Settings GetConfiguration();
-        void SaveWindowSettings(Window window);
-        void SaveSearchSettings(Search search);
+        void SaveSettings<T>(T settings) where T:class;
     }
 }

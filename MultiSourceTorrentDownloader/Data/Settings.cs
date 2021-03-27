@@ -1,10 +1,5 @@
 ﻿using MultiSourceTorrentDownloader.Enums;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace MultiSourceTorrentDownloader.Data
 {
@@ -12,6 +7,7 @@ namespace MultiSourceTorrentDownloader.Data
     {
         public Window Window { get; set; }
         public Search Search { get; set; }
+        public AutoComplete AutoComplete { get; set; }
     }
 
     public class Window
@@ -25,8 +21,13 @@ namespace MultiSourceTorrentDownloader.Data
     public class Search
     {
         public int PagesToLoadOnSeach { get; set; }
-        public Dictionary<TorrentSource, string> SelectedSources { get; set; }
+        public IDictionary<TorrentSource, string> SelectedSources { get; set; }
         public bool SaveSearchOrder { get; set; }
         public Sorting SearchSortOrder { get; set; }
+    }
+    
+    public class AutoComplete
+    {
+        public IEnumerable<string> Values { get; set; }
     }
 }

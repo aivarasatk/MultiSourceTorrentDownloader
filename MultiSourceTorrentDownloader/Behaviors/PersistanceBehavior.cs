@@ -65,7 +65,7 @@ namespace MultiSourceTorrentDownloader.Behaviors
                 PositionTop = AssociatedObject.Top
             };
 
-            _config.SaveWindowSettings(window);
+            _config.SaveSettings(window);
         }
     }
 }

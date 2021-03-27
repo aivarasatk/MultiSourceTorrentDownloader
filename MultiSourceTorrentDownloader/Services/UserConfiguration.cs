@@ -18,6 +18,7 @@ namespace MultiSourceTorrentDownloader.Services
 
         private readonly string _windowSettingsPath;
         private readonly string _searchSettingsPath;
+        private readonly string _autoCompleteSettingsPath;
 
         public UserConfiguration(ILogService logService)
         {
@@ -38,58 +39,71 @@ namespace MultiSourceTorrentDownloader.Services
             {
                 using var searchFile = File.Create(_searchSettingsPath);
             }
+
+            _autoCompleteSettingsPath = Path.Combine(currAppDir, "autoCompleteSettings.json");
+            if (!File.Exists(_autoCompleteSettingsPath))
+            {
+                using var autoCompleteFile = File.Create(_autoCompleteSettingsPath);
+            }
         }
 
         public Settings GetConfiguration()
         {
             if (_settingsSingleton != null)
                 return _settingsSingleton;
+                        
+            var windowSettings = ReadSettings<Window>(_windowSettingsPath);
+            var searchSettings = ReadSettings<Search>(_searchSettingsPath);
 
-            var fileData = File.ReadAllText(_windowSettingsPath);
+            var autoCompleteSettings = ReadSettings<AutoComplete>(_autoCompleteSettingsPath);
+            autoCompleteSettings.Values ??= Enumerable.Empty<string>();
 
-            var windowSettings = new Window();
-            try
-            {
-                windowSettings = JsonConvert.DeserializeObject<Window>(fileData);
-            }
-            catch(Exception ex)
-            {
-                _logService.Information("Window settings parse exception", ex);
-                windowSettings = null;
-            }
-
-            fileData = File.ReadAllText(_searchSettingsPath);
-            var searchSettings = new Search();
-            try
-            {
-                searchSettings = JsonConvert.DeserializeObject<Search>(fileData);
-            }
-            catch (Exception ex)
-            {
-                _logService.Information("Search settings parse exception", ex);
-                searchSettings = null;
-            }
 
             _settingsSingleton = new Settings
             {
                 Window = windowSettings,
-                Search = searchSettings
+                Search = searchSettings,
+                AutoComplete = autoCompleteSettings
             };
 
             return _settingsSingleton;
 
         }
 
-        public void SaveSearchSettings(Search search)
+        private T ReadSettings<T>(string filePath) where T: class
         {
-            var res = JsonConvert.SerializeObject(search, Formatting.Indented);
-            File.WriteAllText(_searchSettingsPath, res);
+            try
+            {
+                var fileData = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<T>(fileData);
+            }
+            catch (Exception ex)
+            {
+                _logService.Information($"{typeof(T)} settings parse exception", ex);
+                return null;
+            }
         }
 
-        public void SaveWindowSettings(Window window)
+        public void SaveSettings<T>(T settings) where T: class
         {
-            var res = JsonConvert.SerializeObject(window, Formatting.Indented);
-            File.WriteAllText(_windowSettingsPath, res);
+            try
+            {
+                var res = JsonConvert.SerializeObject(settings, Formatting.Indented);
+
+                var path = settings switch
+                {
+                    Search => _searchSettingsPath,
+                    Window => _windowSettingsPath,
+                    AutoComplete => _autoCompleteSettingsPath,
+                    _ => throw new NotImplementedException("Settings type not found"),
+                };
+
+                File.WriteAllText(path, res);
+            }
+            catch (Exception ex)
+            {
+                _logService.Information($"{typeof(T)} settings save exception", ex);
+            }
         }
     }
 }
