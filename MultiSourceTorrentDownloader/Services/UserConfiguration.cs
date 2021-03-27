@@ -58,7 +58,6 @@ namespace MultiSourceTorrentDownloader.Services
             var autoCompleteSettings = ReadSettings<AutoComplete>(_autoCompleteSettingsPath);
             autoCompleteSettings.Values ??= Enumerable.Empty<string>();
 
-
             _settingsSingleton = new Settings
             {
                 Window = windowSettings,
@@ -67,7 +66,6 @@ namespace MultiSourceTorrentDownloader.Services
             };
 
             return _settingsSingleton;
-
         }
 
         private T ReadSettings<T>(string filePath) where T: class
