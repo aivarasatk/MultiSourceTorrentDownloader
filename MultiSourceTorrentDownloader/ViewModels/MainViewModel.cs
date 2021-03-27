@@ -397,6 +397,7 @@ namespace MultiSourceTorrentDownloader.ViewModels
             _unfilteredTorrentEntries = new List<TorrentEntry>(Model.TorrentEntries);
 
             _autoCompleteService.TryAddAutoCompleteEntry(Model.SearchValue);
+            Model.AutoCompleteItems = _autoCompleteService.AutoCompletes;
 
             Model.IsLoading = false;
         }
