@@ -2,11 +2,8 @@
 using MultiSourceTorrentDownloader.Interfaces;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiSourceTorrentDownloader.Services
 {
@@ -56,7 +53,13 @@ namespace MultiSourceTorrentDownloader.Services
             var searchSettings = ReadSettings<Search>(_searchSettingsPath);
 
             var autoCompleteSettings = ReadSettings<AutoComplete>(_autoCompleteSettingsPath);
-            autoCompleteSettings.Values ??= Enumerable.Empty<string>();
+            if (autoCompleteSettings is null)
+            {
+                autoCompleteSettings = new AutoComplete
+                {
+                    Values = Enumerable.Empty<string>()
+                };
+            }
 
             _settingsSingleton = new Settings
             {

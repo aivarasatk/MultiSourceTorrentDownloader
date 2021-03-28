@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿using MultiSourceTorrentDownloader.Interfaces;
+using Ninject;
+using System;
+using System.Reflection;
+using System.Windows;
 
 namespace MultiSourceTorrentDownloader
 {
@@ -7,8 +11,15 @@ namespace MultiSourceTorrentDownloader
     /// </summary>
     public partial class App : Application
     {
+        private ILogService _logger; 
         public App()
         {
+
+            var kernel = new StandardKernel();
+            kernel.Load(Assembly.GetExecutingAssembly());
+            _logger = kernel.Get<ILogService>();
+
+            Current.DispatcherUnhandledException += HandleDispatcherUnhandledException;
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //Secret.SyncFususionLicenseKey is a const string containing the community license for the project.
@@ -17,6 +28,12 @@ namespace MultiSourceTorrentDownloader
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(Secret.SyncFususionLicenseKey);
+        }
+
+        private void HandleDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            _logger.Error($"Unhandled exception occured: {e.Exception.StackTrace}");
+            Current.Shutdown();
         }
     }
 }
