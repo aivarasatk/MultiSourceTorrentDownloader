@@ -1,6 +1,5 @@
 ﻿using MultiSourceTorrentDownloader.Interfaces;
 using Ninject;
-using System;
 using System.Reflection;
 using System.Windows;
 

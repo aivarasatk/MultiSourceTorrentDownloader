@@ -3,7 +3,8 @@ An app that gets torrents from multiple sites (like thepiratebay, 133tx.to) and 
 
 
 ## Compilation
-Target the solution for x86 or x64 (needed for CefCharp chromium browser)
+- Target the solution for x86 or x64 (needed for CefCharp chromium browser)
+- App.xaml.cs file requires a Secret.cs file for Syncfusion framework which contains a license key. One can replace that code with empty string and use trial license or create an account for Syncfusion and generate a lifetime community license key.
 
 ## Releases
 [Download page](https://github.com/aivarasatk/MultiSourceTorrentDownloader/releases) <br>
