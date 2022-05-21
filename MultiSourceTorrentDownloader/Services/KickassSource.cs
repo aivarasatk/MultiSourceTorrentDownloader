@@ -29,7 +29,6 @@ namespace MultiSourceTorrentDownloader.Services
             _searchEndpoint = Path.Combine(_baseUrl, _searchResource);
 
             _restClient = new RestClient(_baseUrl);
-            _restClient.Timeout = 7 * 1000;
         }
 
         public string FullTorrentUrl(string uri) => TorrentUrl(uri);
@@ -87,12 +86,13 @@ namespace MultiSourceTorrentDownloader.Services
             BaseUpdateUsedSource(newBaseUrl);
         }
 
-        private async Task<IRestResponse> HttpGetAsync(string fullUrl)
+        private async Task<RestResponse> HttpGetAsync(string fullUrl)
         {
             var request = new RestRequest
             {
-                Method = Method.GET,
-                Resource = fullUrl
+                Method = Method.Get,
+                Resource = fullUrl,
+                Timeout = 7 * 1000
             };
 
             return await _restClient.ExecuteAsync(request);
