@@ -135,7 +135,21 @@ namespace MultiSourceTorrentDownloader.Services
         public async Task<string> ParsePageForMagnetAsync(string pageContents)
         {
             _logger.Information("Leetx magnet parsing parsing");
-            return await BaseParseMagnet(pageContents);
+
+            return await Task.Run(() =>
+            {
+                var htmlAgility = LoadedHtmlDocument(pageContents);
+
+                var magnetNode = htmlAgility.DocumentNode
+                                            .SelectNodes("//a")
+                                            .FirstOrDefault(a => a.Attributes.Any(atr => atr.Name == "href" && atr.Value.Contains("magnet"))
+                                                && a.InnerText.Equals("Magnet Download", StringComparison.InvariantCultureIgnoreCase));
+
+                if (magnetNode == null)
+                    throw new Exception($"Magnet node is not found");
+
+                return magnetNode.Attributes.First(m => m.Name == "href").Value;
+            });
         }
 
         public async Task<string> ParsePageForDescriptionHtmlAsync(string pageContents)
